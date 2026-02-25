@@ -1,6 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import type { Piece as PieceT, Position } from '@/types/game'
-import { BOARD_HEIGHT, BOARD_PADDING, BOARD_WIDTH, CELL_SIZE, COLS, ROWS } from '@/constants/board'
+import {
+  BOARD_HEIGHT,
+  BOARD_PADDING,
+  BOARD_WIDTH,
+  CELL_SIZE,
+  COLS,
+  ROWS,
+  type DisplayMode,
+} from '@/constants/board'
 import { boardToSVG } from '@/lib/coordinates'
 import { Piece } from './Piece'
 import { MoveHighlight } from './MoveHighlight'
@@ -15,6 +23,7 @@ export interface BoardRendererProps {
   onTapSquare: (pos: Position) => void
   onLongPressPiece?: (type: string) => void
   flipped?: boolean
+  labelMode?: DisplayMode
 }
 
 const HIGHLIGHT_COLORS = {
@@ -32,6 +41,7 @@ export function BoardRenderer({
   onTapSquare,
   onLongPressPiece,
   flipped,
+  labelMode,
 }: BoardRendererProps) {
   const { t } = useTranslation()
 
@@ -157,6 +167,7 @@ export function BoardRenderer({
             piece={piece}
             isSelected={isSelected}
             flipped={flipped}
+            labelMode={labelMode}
           />
         )
       })}

@@ -1,4 +1,5 @@
 import { useGameStore } from '@/store/useGameStore'
+import { useLearningStore } from '@/store/useLearningStore'
 import { BoardRenderer } from './BoardRenderer'
 
 interface BoardSVGProps {
@@ -11,6 +12,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
   const legalMoves = useGameStore((s) => s.legalMoves)
   const selectPosition = useGameStore((s) => s.selectPosition)
   const flipped = useGameStore((s) => s.boardFlipped)
+  const displayMode = useLearningStore((s) => s.displayMode)
 
   return (
     <BoardRenderer
@@ -20,6 +22,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
       onTapSquare={selectPosition}
       onLongPressPiece={onPieceInfo}
       flipped={flipped}
+      labelMode={displayMode}
     />
   )
 }

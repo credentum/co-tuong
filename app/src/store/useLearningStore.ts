@@ -8,6 +8,7 @@ import type {
   PuzzleProgress,
   PuzzleDef,
 } from '@/types/learning'
+import type { DisplayMode } from '@/constants/board'
 import { getFullyLegalMoves } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { ALL_PUZZLES } from '@/data/puzzles'
@@ -18,6 +19,10 @@ interface LearningStore {
   // Navigation
   appMode: 'game' | 'learning'
   setAppMode: (mode: 'game' | 'learning') => void
+
+  // Display mode for piece labels
+  displayMode: DisplayMode
+  cycleDisplayMode: () => void
 
   // Lesson state
   currentLesson: LessonId | null
@@ -107,6 +112,15 @@ export const useLearningStore = create<LearningStore>()(
       // Navigation
       appMode: 'game',
       setAppMode: (mode) => set({ appMode: mode }),
+
+      // Display mode for piece labels
+      displayMode: 'english' as DisplayMode,
+      cycleDisplayMode: () => {
+        const modes: DisplayMode[] = ['english', 'vietnamese', 'characters_only']
+        const current = get().displayMode
+        const next = modes[(modes.indexOf(current) + 1) % modes.length]!
+        set({ displayMode: next })
+      },
 
       // Lesson state
       currentLesson: null,
@@ -498,6 +512,7 @@ export const useLearningStore = create<LearningStore>()(
         lessonProgress: state.lessonProgress,
         puzzleProgress: state.puzzleProgress,
         sessionCount: state.sessionCount,
+        displayMode: state.displayMode,
       }),
     },
   ),

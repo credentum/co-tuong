@@ -11,6 +11,7 @@ export function PuzzleBoard() {
   const selectPosition = useLearningStore((s) => s.selectPosition)
   const tapPosition = useLearningStore((s) => s.tapPosition)
   const puzzle = useLearningStore((s) => s.getCurrentPuzzle())
+  const displayMode = useLearningStore((s) => s.displayMode)
 
   const handleTap = (pos: { col: number; row: number }) => {
     if (!puzzle) return
@@ -32,6 +33,7 @@ export function PuzzleBoard() {
       highlightSquares={allHighlights.length > 0 ? allHighlights : undefined}
       highlightStyle={highlightSquares.length > 0 ? highlightStyle : 'target'}
       onTapSquare={handleTap}
+      labelMode={displayMode}
     />
   )
 }

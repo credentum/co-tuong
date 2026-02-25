@@ -11,6 +11,7 @@ export function SeeItPhase() {
   const currentLesson = useLearningStore((s) => s.currentLesson)
   const setPhase = useLearningStore((s) => s.setPhase)
   const completePhase = useLearningStore((s) => s.completePhase)
+  const displayMode = useLearningStore((s) => s.displayMode)
 
   const lesson = LESSONS.find((l) => l.lessonId === currentLesson)
 
@@ -97,6 +98,7 @@ export function SeeItPhase() {
           selectedPosition={demoPieces[0]?.position ?? null}
           legalMoves={demoMoves}
           onTapSquare={() => {}}
+          labelMode={displayMode}
         />
       </div>
 

@@ -37,3 +37,26 @@ export const PIECE_CHARS: Record<string, { red: string; black: string }> = {
   ma: { red: '傌', black: '馬' },
   tot: { red: '兵', black: '卒' },
 }
+
+// Piece name labels for display modes
+export const PIECE_LABELS_EN: Record<string, string> = {
+  tuong: 'General',
+  si: 'Advisor',
+  tuongVoi: 'Elephant',
+  xe: 'Chariot',
+  phao: 'Cannon',
+  ma: 'Horse',
+  tot: 'Soldier',
+}
+
+export const PIECE_LABELS_VI: Record<string, string> = {
+  tuong: 'Tướng',
+  si: 'Sĩ',
+  tuongVoi: 'Tượng',
+  xe: 'Xe',
+  phao: 'Pháo',
+  ma: 'Mã',
+  tot: 'Tốt',
+}
+
+export type DisplayMode = 'english' | 'vietnamese' | 'characters_only'

@@ -5,6 +5,8 @@ import { useLearningStore } from '@/store/useLearningStore'
 export function GameControls() {
   const { t, i18n } = useTranslation()
   const setAppMode = useLearningStore((s) => s.setAppMode)
+  const displayMode = useLearningStore((s) => s.displayMode)
+  const cycleDisplayMode = useLearningStore((s) => s.cycleDisplayMode)
   const confirmMoveEnabled = useGameStore((s) => s.confirmMoveEnabled)
   const toggleConfirmMove = useGameStore((s) => s.toggleConfirmMove)
   const resetGame = useGameStore((s) => s.resetGame)
@@ -28,6 +30,13 @@ export function GameControls() {
       </button>
       <button onClick={toggleLanguage} className={btnClass}>
         {i18n.language === 'vi' ? 'EN' : 'VI'}
+      </button>
+      <button onClick={cycleDisplayMode} className={btnClass}>
+        {displayMode === 'english'
+          ? t('game.labelEnglish')
+          : displayMode === 'vietnamese'
+            ? t('game.labelVietnamese')
+            : t('game.labelTraditional')}
       </button>
       <button
         onClick={() => setOpponentMode('pass-and-play')}

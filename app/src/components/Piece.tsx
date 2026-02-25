@@ -1,21 +1,36 @@
 import { useTranslation } from 'react-i18next'
 import type { Piece as PieceType } from '@/types/game'
-import { PIECE_CHARS, PIECE_RADIUS } from '@/constants/board'
+import {
+  PIECE_CHARS,
+  PIECE_LABELS_EN,
+  PIECE_LABELS_VI,
+  PIECE_RADIUS,
+  type DisplayMode,
+} from '@/constants/board'
 import { boardToSVG } from '@/lib/coordinates'
 
 interface PieceProps {
   piece: PieceType
   isSelected: boolean
   flipped?: boolean
+  labelMode?: DisplayMode
 }
 
-export function Piece({ piece, isSelected, flipped }: PieceProps) {
+export function Piece({ piece, isSelected, flipped, labelMode }: PieceProps) {
   const { t } = useTranslation()
   const { x, y } = boardToSVG(piece.position.col, piece.position.row, flipped)
   const chars = PIECE_CHARS[piece.type]
   const char = piece.side === 'red' ? chars?.red : chars?.black
   const pieceName = t(`pieces.${piece.type}`)
   const sideName = t(`sides.${piece.side}`)
+
+  const showLabel = labelMode && labelMode !== 'characters_only'
+  const label =
+    labelMode === 'english'
+      ? PIECE_LABELS_EN[piece.type]
+      : labelMode === 'vietnamese'
+        ? PIECE_LABELS_VI[piece.type]
+        : undefined
 
   return (
     <g
@@ -46,13 +61,30 @@ export function Piece({ piece, isSelected, flipped }: PieceProps) {
       <text
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={42}
+        fontSize={showLabel ? 32 : 42}
         fontWeight="bold"
         fill={piece.side === 'red' ? '#dc2626' : '#1c1917'}
+        dy={showLabel ? -8 : 0}
         style={{ userSelect: 'none' }}
       >
         {char}
       </text>
+
+      {/* Piece name label */}
+      {showLabel && label && (
+        <text
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={16}
+          fontWeight="600"
+          fill={piece.side === 'red' ? '#991b1b' : '#1c1917'}
+          dy={18}
+          style={{ userSelect: 'none' }}
+          aria-hidden="true"
+        >
+          {label}
+        </text>
+      )}
     </g>
   )
 }
