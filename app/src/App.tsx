@@ -2,6 +2,7 @@ import { Board } from './components/Board'
 import { TurnIndicator } from './components/TurnIndicator'
 import { GameControls } from './components/GameControls'
 import { ConfirmMoveBar } from './components/ConfirmMoveBar'
+import { MoveHistory } from './components/MoveHistory'
 import { Toast } from './components/Toast'
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
       <Board />
       <GameControls />
       <ConfirmMoveBar />
+      <MoveHistory />
       <Toast />
     </div>
   )

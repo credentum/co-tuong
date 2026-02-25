@@ -36,6 +36,8 @@
     "blackWins": "Đen thắng!",
     "passAndPlay": "2P",
     "randomBot": "Dễ",
-    "minimaxBot": "Khó"
+    "minimaxBot": "Khó",
+    "undo": "Hoàn tác",
+    "redo": "Làm lại"
   }
 }

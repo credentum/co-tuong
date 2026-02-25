@@ -36,6 +36,8 @@
     "blackWins": "Black wins!",
     "passAndPlay": "2P",
     "randomBot": "Easy",
-    "minimaxBot": "Hard"
+    "minimaxBot": "Hard",
+    "undo": "Undo",
+    "redo": "Redo"
   }
 }
