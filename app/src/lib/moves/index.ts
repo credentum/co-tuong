@@ -3,8 +3,11 @@ import { getXeMoves } from './xe'
 import { getTuongMoves } from './tuong'
 import { getSiMoves } from './si'
 import { getTotMoves } from './tot'
+import { getPhaoMoves } from './phao'
+import { getMaMoves } from './ma'
+import { getTuongVoiMoves } from './tuongVoi'
 
-/** Returns pseudo-legal moves for the given piece. Unimplemented types return []. */
+/** Returns pseudo-legal moves for the given piece. */
 export function getLegalMoves(piece: Piece, pieces: Piece[]): Position[] {
   switch (piece.type) {
     case 'xe':
@@ -15,7 +18,11 @@ export function getLegalMoves(piece: Piece, pieces: Piece[]): Position[] {
       return getSiMoves(piece, pieces)
     case 'tot':
       return getTotMoves(piece, pieces)
-    default:
-      return []
+    case 'phao':
+      return getPhaoMoves(piece, pieces)
+    case 'ma':
+      return getMaMoves(piece, pieces)
+    case 'tuongVoi':
+      return getTuongVoiMoves(piece, pieces)
   }
 }

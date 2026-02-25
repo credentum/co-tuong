@@ -33,18 +33,21 @@ describe('getLegalMoves', () => {
     expect(moves).toHaveLength(1)
   })
 
-  it('returns empty for unimplemented phao', () => {
+  it('dispatches phao moves', () => {
     const piece = mkPiece('phao', 'red', 1, 2)
-    expect(getLegalMoves(piece, [piece])).toEqual([])
+    const moves = getLegalMoves(piece, [piece])
+    expect(moves.length).toBeGreaterThan(0)
   })
 
-  it('returns empty for unimplemented ma', () => {
-    const piece = mkPiece('ma', 'red', 1, 0)
-    expect(getLegalMoves(piece, [piece])).toEqual([])
+  it('dispatches ma moves', () => {
+    const piece = mkPiece('ma', 'red', 4, 5)
+    const moves = getLegalMoves(piece, [piece])
+    expect(moves).toHaveLength(8)
   })
 
-  it('returns empty for unimplemented tuongVoi', () => {
-    const piece = mkPiece('tuongVoi', 'red', 2, 0)
-    expect(getLegalMoves(piece, [piece])).toEqual([])
+  it('dispatches tuongVoi moves', () => {
+    const piece = mkPiece('tuongVoi', 'red', 4, 2)
+    const moves = getLegalMoves(piece, [piece])
+    expect(moves).toHaveLength(4)
   })
 })
