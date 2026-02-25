@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/co-tuong/',
   plugins: [
     react(),
     tailwindcss(),
@@ -18,17 +19,17 @@ export default defineConfig({
         theme_color: '#7c2d12',
         background_color: '#fef3c7',
         display: 'standalone',
-        scope: '/',
-        start_url: '/',
+        scope: '/co-tuong/',
+        start_url: '/co-tuong/',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: 'icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
