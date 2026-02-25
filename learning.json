@@ -1,0 +1,846 @@
+{
+  "project": "Cờ tướng Learning Mode",
+  "version": "1.0",
+  "design_philosophy": {
+    "target_user": "English-speaking expats in Vietnam who see Cờ tướng played at cafés and want to join in",
+    "session_length": "Under 10 minutes per lesson — coffee-shop-sized learning",
+    "core_principle": "Progressive piece introduction with mini-games, not full-game-first",
+    "pedagogical_basis": [
+      "Andragogy (Knowles): Adults learn best when they understand WHY and can immediately apply knowledge to real-world situations",
+      "Spaced repetition (Ebbinghaus): Puzzles from earlier lessons resurface in later sessions to combat the forgetting curve",
+      "Mini-game pedagogy: Isolate one or two piece types per lesson with a clear win condition before combining",
+      "Three-layer labeling: Character on the disc → Vietnamese name they'll hear → English explanation"
+    ],
+    "completion_goal": "An expat can work through all 7 core lessons in a week of café visits and sit down to play a real game by the weekend"
+  },
+  "piece_reference": {
+    "description": "All pieces with their three-layer labels. Red and Black use different characters on the physical discs.",
+    "pieces": [
+      {
+        "id": "xe",
+        "vietnamese": "Xe",
+        "english": "Chariot",
+        "character_red": "俥",
+        "character_black": "車",
+        "pronunciation_hint": "Say 'seh'",
+        "relative_value": 9
+      },
+      {
+        "id": "ma",
+        "vietnamese": "Mã",
+        "english": "Horse",
+        "character_red": "傌",
+        "character_black": "馬",
+        "pronunciation_hint": "Say 'mah'",
+        "relative_value": 4
+      },
+      {
+        "id": "tuong_general",
+        "vietnamese": "Tướng",
+        "english": "General",
+        "character_red": "帥",
+        "character_black": "將",
+        "pronunciation_hint": "Say 'tuh-ung' (rising tone)",
+        "relative_value": null,
+        "note": "Priceless — if captured, you lose"
+      },
+      {
+        "id": "si",
+        "vietnamese": "Sĩ",
+        "english": "Advisor",
+        "character_red": "仕",
+        "character_black": "士",
+        "pronunciation_hint": "Say 'see'",
+        "relative_value": 2
+      },
+      {
+        "id": "tuong_elephant",
+        "vietnamese": "Tượng",
+        "english": "Elephant",
+        "character_red": "相",
+        "character_black": "象",
+        "pronunciation_hint": "Say 'tuh-ung' (falling tone)",
+        "relative_value": 2
+      },
+      {
+        "id": "phao",
+        "vietnamese": "Pháo",
+        "english": "Cannon",
+        "character_red": "炮",
+        "character_black": "砲",
+        "pronunciation_hint": "Say 'fow' (like 'pow' with an f)",
+        "relative_value": 4.5
+      },
+      {
+        "id": "tot",
+        "vietnamese": "Tốt",
+        "english": "Soldier",
+        "character_red": "兵",
+        "character_black": "卒",
+        "pronunciation_hint": "Say 'toht'",
+        "relative_value": 1,
+        "note": "Gains sideways movement after crossing the river — value increases to ~2"
+      }
+    ]
+  },
+  "lessons": [
+    {
+      "lesson_id": 1,
+      "title": "The Chariot — Your Strongest Warrior",
+      "piece_focus": ["xe"],
+      "café_context": "Look at the board next to you. The round discs marked 俥 or 車 are Xe — Chariots. They're the most powerful pieces on the board, and they move exactly like a Rook in Western chess.",
+      "learning_objectives": [
+        "Recognize 俥 (red) and 車 (black) characters on physical discs",
+        "Understand Xe moves any number of squares along a rank or file",
+        "Understand Xe cannot jump over pieces",
+        "Learn that pieces are placed on intersections, not inside squares"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["俥", "車"],
+          "name": "Xe — Chariot",
+          "movement_diagram": "Highlight all reachable intersections from center of empty board along rank and file",
+          "real_world_tip": "If you know chess, this is your Rook. Strongest piece on the board.",
+          "cultural_note": "Xe also means 'vehicle' in Vietnamese. You'll see it on street signs — xe máy (motorbike), xe buýt (bus)."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Chariot Capture Race",
+        "setup": {
+          "board": "Empty board with 2 red Xe vs 2 black Xe",
+          "scattered_targets": "6 neutral tokens placed on random intersections"
+        },
+        "objective": "Capture more tokens than your opponent (AI). First to 4 wins.",
+        "rules": [
+          "Standard Xe movement (any number of squares along rank or file)",
+          "Capture a token by landing on its intersection",
+          "Xe can also capture opponent's Xe",
+          "Alternate turns"
+        ],
+        "ai_difficulty": "Makes random legal moves with slight preference for tokens",
+        "success_criteria": "Player completes 3 rounds"
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L1_P1",
+            "title": "Chariot's Reach",
+            "type": "tap_all_targets",
+            "prompt": "Tap all intersections the red Xe can reach in one move.",
+            "setup": "Red Xe on e5 with 3 blocking pieces on the board",
+            "answer_count": "Variable based on blockers"
+          },
+          {
+            "puzzle_id": "L1_P2",
+            "title": "Capture in One",
+            "type": "find_the_move",
+            "prompt": "The black Xe is unprotected. Capture it in one move.",
+            "setup": "Red Xe on a1, Black Xe on a7, no obstacles"
+          },
+          {
+            "puzzle_id": "L1_P3",
+            "title": "Blocked Path",
+            "type": "find_the_move",
+            "prompt": "Can the red Xe capture the black Xe? Find the path.",
+            "setup": "Red Xe on a1, blocking piece on a4, Black Xe on a8",
+            "teaches": "Xe cannot jump over pieces"
+          },
+          {
+            "puzzle_id": "L1_P4",
+            "title": "Fork the Tokens",
+            "type": "find_best_move",
+            "prompt": "Move the Xe to an intersection where it threatens two enemy pieces at once.",
+            "setup": "Red Xe on e1, Black pieces on a5 and e9"
+          },
+          {
+            "puzzle_id": "L1_P5",
+            "title": "Escape Route",
+            "type": "find_the_move",
+            "prompt": "Your Xe is under attack. Move it to safety while also threatening an enemy piece.",
+            "setup": "Red Xe on d5 threatened by Black Xe on d9, Black Ma on h5"
+          }
+        ]
+      },
+      "use_it": null,
+      "lesson_summary": "You now know the strongest piece in Cờ tướng. Next time you see 俥 or 車 on the board at the café, you know what it does."
+    },
+    {
+      "lesson_id": 2,
+      "title": "The Horse — Jumps, But Watch Its Legs",
+      "piece_focus": ["ma"],
+      "café_context": "The discs marked 傌 or 馬 are Mã — Horses. They jump in an L-shape like a chess Knight, but there's a catch: if a piece is adjacent to the Horse blocking its first step, it can't jump that direction.",
+      "learning_objectives": [
+        "Recognize 傌 (red) and 馬 (black) characters",
+        "Understand L-shaped movement (one step orthogonal, then one step diagonal outward)",
+        "Understand the leg-block rule: a piece adjacent in the orthogonal direction blocks that jump",
+        "Identify when a Horse is blocked vs free"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["傌", "馬"],
+          "name": "Mã — Horse",
+          "movement_diagram": "Show all 8 possible destinations from center, with blocking squares highlighted in red",
+          "real_world_tip": "Like a chess Knight, but it CAN be blocked. This is the first big difference you'll notice from Western chess.",
+          "cultural_note": "Mã appears in the Vietnamese zodiac — ngựa/mã. The Horse is associated with energy and adventure."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Horse Obstacle Course",
+        "setup": {
+          "board": "Red Ma on a1, target intersection on i9, 8 blocking pieces scattered on board"
+        },
+        "objective": "Navigate your Horse from corner to corner in the fewest moves, avoiding blocked paths.",
+        "rules": [
+          "Standard Ma movement with leg-block rule enforced",
+          "Blocked jumps are shown with a red indicator",
+          "Count your moves — par is displayed after completion"
+        ],
+        "ai_difficulty": null,
+        "success_criteria": "Player reaches target intersection. Bonus for under-par."
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L2_P1",
+            "title": "Where Can It Jump?",
+            "type": "tap_all_targets",
+            "prompt": "Tap all intersections this Horse can legally reach.",
+            "setup": "Red Ma on e5 with 2 adjacent blocking pieces",
+            "teaches": "Identifying legal vs blocked jumps"
+          },
+          {
+            "puzzle_id": "L2_P2",
+            "title": "Blocked or Free?",
+            "type": "true_false_series",
+            "prompt": "For each highlighted destination: can the Horse reach it? (Yes/No)",
+            "setup": "Red Ma on e5 with various blockers, 4 destinations highlighted",
+            "teaches": "Rapid leg-block recognition"
+          },
+          {
+            "puzzle_id": "L2_P3",
+            "title": "Horse Capture",
+            "type": "find_the_move",
+            "prompt": "Capture the unprotected Xe with your Horse.",
+            "setup": "Red Ma on c1, Black Xe on d3, no blocker on d1"
+          },
+          {
+            "puzzle_id": "L2_P4",
+            "title": "Unblock the Horse",
+            "type": "find_the_move",
+            "prompt": "Move your Xe to unblock your Horse's path to capture.",
+            "setup": "Red Ma on e5 blocked by Red Xe on e6, target Black piece on f7",
+            "teaches": "Piece coordination — introduced pieces work together",
+            "pieces_used": ["ma", "xe"]
+          },
+          {
+            "puzzle_id": "L2_P5",
+            "title": "Horse vs Chariot",
+            "type": "find_the_move",
+            "prompt": "Your Horse is attacked by a Chariot. Find the only safe square that also threatens the Chariot back.",
+            "setup": "Tactical puzzle using Ma and Xe interaction"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lesson": 1,
+          "review_puzzles": ["L1_P3"]
+        }
+      },
+      "use_it": {
+        "type": "limited_game",
+        "title": "Chariots vs Horses",
+        "setup": "Each side gets 2 Xe and 2 Ma. No other pieces.",
+        "objective": "Capture all opponent's pieces or force them into a position with no legal moves.",
+        "teaches": "How Xe and Ma interact — the Horse's ability to threaten squares the Chariot can't"
+      },
+      "lesson_summary": "The Horse is tricky but powerful. That leg-block rule is what makes Cờ tướng's Horse unique. When you see 馬 move at the café, watch for what's blocking it."
+    },
+    {
+      "lesson_id": 3,
+      "title": "The Fortress — General and Advisors",
+      "piece_focus": ["tuong_general", "si"],
+      "café_context": "See that 3x3 grid with diagonal lines on each end of the board? That's the Cung — the palace or fortress. The General (帥/將) and Advisors (仕/士) can never leave it. The General is the piece you must protect at all costs.",
+      "learning_objectives": [
+        "Recognize 帥/將 (General) and 仕/士 (Advisor) characters",
+        "Understand the palace boundaries (3x3 grid, 9 intersections)",
+        "Understand General moves one step orthogonally within the palace",
+        "Understand Advisor moves one step diagonally within the palace",
+        "Understand check: when the General is threatened, you MUST respond"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["帥", "將", "仕", "士"],
+          "name": "Tướng — General & Sĩ — Advisor",
+          "movement_diagram": "Show palace with General's 4 orthogonal moves and Advisor's 4 diagonal moves highlighted",
+          "real_world_tip": "The General is your King. The Advisors are bodyguards who never leave the fortress. Together they form a defensive unit.",
+          "cultural_note": "Tướng means 'general' — the same word in the game's name Cờ tướng (General's Chess). This piece IS the game."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Defend the Fortress",
+        "setup": {
+          "board": "Red: Tướng + 2 Sĩ in palace. Black: 2 Xe approaching.",
+          "ai_controls": "Black Xe"
+        },
+        "objective": "Survive 10 moves without getting checkmated. The AI attacks with Chariots.",
+        "rules": [
+          "General and Advisors move only within the palace",
+          "Check must be addressed immediately",
+          "Player learns defensive coordination"
+        ],
+        "ai_difficulty": "Moderate — AI makes logical attacks but leaves some escape routes",
+        "success_criteria": "Survive 10 moves without checkmate"
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L3_P1",
+            "title": "Escape Check",
+            "type": "find_the_move",
+            "prompt": "Your General is in check. Find the safe move.",
+            "setup": "Red Tướng on e1 checked by Black Xe on e7. Sĩ on d2 and f2.",
+            "teaches": "Responding to check by moving the General"
+          },
+          {
+            "puzzle_id": "L3_P2",
+            "title": "Block the Check",
+            "type": "find_the_move",
+            "prompt": "Your General is in check. Use an Advisor to block.",
+            "setup": "Red Tướng on e1 checked by Black Xe on e7. Sĩ available to interpose.",
+            "teaches": "Responding to check by blocking with Advisor"
+          },
+          {
+            "puzzle_id": "L3_P3",
+            "title": "Palace Boundaries",
+            "type": "tap_all_targets",
+            "prompt": "Tap all intersections the Advisor can legally reach.",
+            "setup": "Sĩ on e2 (center of palace edge)",
+            "teaches": "Advisor stays on diagonals within palace"
+          },
+          {
+            "puzzle_id": "L3_P4",
+            "title": "Checkmate in One",
+            "type": "find_the_move",
+            "prompt": "Deliver checkmate using your Chariot.",
+            "setup": "Red Xe vs Black Tướng + Sĩ in palace. One-move mate available.",
+            "pieces_used": ["xe", "tuong_general", "si"]
+          },
+          {
+            "puzzle_id": "L3_P5",
+            "title": "Fortress Coordination",
+            "type": "find_best_move",
+            "prompt": "Position your Advisor to protect the General AND block the diagonal.",
+            "setup": "Defensive positioning puzzle"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lessons": [1, 2],
+          "review_puzzles": ["L1_P4", "L2_P2"]
+        }
+      },
+      "use_it": {
+        "type": "limited_game",
+        "title": "Storm the Fortress",
+        "setup": "Red: Tướng + 2 Sĩ + 1 Xe. Black: Tướng + 2 Sĩ + 1 Xe + 1 Ma.",
+        "objective": "Checkmate the opponent's General.",
+        "teaches": "Attacking vs defending the palace using all pieces learned so far"
+      },
+      "lesson_summary": "The palace is the heart of Cờ tướng. Protecting your Tướng while breaking into your opponent's fortress — that's the game. When you watch at the café, notice how players angle their attacks toward the palace."
+    },
+    {
+      "lesson_id": 4,
+      "title": "The Elephant — Guardian of Your Side",
+      "piece_focus": ["tuong_elephant"],
+      "café_context": "The discs marked 相 or 象 are Tượng — Elephants. They move exactly two intersections diagonally, but they cannot cross the river in the middle of the board, and they can be blocked at the midpoint of their jump.",
+      "learning_objectives": [
+        "Recognize 相 (red) and 象 (black) characters",
+        "Understand the exactly-two-diagonal movement pattern",
+        "Understand the river restriction: Elephants never cross the river",
+        "Understand the eye-block rule: a piece at the midpoint of the diagonal blocks the move",
+        "Understand the river as a board feature that affects multiple pieces"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["相", "象"],
+          "name": "Tượng — Elephant",
+          "movement_diagram": "Show the 4 possible destinations (2 diagonals) with eye-block points highlighted and river boundary marked",
+          "real_world_tip": "Think of a Bishop that can only move exactly 2 squares diagonally and can't cross the center line. It's purely defensive.",
+          "cultural_note": "象 (tượng) means elephant. War elephants were real — they defended the rear. This piece does the same."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Elephant Patrol",
+        "setup": {
+          "board": "Red: 2 Tượng on starting positions. Black: 2 Ma that cross the river.",
+          "ai_controls": "Black Ma"
+        },
+        "objective": "Use your two Elephants to block or capture the invading Horses for 8 moves.",
+        "rules": [
+          "Elephants move exactly 2 intersections diagonally",
+          "Cannot cross the river",
+          "Eye-block rule enforced with visual indicator",
+          "Capture enemy Horses by landing on their intersection"
+        ],
+        "ai_difficulty": "Horses try to penetrate. Player learns Elephant's defensive coverage.",
+        "success_criteria": "Neither Horse reaches the palace"
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L4_P1",
+            "title": "Elephant's Range",
+            "type": "tap_all_targets",
+            "prompt": "Tap all intersections this Elephant can reach.",
+            "setup": "Red Tượng on c1 with one eye-block present"
+          },
+          {
+            "puzzle_id": "L4_P2",
+            "title": "Blocked Eye",
+            "type": "true_false_series",
+            "prompt": "Can the Elephant reach each highlighted intersection? (Yes/No)",
+            "setup": "Red Tượng on c5 with 2 of 4 eyes blocked"
+          },
+          {
+            "puzzle_id": "L4_P3",
+            "title": "River Boundary",
+            "type": "find_the_move",
+            "prompt": "The enemy Horse is across the river. Can your Elephant capture it?",
+            "setup": "Red Tượng near river, Black Ma just across",
+            "teaches": "Elephants CANNOT cross the river — ever"
+          },
+          {
+            "puzzle_id": "L4_P4",
+            "title": "Defensive Formation",
+            "type": "find_best_move",
+            "prompt": "Position your Elephant to protect both the Advisor and block the enemy Chariot's diagonal approach.",
+            "pieces_used": ["tuong_elephant", "si", "xe"]
+          },
+          {
+            "puzzle_id": "L4_P5",
+            "title": "Clear the Eye",
+            "type": "find_the_move",
+            "prompt": "Move your Chariot to unblock your Elephant's path.",
+            "pieces_used": ["tuong_elephant", "xe"],
+            "teaches": "Coordination — clearing blocking pieces to enable Elephant movement"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lessons": [1, 2, 3],
+          "review_puzzles": ["L2_P1", "L3_P1"]
+        }
+      },
+      "use_it": {
+        "type": "limited_game",
+        "title": "Invasion Defense",
+        "setup": "Red: Tướng + 2 Sĩ + 2 Tượng + 1 Xe. Black: Tướng + 2 Sĩ + 2 Ma + 1 Xe.",
+        "objective": "Checkmate. Red has the defensive advantage with Elephants. Black has mobile Horses.",
+        "teaches": "How defensive pieces (Advisor, Elephant) coordinate to protect the General while Chariot attacks"
+      },
+      "lesson_summary": "Elephants are your defensive wall. They never cross the river, and they can be blocked — but positioned well, they lock down your side of the board. At the café, notice how players rarely move their Elephants early."
+    },
+    {
+      "lesson_id": 5,
+      "title": "The Cannon — The Soul of Cờ tướng",
+      "piece_focus": ["phao"],
+      "café_context": "This is the piece that makes Cờ tướng its own game. The discs marked 炮 or 砲 are Pháo — Cannons. They MOVE like a Chariot (any distance along rank or file). But to CAPTURE, they must jump over exactly one piece — friend or foe. That middle piece is called the 'screen.'",
+      "learning_objectives": [
+        "Recognize 炮 (red) and 砲 (black) characters",
+        "Understand that Cannon moves like Chariot when NOT capturing",
+        "Understand the screen rule: to capture, must jump over exactly one intervening piece",
+        "Understand the screen can be friendly or enemy",
+        "Understand Cannon's power decreases as pieces are traded (fewer screens available)"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["炮", "砲"],
+          "name": "Pháo — Cannon",
+          "movement_diagram": "Two diagrams: (1) movement without capture — same as Chariot. (2) capture — show the screen piece and the target beyond it",
+          "real_world_tip": "This piece has no equivalent in Western chess. It's the signature piece of Cờ tướng. Master this and you understand the game.",
+          "cultural_note": "Pháo means cannon or artillery. The character 炮 originally meant catapult — a weapon that launches projectiles OVER obstacles. The movement rule mirrors this perfectly."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Cannon Target Practice",
+        "setup": {
+          "board": "Red: 2 Pháo. Board has 6 neutral 'screen' pieces and 4 black targets.",
+          "ai_controls": null
+        },
+        "objective": "Capture all 4 targets using screen jumps. Screens are not removed when used.",
+        "rules": [
+          "Cannon moves freely along ranks and files (like Chariot) when not capturing",
+          "To capture: must jump over exactly one piece (the screen) to land on the target",
+          "Screens remain on the board",
+          "Find the sequence to capture all 4 targets"
+        ],
+        "ai_difficulty": null,
+        "success_criteria": "All 4 targets captured. Bonus for fewest total moves."
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L5_P1",
+            "title": "Cannon Capture",
+            "type": "find_the_move",
+            "prompt": "Use the screen to capture the enemy piece.",
+            "setup": "Red Pháo on a1, neutral piece on a5, Black piece on a8"
+          },
+          {
+            "puzzle_id": "L5_P2",
+            "title": "No Screen, No Capture",
+            "type": "true_false_series",
+            "prompt": "Can the Cannon capture each highlighted piece? (Yes/No)",
+            "setup": "Red Pháo on e1, various pieces on e-file — some with screens, some without",
+            "teaches": "Without exactly one screen, Cannon cannot capture"
+          },
+          {
+            "puzzle_id": "L5_P3",
+            "title": "Cannon Checkmate",
+            "type": "find_the_move",
+            "prompt": "Deliver checkmate using your Cannon. Find the screen.",
+            "setup": "Red Pháo on e7, Red piece as screen on e4, Black Tướng on e1 in palace"
+          },
+          {
+            "puzzle_id": "L5_P4",
+            "title": "Create a Screen",
+            "type": "find_the_move",
+            "prompt": "Move a piece into position to serve as a screen for your Cannon's capture.",
+            "pieces_used": ["phao", "ma"],
+            "teaches": "Actively creating screens through piece coordination"
+          },
+          {
+            "puzzle_id": "L5_P5",
+            "title": "Double Cannon",
+            "type": "find_best_move",
+            "prompt": "One Cannon serves as the other's screen. Find the checkmate.",
+            "setup": "Two Red Pháo on the same file with Black Tướng at the end",
+            "teaches": "Classic Cờ tướng tactic — Cannons supporting each other"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lessons": [2, 3, 4],
+          "review_puzzles": ["L2_P4", "L3_P4", "L4_P2"]
+        }
+      },
+      "use_it": {
+        "type": "limited_game",
+        "title": "Artillery Assault",
+        "setup": "Red: Tướng + 2 Sĩ + 2 Tượng + 2 Pháo. Black: Tướng + 2 Sĩ + 2 Tượng + 2 Xe.",
+        "objective": "Checkmate. Cannons vs Chariots — learn how Cannons use defensive pieces as screens to attack.",
+        "teaches": "The Cannon's paradox: your own defensive pieces become weapons when a Cannon is behind them"
+      },
+      "lesson_summary": "The Pháo is what makes Cờ tướng unique. Watch a game at the café and you'll see experienced players constantly maneuvering pieces to create or remove screens. If you understand the Cannon, you understand Cờ tướng."
+    },
+    {
+      "lesson_id": 6,
+      "title": "The Soldier — Small But Brave",
+      "piece_focus": ["tot"],
+      "café_context": "The discs marked 兵 or 卒 are Tốt — Soldiers. They start weak, moving only one step forward. But once they cross the river, they gain the ability to move sideways too. They never retreat.",
+      "learning_objectives": [
+        "Recognize 兵 (red) and 卒 (black) characters",
+        "Understand Soldiers move one step forward only (before crossing river)",
+        "Understand Soldiers gain sideways movement after crossing the river",
+        "Understand Soldiers never move backward",
+        "Understand the river as a power-up boundary for Soldiers"
+      ],
+      "see_it": {
+        "type": "piece_card",
+        "content": {
+          "character_display": ["兵", "卒"],
+          "name": "Tốt — Soldier",
+          "movement_diagram": "Two diagrams: (1) Before river — forward only. (2) After river — forward or sideways.",
+          "real_world_tip": "Unlike chess pawns, Soldiers don't move diagonally to capture. They always move and capture the same way. And there's no promotion — once a Soldier reaches the back rank, it can only move sideways.",
+          "cultural_note": "卒 (tốt) means foot soldier. 兵 (binh) means soldier/army. Five Soldiers per side — they form your front line, and crossed-river Soldiers are surprisingly dangerous."
+        }
+      },
+      "try_it": {
+        "type": "mini_game",
+        "title": "Cross the River",
+        "setup": {
+          "board": "5 Red Tốt on starting positions vs 5 Black Tốt on starting positions"
+        },
+        "objective": "Get 3 Soldiers across the river before your opponent does.",
+        "rules": [
+          "Soldiers move one step forward before the river",
+          "After crossing, can also move one step sideways",
+          "Capture by moving onto opponent's intersection",
+          "No backward movement ever"
+        ],
+        "ai_difficulty": "Easy — AI demonstrates basic Soldier tactics",
+        "success_criteria": "3 Soldiers cross the river"
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L6_P1",
+            "title": "Soldier's Reach",
+            "type": "tap_all_targets",
+            "prompt": "Tap all intersections this crossed-river Soldier can reach.",
+            "setup": "Red Tốt on e6 (across river)",
+            "teaches": "Crossed-river Soldier has 3 possible moves (forward, left, right)"
+          },
+          {
+            "puzzle_id": "L6_P2",
+            "title": "Soldier Checkmate",
+            "type": "find_the_move",
+            "prompt": "Deliver checkmate with a Soldier.",
+            "setup": "Red Tốt crossed river, near Black Tướng in palace with limited escape",
+            "teaches": "Crossed-river Soldiers are genuinely dangerous to the General"
+          },
+          {
+            "puzzle_id": "L6_P3",
+            "title": "Soldier as Screen",
+            "type": "find_the_move",
+            "prompt": "Advance your Soldier to serve as a screen for your Cannon's checkmate.",
+            "pieces_used": ["tot", "phao"],
+            "teaches": "Soldiers make excellent Cannon screens"
+          },
+          {
+            "puzzle_id": "L6_P4",
+            "title": "No Retreat",
+            "type": "find_best_move",
+            "prompt": "Your Soldier is on the back rank. Find the only useful move.",
+            "setup": "Red Tốt on e9 — can only move sideways",
+            "teaches": "End-of-board Soldiers are limited but still useful"
+          },
+          {
+            "puzzle_id": "L6_P5",
+            "title": "Soldier Army",
+            "type": "find_best_move",
+            "prompt": "You have 3 crossed-river Soldiers. Which one should advance to create a mating threat?",
+            "pieces_used": ["tot", "tuong_general"],
+            "teaches": "Multiple Soldiers coordinate powerfully"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lessons": [3, 5],
+          "review_puzzles": ["L3_P2", "L5_P3"]
+        }
+      },
+      "use_it": {
+        "type": "limited_game",
+        "title": "All Arms",
+        "setup": "Full piece set MINUS Cannons for both sides.",
+        "objective": "Checkmate. Practice with all pieces learned except the Cannon.",
+        "teaches": "Near-complete game coordination. Cannons removed to keep complexity manageable for one more lesson."
+      },
+      "lesson_summary": "Soldiers look weak but crossed-river Tốt win games. Experienced players at the café will push Soldiers aggressively. Now you know why."
+    },
+    {
+      "lesson_id": 7,
+      "title": "The Full Game — Flying Generals and You",
+      "piece_focus": ["all"],
+      "café_context": "You now know every piece. There's one last rule: the Flying General. The two Generals can never face each other on the same file with nothing between them. Think of it as a staring contest — if they're looking at each other with no pieces in the way, the position is illegal. This rule creates tactics you won't see in any other game.",
+      "learning_objectives": [
+        "Understand the Flying General rule and how it restricts movement",
+        "Understand how Flying General creates tactical pins and attacks",
+        "Play a complete game of Cờ tướng with all rules enforced",
+        "Recognize the opening setup and standard first moves",
+        "Identify common opening patterns seen in café play"
+      ],
+      "see_it": {
+        "type": "rule_card",
+        "content": {
+          "title": "Flying General Rule (Đối mặt Tướng)",
+          "diagram": "Show two Generals on same file with open path — illegal. Show same file with piece between — legal.",
+          "explanation": "If both Generals are on the same file, at least one piece must be between them. This means pieces standing between the Generals are effectively 'pinned' — moving them would expose the illegal face-off.",
+          "tactical_tip": "This creates the most unique tactic in Cờ tướng: using your General as an attacker. If you clear the file between the Generals, your General 'attacks' the enemy General through the empty file."
+        }
+      },
+      "try_it": {
+        "type": "full_game",
+        "title": "Your First Full Game",
+        "setup": {
+          "board": "Standard starting position. All 32 pieces."
+        },
+        "objective": "Play a complete game against the AI with all rules enforced.",
+        "rules": [
+          "All piece movement rules from Lessons 1-6",
+          "Flying General rule enforced",
+          "Check, checkmate, and stalemate (loss) enforced",
+          "'Why illegal?' panel active for any blocked moves"
+        ],
+        "ai_difficulty": "Easy — AI makes reasonable but beatable moves. Prioritizes teaching moments.",
+        "coach_features": [
+          "Highlight when Flying General rule prevents a move",
+          "Post-move hint if player misses a significant tactic",
+          "End-of-game review showing 2-3 key moments"
+        ],
+        "success_criteria": "Complete the game (win or lose)"
+      },
+      "test_it": {
+        "type": "puzzle_set",
+        "puzzles": [
+          {
+            "puzzle_id": "L7_P1",
+            "title": "Flying General Pin",
+            "type": "find_the_move",
+            "prompt": "Move the piece between the Generals to win material — the Flying General rule pins your opponent.",
+            "teaches": "Using Flying General as a tactical weapon"
+          },
+          {
+            "puzzle_id": "L7_P2",
+            "title": "General as Attacker",
+            "type": "find_the_move",
+            "prompt": "Clear the file to 'attack' with your General. Find checkmate.",
+            "teaches": "The General can deliver checkmate through the Flying General rule"
+          },
+          {
+            "puzzle_id": "L7_P3",
+            "title": "Double Cannon Mate",
+            "type": "find_the_move",
+            "prompt": "Classic Cờ tướng checkmate pattern. Set up the double Cannon.",
+            "teaches": "Signature mating pattern"
+          },
+          {
+            "puzzle_id": "L7_P4",
+            "title": "Horse and Cannon Mate",
+            "type": "find_the_move",
+            "prompt": "The Horse controls the escape squares while the Cannon delivers check.",
+            "teaches": "Piece coordination for checkmate"
+          },
+          {
+            "puzzle_id": "L7_P5",
+            "title": "Chariot Sacrifice",
+            "type": "find_the_move",
+            "prompt": "Sacrifice your Chariot to force checkmate in 2 moves.",
+            "teaches": "Tactical sacrifice — advanced beginner concept"
+          }
+        ],
+        "spaced_repetition_review": {
+          "from_lessons": [1, 2, 3, 4, 5, 6],
+          "review_puzzles": ["L1_P5", "L2_P5", "L4_P4", "L5_P5", "L6_P2"]
+        }
+      },
+      "use_it": {
+        "type": "full_game",
+        "title": "Rematch",
+        "setup": "Standard starting position. AI slightly stronger than first game.",
+        "objective": "Play again with confidence. Win or learn.",
+        "teaches": "Repetition and confidence building"
+      },
+      "lesson_summary": "You now know every rule of Cờ tướng. You can read the pieces, you know the Vietnamese names, and you understand what's happening at the table next to you. Sit down and play."
+    }
+  ],
+  "spaced_repetition_system": {
+    "description": "Puzzles from earlier lessons resurface in later sessions based on a simplified Leitner-style system.",
+    "implementation": {
+      "storage": "localStorage with fallback for Safari private browsing",
+      "algorithm": "Modified Leitner box system with 4 levels",
+      "levels": [
+        {
+          "box": 1,
+          "label": "New / Failed",
+          "review_interval": "Same session or next session"
+        },
+        {
+          "box": 2,
+          "label": "Learning",
+          "review_interval": "2 sessions later"
+        },
+        {
+          "box": 3,
+          "label": "Familiar",
+          "review_interval": "5 sessions later"
+        },
+        {
+          "box": 4,
+          "label": "Mastered",
+          "review_interval": "Retired from active rotation"
+        }
+      ],
+      "rules": [
+        "Correct answer on first attempt: advance one box",
+        "Incorrect answer: return to Box 1",
+        "Each lesson session includes 2-3 review puzzles from earlier lessons",
+        "Review puzzles are selected from the lowest box number first"
+      ]
+    }
+  },
+  "ui_integration_notes": {
+    "lesson_mode_entry": "Main menu button: 'Learn Cờ tướng' — opens lesson selector",
+    "lesson_selector": {
+      "display": "7 lessons shown as a vertical path/journey (not a grid)",
+      "locked_lessons": "Lessons unlock sequentially after completing the previous lesson's try_it mini-game",
+      "progress_indicators": "Stars or checkmarks for see_it, try_it, test_it, use_it completion"
+    },
+    "piece_card_access": {
+      "in_lesson": "Shown as the first step of each lesson",
+      "in_game": "Long-press any piece during play to see its card (existing feature)",
+      "in_puzzle": "Tap help icon to see cards for pieces in the current puzzle"
+    },
+    "three_layer_label_display": {
+      "primary": "Chinese character (what they see on the physical disc)",
+      "secondary": "Vietnamese name (what they hear at the café)",
+      "tertiary": "English meaning (what helps them understand)",
+      "always_visible": "All three layers visible on piece cards and in piece info panels",
+      "in_game_pieces": "Show character by default. Toggle available for Vietnamese name overlay."
+    },
+    "bottom_sheet_integration": {
+      "during_lessons": "Bottom sheet shows current objective and hint button",
+      "during_puzzles": "Bottom sheet shows puzzle prompt and 'Show solution' after 2 failed attempts",
+      "during_games": "'Why illegal?' panel appears here when a blocked move is attempted"
+    },
+    "audio_future": {
+      "status": "Not in current sprint — stubbed for future implementation",
+      "planned": "Vietnamese pronunciation of piece names using Web Audio API or pre-recorded clips",
+      "trigger": "Tap the Vietnamese name on any piece card to hear pronunciation"
+    }
+  },
+  "café_play_features": {
+    "description": "Features specifically designed for the expat-at-a-café use case",
+    "quick_reference_mode": {
+      "trigger": "Shake phone or tap floating button during any screen",
+      "content": "Overlay showing all 7 piece types with character → Vietnamese name → movement summary",
+      "purpose": "Player is watching a live game and needs to quickly identify a piece they see on the physical board"
+    },
+    "physical_board_companion": {
+      "trigger": "'Watch mode' button — puts the app in a passive reference state",
+      "content": "Large display of piece cards, swipeable. No game logic running.",
+      "purpose": "Reference guide while watching or playing on a physical board"
+    },
+    "share_feature": {
+      "trigger": "Complete any lesson",
+      "content": "Shareable card: 'I just learned the [piece name] in Cờ tướng! 🏯' with link to app",
+      "purpose": "Facebook expat group engagement and organic growth"
+    }
+  },
+  "implementation_sprint": {
+    "sprint_name": "Learning Mode",
+    "estimated_duration": "2 weeks",
+    "dependencies": [
+      "Complete game engine (all piece movement and rules — DONE)",
+      "AI opponent (minimax — DONE)",
+      "Board rendering and touch interaction — DONE",
+      "Puzzle infrastructure — DONE"
+    ],
+    "week_1": [
+      "Implement lesson data loader (parse this JSON into app state)",
+      "Build lesson flow UI: see_it → try_it → test_it → use_it progression",
+      "Implement piece cards with three-layer labeling",
+      "Build mini-game framework (limited piece sets on existing board engine)",
+      "Implement Lessons 1-3 with all puzzles"
+    ],
+    "week_2": [
+      "Implement Lessons 4-7 with all puzzles",
+      "Build spaced repetition tracker (Leitner boxes in localStorage)",
+      "Implement lesson selector with progress tracking",
+      "Build quick reference overlay",
+      "Polish, test on physical iPhone, deploy"
+    ]
+  }
+}
