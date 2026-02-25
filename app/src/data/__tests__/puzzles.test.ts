@@ -8,9 +8,8 @@ describe('puzzle verification', () => {
   // Collect all puzzle IDs referenced by lessons
   const referencedIds = LESSONS.flatMap((l) => l.puzzleIds)
 
-  it('all lesson puzzleIds for L1-L3 exist in ALL_PUZZLES', () => {
-    const l1to3Ids = LESSONS.filter((l) => l.lessonId <= 3).flatMap((l) => l.puzzleIds)
-    for (const id of l1to3Ids) {
+  it('all lesson puzzleIds exist in ALL_PUZZLES', () => {
+    for (const id of referencedIds) {
       expect(ALL_PUZZLES[id], `Missing puzzle: ${id}`).toBeDefined()
     }
   })
