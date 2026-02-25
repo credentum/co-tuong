@@ -67,10 +67,10 @@ export function Piece({ piece, isSelected, aiHighlight, flipped, labelMode }: Pi
       <text
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={showLabel ? 32 : 42}
+        fontSize={showLabel ? 36 : 46}
         fontWeight="bold"
         fill={piece.side === 'red' ? '#dc2626' : '#1c1917'}
-        dy={showLabel ? -8 : 0}
+        dy={showLabel ? -9 : 0}
         style={{ userSelect: 'none' }}
       >
         {char}
@@ -81,10 +81,10 @@ export function Piece({ piece, isSelected, aiHighlight, flipped, labelMode }: Pi
         <text
           textAnchor="middle"
           dominantBaseline="central"
-          fontSize={16}
+          fontSize={18}
           fontWeight="600"
           fill={piece.side === 'red' ? '#991b1b' : '#1c1917'}
-          dy={18}
+          dy={20}
           style={{ userSelect: 'none' }}
           aria-hidden="true"
         >

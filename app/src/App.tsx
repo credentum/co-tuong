@@ -19,7 +19,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col items-center bg-amber-50">
+    <div className="flex h-[100dvh] flex-col items-center">
       <TurnIndicator />
       <Board onPieceInfo={(type) => setInfoPiece(type as PieceType)} />
       <ActionBar onOpenSettings={() => setSettingsOpen(true)} />

@@ -76,8 +76,18 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         ref={panelRef}
         className="fixed inset-x-0 bottom-0 z-50 max-h-[70vh] overflow-y-auto rounded-t-2xl bg-white px-4 pb-6 pt-3 shadow-xl"
       >
-        {/* Drag handle */}
-        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-stone-300" />
+        {/* Close handle + button */}
+        <div className="mb-3 flex items-center justify-between">
+          <div className="w-8" />
+          <button
+            onClick={onClose}
+            className="mx-auto h-1 w-10 rounded-full bg-stone-300"
+            aria-label={t('game.close')}
+          />
+          <button onClick={onClose} className="text-xs font-medium text-stone-500">
+            {t('game.close')}
+          </button>
+        </div>
 
         {/* Piece Labels */}
         <section className="mb-4">

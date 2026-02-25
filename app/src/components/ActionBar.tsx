@@ -15,21 +15,22 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
   const canUndo = historyIndex > 0
 
   const btnClass =
-    'flex items-center justify-center rounded-lg p-2 text-stone-600 active:bg-stone-200 disabled:opacity-30'
+    'flex flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-stone-600 active:bg-stone-200 disabled:opacity-30'
+  const labelClass = 'text-[10px] font-medium leading-tight'
 
   return (
-    <div className="flex items-center justify-center gap-4 py-1">
+    <div className="flex items-center justify-center gap-3 py-1">
       {/* Undo */}
       <button onClick={undo} disabled={!canUndo} className={btnClass} aria-label={t('game.undo')}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="h-6 w-6"
+          className="h-7 w-7"
         >
           <path d="M9.195 18.44c1.25.714 2.805-.189 2.805-1.629v-2.34l6.945 3.968c1.25.715 2.805-.188 2.805-1.628V7.19c0-1.44-1.555-2.343-2.805-1.628L12 9.5v-2.34c0-1.44-1.555-2.343-2.805-1.628l-7.108 4.061c-1.26.72-1.26 2.536 0 3.256l7.108 4.061Z" />
         </svg>
-        <span className="sr-only">{t('game.undo')}</span>
+        <span className={labelClass}>{t('game.undo')}</span>
       </button>
 
       {/* New Game */}
@@ -38,7 +39,7 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="h-6 w-6"
+          className="h-7 w-7"
         >
           <path
             fillRule="evenodd"
@@ -46,7 +47,7 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="sr-only">{t('game.newGame')}</span>
+        <span className={labelClass}>{t('game.newGame')}</span>
       </button>
 
       {/* Learn */}
@@ -59,12 +60,12 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="h-6 w-6"
+          className="h-7 w-7"
         >
           <path d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002-.34.18a.75.75 0 0 1-.707 0A50.88 50.88 0 0 0 7.5 12.174v-.224c0-.131.067-.248.172-.311a54.615 54.615 0 0 1 4.653-2.52.75.75 0 0 0-.65-1.352 56.123 56.123 0 0 0-4.78 2.589 1.858 1.858 0 0 0-.859 1.228 49.803 49.803 0 0 0-4.634-1.527.75.75 0 0 1-.231-1.337A60.653 60.653 0 0 1 11.7 2.805Z" />
           <path d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.878 47.878 0 0 0-8.105 4.342.75.75 0 0 1-.832 0 47.205 47.205 0 0 0-1.346-.808c-.349-.21-.57-.573-.57-.97v-.073a1.147 1.147 0 0 1 .854-1.108 48.394 48.394 0 0 0 2.538-.95ZM7.5 13.722v-.224c0-.131.067-.248.172-.311a54.615 54.615 0 0 1 2.2-1.173A49.292 49.292 0 0 0 5.577 15.1a.75.75 0 0 1-.632-.38 48.25 48.25 0 0 1-.93-1.72.75.75 0 0 1 .374-.966 50.159 50.159 0 0 0 3.111-1.637Z" />
         </svg>
-        <span className="sr-only">{t('learning.title')}</span>
+        <span className={labelClass}>{t('learning.title')}</span>
       </button>
 
       {/* Settings */}
@@ -73,7 +74,7 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="h-6 w-6"
+          className="h-7 w-7"
         >
           <path
             fillRule="evenodd"
@@ -81,7 +82,7 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="sr-only">{t('game.settings')}</span>
+        <span className={labelClass}>{t('game.settings')}</span>
       </button>
     </div>
   )

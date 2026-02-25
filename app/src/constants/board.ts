@@ -22,7 +22,7 @@ export const RIVER_ROW_BOTTOM = 4
 export const RIVER_ROW_TOP = 5
 
 // Piece radius in SVG units
-export const PIECE_RADIUS = 40
+export const PIECE_RADIUS = 44
 
 // Tap target size in SVG units (≥44px physical on iPhone 8 at 375pt width)
 export const TAP_TARGET_SIZE = 80

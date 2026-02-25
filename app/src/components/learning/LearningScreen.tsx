@@ -15,7 +15,7 @@ export function LearningScreen() {
   const lesson = currentLesson ? LESSONS.find((l) => l.lessonId === currentLesson) : null
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-amber-50">
+    <div className="flex h-[100dvh] flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button
