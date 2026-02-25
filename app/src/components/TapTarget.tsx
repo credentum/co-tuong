@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Piece } from '@/types/game'
 import { TAP_TARGET_SIZE } from '@/constants/board'
@@ -8,12 +9,17 @@ interface TapTargetProps {
   row: number
   piece: Piece | undefined
   onTap: () => void
+  onLongPress?: () => void
 }
 
-export function TapTarget({ col, row, piece, onTap }: TapTargetProps) {
+const LONG_PRESS_MS = 500
+
+export function TapTarget({ col, row, piece, onTap, onLongPress }: TapTargetProps) {
   const { t } = useTranslation()
   const { x, y } = boardToSVG(col, row)
   const half = TAP_TARGET_SIZE / 2
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const didLongPress = useRef(false)
 
   const label = piece
     ? t('board.pieceAt', {
@@ -23,6 +29,31 @@ export function TapTarget({ col, row, piece, onTap }: TapTargetProps) {
         row: row + 1,
       })
     : t('board.emptyAt', { col: col + 1, row: row + 1 })
+
+  const startPress = useCallback(() => {
+    didLongPress.current = false
+    if (onLongPress) {
+      timerRef.current = setTimeout(() => {
+        didLongPress.current = true
+        onLongPress()
+      }, LONG_PRESS_MS)
+    }
+  }, [onLongPress])
+
+  const endPress = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+  }, [])
+
+  const handleClick = useCallback(() => {
+    if (didLongPress.current) {
+      didLongPress.current = false
+      return
+    }
+    onTap()
+  }, [onTap])
 
   return (
     <rect
@@ -34,7 +65,11 @@ export function TapTarget({ col, row, piece, onTap }: TapTargetProps) {
       cursor="pointer"
       role="button"
       aria-label={label}
-      onClick={onTap}
+      onClick={handleClick}
+      onPointerDown={startPress}
+      onPointerUp={endPress}
+      onPointerCancel={endPress}
+      onPointerLeave={endPress}
     />
   )
 }

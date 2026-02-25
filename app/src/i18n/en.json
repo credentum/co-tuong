@@ -38,6 +38,16 @@
     "randomBot": "Easy",
     "minimaxBot": "Hard",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "close": "Close"
+  },
+  "pieceInfo": {
+    "tuong": "The General (King) moves one step orthogonally — up, down, left, or right. It must stay inside the 3×3 palace. If both Generals face each other on the same column with no pieces between them, the move is illegal (\"flying generals\" rule).",
+    "si": "The Advisor moves one step diagonally. It must stay inside the 3×3 palace, so it only has 5 possible positions.",
+    "tuongVoi": "The Elephant moves exactly 2 steps diagonally, forming a wide diagonal jump. It cannot cross the river (stays on its own half). If the intermediate diagonal square is occupied, the move is blocked (\"eye block\").",
+    "xe": "The Chariot (Rook) moves any number of squares orthogonally — up, down, left, or right — until blocked. It captures by landing on an enemy piece. The most powerful piece.",
+    "phao": "The Cannon moves like the Chariot for non-capture moves (sliding orthogonally). To capture, it must jump over exactly one piece (the \"screen\") and land on an enemy piece behind it.",
+    "ma": "The Horse (Knight) moves in an L-shape: one step orthogonally, then one step diagonally away. If the adjacent orthogonal square is occupied, that direction is blocked (\"leg block\").",
+    "tot": "The Soldier (Pawn) moves one step forward before crossing the river. After crossing the river, it can also move one step sideways (left or right). It never moves backward."
   }
 }

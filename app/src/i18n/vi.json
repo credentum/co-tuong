@@ -38,6 +38,16 @@
     "randomBot": "Dễ",
     "minimaxBot": "Khó",
     "undo": "Hoàn tác",
-    "redo": "Làm lại"
+    "redo": "Làm lại",
+    "close": "Đóng"
+  },
+  "pieceInfo": {
+    "tuong": "Tướng đi một bước theo chiều ngang hoặc dọc. Phải ở trong cung 3×3. Nếu hai Tướng đối mặt trên cùng một cột mà không có quân nào ở giữa thì nước đi không hợp lệ (luật \"đối mặt Tướng\").",
+    "si": "Sĩ đi một bước theo đường chéo. Phải ở trong cung 3×3, chỉ có 5 vị trí có thể đứng.",
+    "tuongVoi": "Tượng đi đúng 2 bước theo đường chéo. Không được qua sông (chỉ ở nửa sân nhà). Nếu ô chéo trung gian bị chặn thì không đi được (\"bịt mắt Tượng\").",
+    "xe": "Xe đi thẳng theo hàng ngang hoặc dọc, không giới hạn số ô, cho đến khi bị chặn. Bắt quân bằng cách đặt vào vị trí quân đối phương. Quân mạnh nhất.",
+    "phao": "Pháo đi thẳng như Xe khi không bắt quân. Để bắt quân, phải nhảy qua đúng một quân (\"ngòi\") rồi hạ quân đối phương phía sau.",
+    "ma": "Mã đi hình chữ L: một bước thẳng rồi một bước chéo ra ngoài. Nếu ô thẳng liền kề bị chặn thì hướng đó không đi được (\"cản Mã\").",
+    "tot": "Tốt đi một bước tiến trước khi qua sông. Sau khi qua sông, có thể đi ngang (trái hoặc phải). Không bao giờ đi lùi."
   }
 }

@@ -6,7 +6,11 @@ import { Piece } from './Piece'
 import { MoveHighlight } from './MoveHighlight'
 import { TapTarget } from './TapTarget'
 
-export function BoardSVG() {
+interface BoardSVGProps {
+  onPieceInfo?: (type: string) => void
+}
+
+export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
   const { t } = useTranslation()
   const pieces = useGameStore((s) => s.pieces)
   const selectedPosition = useGameStore((s) => s.selectedPosition)
@@ -160,6 +164,11 @@ export function BoardSVG() {
             row={row}
             piece={pieceAt(col, row)}
             onTap={() => selectPosition({ col, row })}
+            onLongPress={
+              pieceAt(col, row) && onPieceInfo
+                ? () => onPieceInfo(pieceAt(col, row)!.type)
+                : undefined
+            }
           />
         )),
       )}
