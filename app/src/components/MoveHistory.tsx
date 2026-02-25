@@ -34,9 +34,9 @@ export function MoveHistory() {
         <button onClick={redo} disabled={!canRedo} className={btnClass}>
           {t('game.redo')}
         </button>
-        <div className="flex flex-1 flex-wrap gap-x-3 gap-y-0.5 overflow-hidden text-xs text-stone-600">
-          {pairs.map((p) => (
-            <span key={p.num}>
+        <div className="flex flex-1 gap-x-3 overflow-x-auto text-xs text-stone-600">
+          {pairs.slice(-5).map((p) => (
+            <span key={p.num} className="shrink-0">
               <span className="text-stone-400">{p.num}.</span>{' '}
               <span className="text-red-700">{p.red}</span>
               {p.black && <span className="ml-1 text-stone-800">{p.black}</span>}
