@@ -304,10 +304,11 @@ export const useLearningStore = create<LearningStore>()(
         const ids = state.getPuzzleIds()
         const nextIdx = state.currentPuzzleIndex + 1
         if (nextIdx >= ids.length) {
-          // All puzzles done — complete the phase
+          // All puzzles done — complete the phase and advance index so getCurrentPuzzle returns null
           if (state.currentLesson) {
             state.completePhase(state.currentLesson, 'test_it')
           }
+          set({ currentPuzzleIndex: nextIdx })
           return
         }
         const nextId = ids[nextIdx]!
@@ -338,10 +339,15 @@ export const useLearningStore = create<LearningStore>()(
 
       completePhase: (lessonId, phase) => {
         const state = get()
-        const key = `${phase}Complete` as keyof LessonProgress
+        const keyMap: Record<LessonPhase, keyof LessonProgress> = {
+          see_it: 'seeItComplete',
+          try_it: 'tryItComplete',
+          test_it: 'testItComplete',
+          use_it: 'useItComplete',
+        }
         set({
           lessonProgress: upsertLessonProgress(state.lessonProgress, lessonId, {
-            [key]: true,
+            [keyMap[phase]]: true,
           }),
         })
       },
