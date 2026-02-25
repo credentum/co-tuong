@@ -29,6 +29,7 @@ interface GameStore {
   moveList: MoveRecord[] // WXF notation move list
 
   boardFlipped: boolean
+  lastMove: { from: Position; to: Position } | null
 
   selectPosition: (pos: Position) => void
   confirmMove: () => void
@@ -55,7 +56,7 @@ function applyMoveLogic(
 }
 
 function isAiTurn(mode: OpponentMode, turn: Side): boolean {
-  return (mode === 'random-bot' || mode === 'minimax') && turn === 'black'
+  return mode !== 'pass-and-play' && turn === 'black'
 }
 
 const initialFen = boardToFen(INITIAL_POSITION, 'red')
@@ -88,6 +89,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gameResult: 'ongoing',
   opponentMode: 'pass-and-play',
   boardFlipped: false,
+  lastMove: null,
   history: [initialFen],
   historyIndex: 0,
   moveList: [],
@@ -136,7 +138,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
       const result = applyMoveLogic(pieces, selectedPosition, pos, currentTurn)
       const record = recordMove(state, selectedPosition, pos, result)
-      set({ ...result, ...record, selectedPosition: null, legalMoves: [], pendingMove: null })
+      set({
+        ...result,
+        ...record,
+        selectedPosition: null,
+        legalMoves: [],
+        pendingMove: null,
+        lastMove: { from: selectedPosition, to: pos },
+      })
       if (result.gameResult === 'ongoing' && isAiTurn(opponentMode, result.currentTurn)) {
         scheduleAiMove(opponentMode)
       }
@@ -152,7 +161,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!pendingMove) return
     const result = applyMoveLogic(pieces, pendingMove.from, pendingMove.to, currentTurn)
     const record = recordMove(state, pendingMove.from, pendingMove.to, result)
-    set({ ...result, ...record, selectedPosition: null, legalMoves: [], pendingMove: null })
+    set({
+      ...result,
+      ...record,
+      selectedPosition: null,
+      legalMoves: [],
+      pendingMove: null,
+      lastMove: { from: pendingMove.from, to: pendingMove.to },
+    })
     if (result.gameResult === 'ongoing' && isAiTurn(opponentMode, result.currentTurn)) {
       scheduleAiMove(opponentMode)
     }
@@ -178,6 +194,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       selectedPosition: null,
       legalMoves: [],
       pendingMove: null,
+      lastMove: null,
       gameResult: 'ongoing',
       history: [initialFen],
       historyIndex: 0,
@@ -253,7 +270,8 @@ function scheduleAiMove(mode: OpponentMode) {
       ...record,
       selectedPosition: null,
       legalMoves: [],
+      lastMove: { from: aiMove.from, to: aiMove.to },
       pendingMove: null,
     })
-  }, 300)
+  }, 500)
 }

@@ -12,6 +12,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
   const legalMoves = useGameStore((s) => s.legalMoves)
   const selectPosition = useGameStore((s) => s.selectPosition)
   const flipped = useGameStore((s) => s.boardFlipped)
+  const lastMove = useGameStore((s) => s.lastMove)
   const displayMode = useLearningStore((s) => s.displayMode)
 
   return (
@@ -19,6 +20,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
       pieces={pieces}
       selectedPosition={selectedPosition}
       legalMoves={legalMoves}
+      lastMove={lastMove}
       onTapSquare={selectPosition}
       onLongPressPiece={onPieceInfo}
       flipped={flipped}

@@ -18,6 +18,7 @@ export interface BoardRendererProps {
   pieces: PieceT[]
   selectedPosition: Position | null
   legalMoves: Position[]
+  lastMove?: { from: Position; to: Position } | null
   highlightSquares?: Position[]
   highlightStyle?: 'target' | 'correct' | 'incorrect'
   onTapSquare: (pos: Position) => void
@@ -36,6 +37,7 @@ export function BoardRenderer({
   pieces,
   selectedPosition,
   legalMoves,
+  lastMove,
   highlightSquares,
   highlightStyle,
   onTapSquare,
@@ -155,6 +157,24 @@ export function BoardRenderer({
           </text>
         )
       })()}
+
+      {/* Last move highlight */}
+      {lastMove &&
+        [lastMove.from, lastMove.to].map((pos, i) => {
+          const { x, y } = boardToSVG(pos.col, pos.row, flipped)
+          return (
+            <rect
+              key={`lastmove-${i}`}
+              x={x - CELL_SIZE / 2}
+              y={y - CELL_SIZE / 2}
+              width={CELL_SIZE}
+              height={CELL_SIZE}
+              fill="#facc15"
+              opacity={0.3}
+              rx={4}
+            />
+          )
+        })}
 
       {/* Pieces */}
       {pieces.map((piece) => {
