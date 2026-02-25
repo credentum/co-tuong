@@ -35,6 +35,12 @@ export function GameControls() {
       >
         {t('game.randomBot')}
       </button>
+      <button
+        onClick={() => setOpponentMode('minimax')}
+        className={opponentMode === 'minimax' ? activeBtnClass : btnClass}
+      >
+        {t('game.minimaxBot')}
+      </button>
       <button onClick={toggleConfirmMove} className={btnClass}>
         {confirmMoveEnabled ? t('game.confirmModeOn') : t('game.confirmModeOff')}
       </button>

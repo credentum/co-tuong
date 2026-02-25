@@ -35,6 +35,7 @@
     "redWins": "Đỏ thắng!",
     "blackWins": "Đen thắng!",
     "passAndPlay": "2P",
-    "randomBot": "Bot"
+    "randomBot": "Dễ",
+    "minimaxBot": "Khó"
   }
 }
