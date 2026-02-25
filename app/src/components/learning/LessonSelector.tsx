@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useLearningStore } from '@/store/useLearningStore'
 import { LESSONS } from '@/data/lessons'
+import { ALL_PUZZLES } from '@/data/puzzles'
 import type { LessonId } from '@/types/learning'
 
 export function LessonSelector() {
@@ -24,7 +25,7 @@ export function LessonSelector() {
     <div className="flex flex-col gap-2 px-4 py-2">
       <h2 className="mb-2 text-center text-lg font-bold text-stone-800">{t('learning.title')}</h2>
       <div className="flex flex-col gap-1">
-        {LESSONS.map((lesson) => {
+        {LESSONS.filter((l) => l.puzzleIds.every((id) => ALL_PUZZLES[id])).map((lesson) => {
           const unlocked = isUnlocked(lesson.lessonId)
           const progress = getProgress(lesson.lessonId)
 
