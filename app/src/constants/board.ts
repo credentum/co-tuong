@@ -27,13 +27,13 @@ export const PIECE_RADIUS = 40
 // Tap target size in SVG units (≥44px physical on iPhone 8 at 375pt width)
 export const TAP_TARGET_SIZE = 80
 
-// Chinese characters for pieces (Red / Black)
+// Vietnamese piece labels displayed on pieces (Red / Black)
 export const PIECE_CHARS: Record<string, { red: string; black: string }> = {
-  tuong: { red: '帥', black: '將' },
-  si: { red: '仕', black: '士' },
-  tuongVoi: { red: '相', black: '象' },
-  xe: { red: '俥', black: '車' },
-  phao: { red: '炮', black: '砲' },
-  ma: { red: '傌', black: '馬' },
-  tot: { red: '兵', black: '卒' },
+  tuong: { red: 'Tướng', black: 'Tướng' },
+  si: { red: 'Sĩ', black: 'Sĩ' },
+  tuongVoi: { red: 'Tượng', black: 'Tượng' },
+  xe: { red: 'Xe', black: 'Xe' },
+  phao: { red: 'Pháo', black: 'Pháo' },
+  ma: { red: 'Mã', black: 'Mã' },
+  tot: { red: 'Tốt', black: 'Binh' },
 }

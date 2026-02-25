@@ -127,7 +127,7 @@ export function BoardSVG() {
             style={{ userSelect: 'none' }}
             aria-label={t('board.river')}
           >
-            楚 河 {'     '} 漢 界
+            S Ô N G
           </text>
         )
       })()}

@@ -12,7 +12,9 @@ export function Piece({ piece, isSelected }: PieceProps) {
   const { t } = useTranslation()
   const { x, y } = boardToSVG(piece.position.col, piece.position.row)
   const chars = PIECE_CHARS[piece.type]
-  const char = piece.side === 'red' ? chars?.red : chars?.black
+  const label = piece.side === 'red' ? chars?.red : chars?.black
+  // Scale font to fit: short names (Xe, Sĩ, Mã) get larger text, longer names get smaller
+  const fontSize = label && label.length <= 2 ? 30 : label && label.length <= 3 ? 24 : 20
   const pieceName = t(`pieces.${piece.type}`)
   const sideName = t(`sides.${piece.side}`)
 
@@ -40,16 +42,16 @@ export function Piece({ piece, isSelected }: PieceProps) {
         <circle r={PIECE_RADIUS + 6} fill="none" stroke="#2563eb" strokeWidth={3} opacity={0.8} />
       )}
 
-      {/* Chinese character */}
+      {/* Vietnamese piece name */}
       <text
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={42}
+        fontSize={fontSize}
         fontWeight="bold"
         fill={piece.side === 'red' ? '#dc2626' : '#1c1917'}
         style={{ userSelect: 'none' }}
       >
-        {char}
+        {label}
       </text>
     </g>
   )
