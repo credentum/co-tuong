@@ -19,6 +19,7 @@ export interface BoardRendererProps {
   selectedPosition: Position | null
   legalMoves: Position[]
   lastMove?: { from: Position; to: Position } | null
+  aiHighlightPos?: Position | null
   highlightSquares?: Position[]
   highlightStyle?: 'target' | 'correct' | 'incorrect'
   onTapSquare: (pos: Position) => void
@@ -38,6 +39,7 @@ export function BoardRenderer({
   selectedPosition,
   legalMoves,
   lastMove,
+  aiHighlightPos,
   highlightSquares,
   highlightStyle,
   onTapSquare,
@@ -181,11 +183,13 @@ export function BoardRenderer({
         const isSelected =
           selectedPosition?.col === piece.position.col &&
           selectedPosition?.row === piece.position.row
+        const isAiHighlight =
+          aiHighlightPos?.col === piece.position.col && aiHighlightPos?.row === piece.position.row
         return (
           <Piece
             key={`${piece.side}-${piece.type}-${piece.position.col}-${piece.position.row}`}
             piece={piece}
-            isSelected={isSelected}
+            isSelected={isSelected || isAiHighlight}
             flipped={flipped}
             labelMode={labelMode}
           />

@@ -30,6 +30,7 @@ interface GameStore {
 
   boardFlipped: boolean
   lastMove: { from: Position; to: Position } | null
+  aiHighlightPos: Position | null
 
   selectPosition: (pos: Position) => void
   confirmMove: () => void
@@ -90,6 +91,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   opponentMode: 'pass-and-play',
   boardFlipped: false,
   lastMove: null,
+  aiHighlightPos: null,
   history: [initialFen],
   historyIndex: 0,
   moveList: [],
@@ -195,6 +197,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       legalMoves: [],
       pendingMove: null,
       lastMove: null,
+      aiHighlightPos: null,
       gameResult: 'ongoing',
       history: [initialFen],
       historyIndex: 0,
@@ -271,7 +274,12 @@ function scheduleAiMove(mode: OpponentMode) {
       selectedPosition: null,
       legalMoves: [],
       lastMove: { from: aiMove.from, to: aiMove.to },
+      aiHighlightPos: aiMove.to,
       pendingMove: null,
     })
+    // Clear the highlight ring after 500ms
+    setTimeout(() => {
+      useGameStore.setState({ aiHighlightPos: null })
+    }, 500)
   }, 500)
 }
