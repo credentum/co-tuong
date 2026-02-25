@@ -17,17 +17,36 @@ export function SeeItPhase() {
   const demoPieces: Piece[] = useMemo(() => {
     if (!lesson) return []
     const type = lesson.pieceFocus[0]! as PieceType
-    const all: Piece[] = [
-      { type, side: 'red' as const, position: { col: 4, row: 4 } },
-      { type: 'tuong' as const, side: 'red' as const, position: { col: 4, row: 0 } },
-      { type: 'tuong' as const, side: 'black' as const, position: { col: 4, row: 9 } },
+
+    // Piece-specific demo positions to show meaningful legal moves
+    const demoSetups: Partial<Record<PieceType, Piece[]>> = {
+      tuong: [
+        // General inside palace
+        { type: 'tuong', side: 'red', position: { col: 4, row: 1 } },
+        { type: 'tuong', side: 'black', position: { col: 3, row: 9 } },
+      ],
+      si: [
+        // Advisor inside palace
+        { type: 'si', side: 'red', position: { col: 4, row: 1 } },
+        { type: 'tuong', side: 'red', position: { col: 5, row: 0 } },
+        { type: 'tuong', side: 'black', position: { col: 3, row: 9 } },
+      ],
+      tuongVoi: [
+        // Elephant on own side (can't cross river)
+        { type: 'tuongVoi', side: 'red', position: { col: 4, row: 2 } },
+        { type: 'tuong', side: 'red', position: { col: 5, row: 0 } },
+        { type: 'tuong', side: 'black', position: { col: 3, row: 9 } },
+      ],
+    }
+
+    if (demoSetups[type]) return demoSetups[type]
+
+    // Default: focus piece at center, generals on different columns
+    return [
+      { type, side: 'red', position: { col: 4, row: 4 } },
+      { type: 'tuong', side: 'red', position: { col: 5, row: 0 } },
+      { type: 'tuong', side: 'black', position: { col: 3, row: 9 } },
     ]
-    return all.filter(
-      (p, i, arr) =>
-        arr.findIndex(
-          (a) => a.position.col === p.position.col && a.position.row === p.position.row,
-        ) === i,
-    )
   }, [lesson])
 
   const demoMoves: Position[] = useMemo(() => {
