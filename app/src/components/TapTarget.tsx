@@ -10,13 +10,14 @@ interface TapTargetProps {
   piece: Piece | undefined
   onTap: () => void
   onLongPress?: () => void
+  flipped?: boolean
 }
 
 const LONG_PRESS_MS = 500
 
-export function TapTarget({ col, row, piece, onTap, onLongPress }: TapTargetProps) {
+export function TapTarget({ col, row, piece, onTap, onLongPress, flipped }: TapTargetProps) {
   const { t } = useTranslation()
-  const { x, y } = boardToSVG(col, row)
+  const { x, y } = boardToSVG(col, row, flipped)
   const half = TAP_TARGET_SIZE / 2
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const didLongPress = useRef(false)

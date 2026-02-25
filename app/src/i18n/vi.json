@@ -39,7 +39,8 @@
     "minimaxBot": "Khó",
     "undo": "Hoàn tác",
     "redo": "Làm lại",
-    "close": "Đóng"
+    "close": "Đóng",
+    "flipBoard": "Lật"
   },
   "pieceInfo": {
     "tuong": "Tướng đi một bước theo chiều ngang hoặc dọc. Phải ở trong cung 3×3. Nếu hai Tướng đối mặt trên cùng một cột mà không có quân nào ở giữa thì nước đi không hợp lệ (luật \"đối mặt Tướng\").",

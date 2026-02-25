@@ -28,6 +28,8 @@ interface GameStore {
   historyIndex: number // Current position in history
   moveList: MoveRecord[] // WXF notation move list
 
+  boardFlipped: boolean
+
   selectPosition: (pos: Position) => void
   confirmMove: () => void
   cancelMove: () => void
@@ -36,6 +38,7 @@ interface GameStore {
   resetGame: () => void
   undo: () => void
   redo: () => void
+  toggleBoardFlip: () => void
 }
 
 function applyMoveLogic(
@@ -84,6 +87,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   pendingMove: null,
   gameResult: 'ongoing',
   opponentMode: 'pass-and-play',
+  boardFlipped: false,
   history: [initialFen],
   historyIndex: 0,
   moveList: [],
@@ -196,6 +200,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       pendingMove: null,
       gameResult: 'ongoing',
     })
+  },
+
+  toggleBoardFlip: () => {
+    set((s) => ({ boardFlipped: !s.boardFlipped }))
   },
 
   redo: () => {

@@ -6,11 +6,12 @@ import { boardToSVG } from '@/lib/coordinates'
 interface PieceProps {
   piece: PieceType
   isSelected: boolean
+  flipped?: boolean
 }
 
-export function Piece({ piece, isSelected }: PieceProps) {
+export function Piece({ piece, isSelected, flipped }: PieceProps) {
   const { t } = useTranslation()
-  const { x, y } = boardToSVG(piece.position.col, piece.position.row)
+  const { x, y } = boardToSVG(piece.position.col, piece.position.row, flipped)
   const chars = PIECE_CHARS[piece.type]
   const char = piece.side === 'red' ? chars?.red : chars?.black
   const pieceName = t(`pieces.${piece.type}`)
@@ -19,6 +20,7 @@ export function Piece({ piece, isSelected }: PieceProps) {
   return (
     <g
       transform={`translate(${x}, ${y})`}
+      style={{ transition: 'transform 300ms ease-out' }}
       role="img"
       aria-label={t('board.pieceAt', {
         side: sideName,

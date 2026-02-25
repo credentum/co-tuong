@@ -8,6 +8,7 @@ export function GameControls() {
   const resetGame = useGameStore((s) => s.resetGame)
   const opponentMode = useGameStore((s) => s.opponentMode)
   const setOpponentMode = useGameStore((s) => s.setOpponentMode)
+  const toggleBoardFlip = useGameStore((s) => s.toggleBoardFlip)
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')
@@ -40,6 +41,9 @@ export function GameControls() {
         className={opponentMode === 'minimax' ? activeBtnClass : btnClass}
       >
         {t('game.minimaxBot')}
+      </button>
+      <button onClick={toggleBoardFlip} className={btnClass}>
+        {t('game.flipBoard')}
       </button>
       <button onClick={toggleConfirmMove} className={btnClass}>
         {confirmMoveEnabled ? t('game.confirmModeOn') : t('game.confirmModeOff')}

@@ -16,20 +16,24 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
   const selectedPosition = useGameStore((s) => s.selectedPosition)
   const legalMoves = useGameStore((s) => s.legalMoves)
   const selectPosition = useGameStore((s) => s.selectPosition)
+  const flipped = useGameStore((s) => s.boardFlipped)
 
   // Helper: get piece at board position
   const pieceAt = (col: number, row: number) =>
     pieces.find((p) => p.position.col === col && p.position.row === row)
 
-  // SVG grid line coordinates
+  // SVG grid line coordinates (grid is always the same layout)
   const gridLeft = BOARD_PADDING
   const gridRight = BOARD_PADDING + (COLS - 1) * CELL_SIZE
   const gridTop = BOARD_PADDING
   const gridBottom = BOARD_PADDING + (ROWS - 1) * CELL_SIZE
 
-  // River Y positions (between rows 4 and 5, which in SVG is between row-indices 5 and 4 from top)
-  const riverTop = boardToSVG(0, 5).y
-  const riverBottom = boardToSVG(0, 4).y
+  // River Y positions
+  const riverTop = boardToSVG(0, 5, flipped).y
+  const riverBottom = boardToSVG(0, 4, flipped).y
+  // When flipped, riverTop > riverBottom, so normalize
+  const riverMinY = Math.min(riverTop, riverBottom)
+  const riverMaxY = Math.max(riverTop, riverBottom)
 
   return (
     <svg
@@ -61,7 +65,6 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
       {Array.from({ length: COLS }, (_, i) => {
         const x = gridLeft + i * CELL_SIZE
         if (i === 0 || i === COLS - 1) {
-          // Edge columns: full line
           return (
             <line
               key={`v-${i}`}
@@ -74,28 +77,20 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
             />
           )
         }
-        // Inner columns: break at river
         return (
           <g key={`v-${i}`}>
-            <line x1={x} y1={gridTop} x2={x} y2={riverTop} stroke="#5c3317" strokeWidth={1.5} />
-            <line
-              x1={x}
-              y1={riverBottom}
-              x2={x}
-              y2={gridBottom}
-              stroke="#5c3317"
-              strokeWidth={1.5}
-            />
+            <line x1={x} y1={gridTop} x2={x} y2={riverMinY} stroke="#5c3317" strokeWidth={1.5} />
+            <line x1={x} y1={riverMaxY} x2={x} y2={gridBottom} stroke="#5c3317" strokeWidth={1.5} />
           </g>
         )
       })}
 
-      {/* Palace diagonals — Red (bottom, rows 0-2) */}
+      {/* Palace diagonals — Red (rows 0-2) */}
       {(() => {
-        const tl = boardToSVG(3, 2)
-        const tr = boardToSVG(5, 2)
-        const bl = boardToSVG(3, 0)
-        const br = boardToSVG(5, 0)
+        const tl = boardToSVG(3, 2, flipped)
+        const tr = boardToSVG(5, 2, flipped)
+        const bl = boardToSVG(3, 0, flipped)
+        const br = boardToSVG(5, 0, flipped)
         return (
           <g>
             <line x1={tl.x} y1={tl.y} x2={br.x} y2={br.y} stroke="#5c3317" strokeWidth={1.5} />
@@ -104,12 +99,12 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
         )
       })()}
 
-      {/* Palace diagonals — Black (top, rows 7-9) */}
+      {/* Palace diagonals — Black (rows 7-9) */}
       {(() => {
-        const tl = boardToSVG(3, 9)
-        const tr = boardToSVG(5, 9)
-        const bl = boardToSVG(3, 7)
-        const br = boardToSVG(5, 7)
+        const tl = boardToSVG(3, 9, flipped)
+        const tr = boardToSVG(5, 9, flipped)
+        const bl = boardToSVG(3, 7, flipped)
+        const br = boardToSVG(5, 7, flipped)
         return (
           <g>
             <line x1={tl.x} y1={tl.y} x2={br.x} y2={br.y} stroke="#5c3317" strokeWidth={1.5} />
@@ -120,7 +115,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
 
       {/* River text */}
       {(() => {
-        const riverCenterY = (riverTop + riverBottom) / 2
+        const riverCenterY = (riverMinY + riverMaxY) / 2
         return (
           <text
             x={BOARD_WIDTH / 2}
@@ -148,12 +143,13 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
             key={`${piece.side}-${piece.type}-${piece.position.col}-${piece.position.row}`}
             piece={piece}
             isSelected={isSelected}
+            flipped={flipped}
           />
         )
       })}
 
       {/* Legal move highlights */}
-      {selectedPosition && <MoveHighlight moves={legalMoves} pieces={pieces} />}
+      {selectedPosition && <MoveHighlight moves={legalMoves} pieces={pieces} flipped={flipped} />}
 
       {/* Tap targets (rendered on top of everything for input capture) */}
       {Array.from({ length: ROWS }, (_, row) =>
@@ -169,6 +165,7 @@ export function BoardSVG({ onPieceInfo }: BoardSVGProps) {
                 ? () => onPieceInfo(pieceAt(col, row)!.type)
                 : undefined
             }
+            flipped={flipped}
           />
         )),
       )}

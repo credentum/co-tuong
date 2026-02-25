@@ -4,13 +4,14 @@ import { boardToSVG } from '@/lib/coordinates'
 interface MoveHighlightProps {
   moves: Position[]
   pieces: Piece[]
+  flipped?: boolean
 }
 
-export function MoveHighlight({ moves, pieces }: MoveHighlightProps) {
+export function MoveHighlight({ moves, pieces, flipped }: MoveHighlightProps) {
   return (
     <>
       {moves.map((pos) => {
-        const { x, y } = boardToSVG(pos.col, pos.row)
+        const { x, y } = boardToSVG(pos.col, pos.row, flipped)
         const isCapture = pieces.some(
           (p) => p.position.col === pos.col && p.position.row === pos.row,
         )
