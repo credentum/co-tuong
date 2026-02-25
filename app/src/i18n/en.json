@@ -68,6 +68,9 @@
     "tryAgain": "Not quite — try again!",
     "puzzleProgress": "Puzzle {{current}} of {{total}}",
     "hint": "Hint",
+    "yes": "Yes",
+    "no": "No",
+    "tfProgress": "Question {{current}} of {{total}}",
     "lessonComplete": "Lesson Complete!"
   }
 }

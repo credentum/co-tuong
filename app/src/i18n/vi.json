@@ -68,6 +68,9 @@
     "tryAgain": "Chưa đúng — thử lại!",
     "puzzleProgress": "Bài {{current}} / {{total}}",
     "hint": "Gợi ý",
+    "yes": "Có",
+    "no": "Không",
+    "tfProgress": "Câu {{current}} / {{total}}",
     "lessonComplete": "Hoàn thành bài học!"
   }
 }

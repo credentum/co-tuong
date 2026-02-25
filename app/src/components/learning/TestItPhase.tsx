@@ -13,6 +13,8 @@ export function TestItPhase() {
   const submitTapAnswer = useLearningStore((s) => s.submitTapAnswer)
   const nextPuzzle = useLearningStore((s) => s.nextPuzzle)
   const backToSelector = useLearningStore((s) => s.backToSelector)
+  const tfCurrentIndex = useLearningStore((s) => s.tfCurrentIndex)
+  const submitTfAnswer = useLearningStore((s) => s.submitTfAnswer)
 
   if (!puzzle) {
     // All puzzles completed
@@ -32,16 +34,27 @@ export function TestItPhase() {
 
   const isLastPuzzle = currentPuzzleIndex >= puzzleIds.length - 1
   const canSubmitTap = puzzle.type === 'tap_all_targets' && puzzleFeedback === 'none'
+  const isTfActive =
+    puzzle.type === 'true_false_series' &&
+    puzzleFeedback === 'none' &&
+    tfCurrentIndex < (puzzle.highlightPositions?.length ?? 0)
   const canRetry = puzzleFeedback === 'incorrect' && !showSolution
   const canNext = puzzleFeedback === 'correct' || showSolution
 
   const handleRetry = () => {
+    const currentPuzzle = useLearningStore.getState().getCurrentPuzzle()
     useLearningStore.setState({
       puzzleFeedback: 'none',
       tappedPositions: [],
-      highlightSquares: [],
+      highlightSquares:
+        currentPuzzle?.type === 'true_false_series' && currentPuzzle.highlightPositions?.[0]
+          ? [currentPuzzle.highlightPositions[0]]
+          : [],
+      highlightStyle: 'target' as const,
       selectedPosition: null,
       legalMoves: [],
+      tfCurrentIndex: 0,
+      tfAnswers: [],
     })
   }
 
@@ -89,8 +102,35 @@ export function TestItPhase() {
           <p className="mb-3 text-sm text-stone-500">{t('learning.showSolution')}</p>
         )}
 
+        {/* True/false question indicator */}
+        {isTfActive && puzzle.highlightPositions && (
+          <p className="mb-2 text-xs text-stone-500">
+            {t('learning.tfProgress', {
+              current: tfCurrentIndex + 1,
+              total: puzzle.highlightPositions.length,
+            })}
+          </p>
+        )}
+
         {/* Action buttons */}
         <div className="flex gap-2">
+          {isTfActive && (
+            <>
+              <button
+                onClick={() => submitTfAnswer(true)}
+                className="flex-1 rounded-lg bg-green-600 py-2.5 text-sm font-semibold text-white"
+              >
+                {t('learning.yes')}
+              </button>
+              <button
+                onClick={() => submitTfAnswer(false)}
+                className="flex-1 rounded-lg bg-red-600 py-2.5 text-sm font-semibold text-white"
+              >
+                {t('learning.no')}
+              </button>
+            </>
+          )}
+
           {canSubmitTap && (
             <button
               onClick={submitTapAnswer}

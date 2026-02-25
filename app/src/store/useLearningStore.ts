@@ -44,6 +44,11 @@ interface LearningStore {
   nextPuzzle: () => void
   loadPuzzle: (puzzleId: string) => void
 
+  // True/false series state
+  tfCurrentIndex: number
+  tfAnswers: boolean[]
+  submitTfAnswer: (answer: boolean) => void
+
   // Progress (persisted)
   lessonProgress: LessonProgress[]
   puzzleProgress: PuzzleProgress[]
@@ -117,6 +122,8 @@ export const useLearningStore = create<LearningStore>()(
           highlightSquares: [],
           selectedPosition: null,
           legalMoves: [],
+          tfCurrentIndex: 0,
+          tfAnswers: [],
         }),
       setPhase: (phase) => {
         set({
@@ -129,6 +136,8 @@ export const useLearningStore = create<LearningStore>()(
           highlightSquares: [],
           selectedPosition: null,
           legalMoves: [],
+          tfCurrentIndex: 0,
+          tfAnswers: [],
         })
         // Load first puzzle if entering test_it
         if (phase === 'test_it') {
@@ -202,6 +211,8 @@ export const useLearningStore = create<LearningStore>()(
       puzzleFeedback: 'none',
       showSolution: false,
       tappedPositions: [],
+      tfCurrentIndex: 0,
+      tfAnswers: [],
 
       tapPosition: (pos) => {
         const state = get()
@@ -299,6 +310,58 @@ export const useLearningStore = create<LearningStore>()(
         }
       },
 
+      submitTfAnswer: (answer) => {
+        const state = get()
+        const puzzle = state.getCurrentPuzzle()
+        if (!puzzle || puzzle.type !== 'true_false_series') return
+        if (state.puzzleFeedback !== 'none') return
+
+        const positions = puzzle.highlightPositions ?? []
+        const correctAnswers = puzzle.answer.booleans ?? []
+        const newAnswers = [...state.tfAnswers, answer]
+        const idx = state.tfCurrentIndex
+
+        const isCorrect = answer === correctAnswers[idx]
+
+        if (!isCorrect) {
+          const attempts = state.puzzleAttempts + 1
+          const showSol = attempts >= 2
+          set({
+            tfAnswers: newAnswers,
+            puzzleFeedback: 'incorrect',
+            puzzleAttempts: attempts,
+            showSolution: showSol,
+            highlightSquares: showSol ? positions : [positions[idx]!],
+            highlightStyle: showSol ? 'correct' : 'incorrect',
+          })
+          if (showSol) {
+            state.recordPuzzleResult(puzzle.puzzleId, false)
+          }
+          return
+        }
+
+        // Correct answer — advance to next question or finish
+        if (idx + 1 >= positions.length) {
+          // All questions answered correctly
+          set({
+            tfAnswers: newAnswers,
+            tfCurrentIndex: idx + 1,
+            puzzleFeedback: 'correct',
+            highlightSquares: positions,
+            highlightStyle: 'correct',
+          })
+          state.recordPuzzleResult(puzzle.puzzleId, true)
+        } else {
+          // Next question
+          set({
+            tfAnswers: newAnswers,
+            tfCurrentIndex: idx + 1,
+            highlightSquares: [positions[idx + 1]!],
+            highlightStyle: 'target',
+          })
+        }
+      },
+
       nextPuzzle: () => {
         const state = get()
         const ids = state.getPuzzleIds()
@@ -321,6 +384,8 @@ export const useLearningStore = create<LearningStore>()(
           highlightSquares: [],
           selectedPosition: null,
           legalMoves: [],
+          tfCurrentIndex: 0,
+          tfAnswers: [],
         })
         get().loadPuzzle(nextId)
       },
@@ -329,6 +394,15 @@ export const useLearningStore = create<LearningStore>()(
         const puzzle = ALL_PUZZLES[puzzleId]
         if (puzzle) {
           set({ pieces: [...puzzle.setup.pieces] })
+          // For true_false_series, highlight the first position
+          if (puzzle.type === 'true_false_series' && puzzle.highlightPositions?.[0]) {
+            set({
+              highlightSquares: [puzzle.highlightPositions[0]],
+              highlightStyle: 'target',
+              tfCurrentIndex: 0,
+              tfAnswers: [],
+            })
+          }
         }
       },
 
