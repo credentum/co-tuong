@@ -1,0 +1,297 @@
+{
+  "feature_name": "Practice Mode & Loss Tracker",
+  "description": "A Go-Problems-style tactical puzzle mode plus automatic tracking of interesting positions from lost games. Bridges the gap between Learn (tutorial) and Play (full game).",
+
+  "practice_mode": {
+    "description": "Short tactical problems. Quick in, quick out. Solve a few at the café in 5 minutes.",
+    "entry_point": "Main menu button: 'Practice' — sits between 'Learn' and 'Play'",
+
+    "difficulty_levels": [
+      {
+        "level": "easy",
+        "label": "⭐",
+        "description": "One-move problems. Find the capture, find the check, find the escape.",
+        "moves_to_solve": 1,
+        "concepts": [
+          "Capture an unprotected piece",
+          "Deliver check",
+          "Escape from check",
+          "Identify the Cannon's screen"
+        ],
+        "time_pressure": false,
+        "hints_available": 2
+      },
+      {
+        "level": "medium",
+        "label": "⭐⭐",
+        "description": "Two-move problems. Find the tactic that wins material or forces checkmate.",
+        "moves_to_solve": 2,
+        "concepts": [
+          "Checkmate in 2",
+          "Cannon screen setup then capture",
+          "Horse fork (attack two pieces at once)",
+          "Flying General pin exploitation",
+          "Double Cannon attack",
+          "Sacrifice to expose the General"
+        ],
+        "time_pressure": false,
+        "hints_available": 1
+      },
+      {
+        "level": "hard",
+        "label": "⭐⭐⭐",
+        "description": "Three to four move combinations. Requires seeing the whole sequence.",
+        "moves_to_solve": [3, 4],
+        "concepts": [
+          "Checkmate in 3",
+          "Chariot sacrifice leading to Cannon mate",
+          "Horse + Cannon coordination checkmate",
+          "Clearance sacrifice (move a piece to open a line)",
+          "Flying General as the finishing move",
+          "Smothered mate with Horse"
+        ],
+        "time_pressure": false,
+        "hints_available": 0
+      }
+    ],
+
+    "puzzle_data_format": {
+      "description": "Each puzzle is a JSON object that can be loaded from a curated set or generated from saved game positions.",
+      "schema": {
+        "puzzle_id": "string — unique identifier",
+        "fen": "string — board position in Cờ tướng FEN format",
+        "turn": "string — 'red' or 'black' (who is solving)",
+        "difficulty": "string — 'easy', 'medium', 'hard'",
+        "solution": [
+          {
+            "move_number": 1,
+            "player_move": "string — algebraic notation of correct move",
+            "opponent_response": "string — forced or best opponent reply",
+            "alternative_correct": ["string — other acceptable moves if any"]
+          }
+        ],
+        "concept": "string — what tactic this teaches (e.g., 'cannon_screen', 'horse_fork', 'flying_general_pin')",
+        "hint": "string — text hint shown when player requests help (e.g., 'Look at the file between the Generals')",
+        "source": "string — 'curated', 'from_game', or 'community'",
+        "source_game_id": "string|null — if generated from a loss, link back to the game"
+      }
+    },
+
+    "ui_flow": {
+      "puzzle_screen": {
+        "layout": "Same board component as Play mode — no new rendering needed",
+        "top_area": "Difficulty stars + puzzle number (e.g., '⭐⭐ Puzzle 14')",
+        "prompt": "Bottom sheet shows the objective (e.g., 'Checkmate in 2 — Red to move')",
+        "interaction": "Standard tap-to-select, tap-to-move from Play mode",
+        "on_correct_move": "Board plays opponent's forced response automatically (200ms delay), then waits for next player move",
+        "on_wrong_move": "Piece snaps back, bottom sheet shows 'Not quite — try again' with subtle shake animation",
+        "on_solve": "Confetti or green flash, 'Solved!' message, auto-advance to next puzzle after 1.5s",
+        "on_give_up": "'Show solution' button appears after 2 failed attempts (easy/medium) or 3 failed attempts (hard)"
+      },
+
+      "session_flow": {
+        "default_session": "5 puzzles per session, same difficulty",
+        "selection": "Player picks difficulty, puzzles served sequentially",
+        "mixed_mode": "Optional — shuffles across difficulties, weighted by spaced repetition box",
+        "end_of_session": "Summary: solved count, average attempts, streak"
+      },
+
+      "navigation": {
+        "back_button": "Returns to Practice menu, progress auto-saved",
+        "skip_button": "Skip puzzle without penalty (doesn't count as failed)",
+        "hint_button": "Shows hint text from puzzle data, deducts from hints_available count"
+      }
+    },
+
+    "initial_puzzle_set": {
+      "description": "Ship with a curated starter set. Expand from game losses over time.",
+      "count": {
+        "easy": 20,
+        "medium": 15,
+        "hard": 10
+      },
+      "total": 45,
+      "source": "Curated from classic Cờ tướng tactical patterns. JSON file bundled with app.",
+      "categories_to_cover": [
+        "Cannon screen checkmate (the most common Cờ tướng tactic)",
+        "Double Cannon on same file",
+        "Horse fork winning material",
+        "Chariot back-rank checkmate",
+        "Flying General pin exploitation",
+        "Soldier + Cannon endgame mate",
+        "Horse + Cannon coordination",
+        "Sacrifice to clear a file or diagonal"
+      ]
+    },
+
+    "progress_tracking": {
+      "storage": "localStorage with Safari private browsing fallback",
+      "per_puzzle": {
+        "attempts": "number — how many times attempted",
+        "solved": "boolean",
+        "best_attempt": "number — fewest wrong moves before solving",
+        "last_attempted": "ISO date string"
+      },
+      "aggregate": {
+        "total_solved": "number",
+        "current_streak": "number — consecutive puzzles solved first try",
+        "best_streak": "number",
+        "by_difficulty": {
+          "easy": { "solved": 0, "total": 20 },
+          "medium": { "solved": 0, "total": 15 },
+          "hard": { "solved": 0, "total": 10 }
+        }
+      },
+      "spaced_repetition": {
+        "description": "Same Leitner box system from lesson plan. Failed puzzles return to Box 1, solved puzzles advance.",
+        "integration": "Shared system with Learn mode puzzles — all puzzles live in the same Leitner tracker"
+      }
+    }
+  },
+
+  "loss_tracker": {
+    "description": "Automatically saves interesting positions from lost games to build a personalized puzzle library.",
+
+    "trigger": {
+      "on_checkmate": "Save position from 3 moves before checkmate",
+      "on_resign": "Save current position",
+      "on_significant_material_loss": "Save position when player loses a Chariot, Cannon, or Horse without compensation (optional, can enable later)"
+    },
+
+    "what_to_save": {
+      "fen": "Board state from the critical moment (not the final position)",
+      "moves_before": 3,
+      "logic": "Walk back the move history 3 half-moves from the end position. That's typically where the mistake happened.",
+      "full_game_fen_history": "Also save the complete move history for optional full replay"
+    },
+
+    "saved_position_schema": {
+      "id": "string — auto-generated unique ID",
+      "fen": "string — position at the critical moment",
+      "turn": "string — whose turn at the saved position",
+      "game_result": "string — 'checkmate' or 'resign'",
+      "ai_difficulty": "string — 'easy', 'medium', 'hard'",
+      "timestamp": "ISO date string",
+      "reviewed": "boolean — has the player replayed this position",
+      "converted_to_puzzle": "boolean — has this been turned into a practice puzzle",
+      "player_notes": "string|null — optional note the player can add (e.g., 'missed the cannon screen')"
+    },
+
+    "storage": {
+      "location": "localStorage under key 'co_tuong_losses'",
+      "max_entries": 50,
+      "overflow": "When limit reached, remove oldest reviewed positions first"
+    },
+
+    "ui": {
+      "post_game_prompt": {
+        "trigger": "After any loss",
+        "message": "Bottom sheet slides up: 'Want to see where it went wrong?'",
+        "options": [
+          {
+            "label": "Review",
+            "action": "Load the saved position in review mode"
+          },
+          {
+            "label": "Later",
+            "action": "Dismiss, position is saved to loss library for later"
+          },
+          {
+            "label": "New game",
+            "action": "Dismiss and start new game"
+          }
+        ]
+      },
+
+      "loss_library": {
+        "entry_point": "Practice menu → 'My Mistakes' section",
+        "display": "List of saved positions with date, AI difficulty, and review status",
+        "thumbnail": "Small board preview showing the position",
+        "sort": "Most recent first, unreviewed positions highlighted"
+      }
+    }
+  },
+
+  "review_mode": {
+    "description": "Replay from the critical moment. Try a different move and see what happens.",
+
+    "ui_flow": {
+      "board": "Standard board loaded with the saved FEN position",
+      "prompt": "Bottom sheet: 'This is where things went wrong. Red to move — try a different approach.'",
+      "interaction": "Player makes moves, AI responds in real time (using same difficulty as original game)",
+      "features": [
+        "Undo available to try different lines",
+        "No move limit — play it out as far as you want",
+        "If player finds checkmate: 'Nice recovery! Save as puzzle?' option appears"
+      ]
+    },
+
+    "convert_to_puzzle": {
+      "description": "If the position has a clean tactical solution, player or app can convert it to a practice puzzle.",
+      "manual": "Player taps 'Save as puzzle' after finding a good line",
+      "auto_detection": "If position has a forced checkmate in 1-3 moves (detected by minimax), suggest conversion automatically",
+      "on_convert": {
+        "action": "Create a puzzle entry in the practice puzzle library",
+        "source": "from_game",
+        "source_game_id": "Links back to the original loss",
+        "difficulty": "Auto-assigned based on solution length: 1 move = easy, 2 = medium, 3+ = hard"
+      }
+    }
+  },
+
+  "menu_structure": {
+    "description": "Updated main menu with Practice as the bridge between Learn and Play",
+    "buttons": [
+      {
+        "label": "Learn",
+        "description": "7-lesson tutorial — piece movement and rules",
+        "status": "Built"
+      },
+      {
+        "label": "Practice",
+        "description": "Tactical puzzles and loss review",
+        "sub_menu": [
+          {
+            "label": "Puzzles",
+            "description": "Go-Problems-style tactical problems",
+            "sub_options": ["⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Hard", "🔀 Mixed"]
+          },
+          {
+            "label": "My Mistakes",
+            "description": "Positions from your losses — review and learn from them",
+            "badge": "Shows count of unreviewed positions"
+          }
+        ]
+      },
+      {
+        "label": "Play",
+        "description": "Full game against AI or 2-player",
+        "sub_options": ["Easy", "Medium", "Hard", "2P"],
+        "status": "Built (Medium pending)"
+      }
+    ]
+  },
+
+  "implementation_notes": {
+    "dependencies": {
+      "game_engine": "DONE — all piece movement and rules",
+      "ai_minimax": "DONE — used for opponent responses in puzzles and solution verification",
+      "fen_snapshots": "DONE — used for saving and loading positions",
+      "board_rendering": "DONE — same component for puzzles, review, and play",
+      "move_history": "DONE — used for walking back 3 moves on loss"
+    },
+
+    "new_code_needed": [
+      "Puzzle data loader — parse puzzle JSON and serve to board",
+      "Puzzle interaction handler — validate player moves against solution tree",
+      "Loss capture hook — trigger on game end, walk back move history, save FEN",
+      "Loss library UI — list view with board thumbnails",
+      "Review mode — load FEN, allow free play against AI from that position",
+      "Puzzle-from-loss converter — create puzzle entry from reviewed position",
+      "Practice progress tracker — Leitner box state in localStorage",
+      "Curated puzzle set — 45 puzzles in JSON (20 easy, 15 medium, 10 hard)"
+    ],
+
+    "estimated_effort": "1 week for puzzle mode + loss tracker. Curated puzzle content is the most time-consuming part — may want AI assistance generating the initial 45 puzzles from known Cờ tướng tactical patterns."
+  }
+}
