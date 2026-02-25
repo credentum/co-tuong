@@ -415,28 +415,25 @@ export const useLearningStore = create<LearningStore>()(
 
       loadPuzzle: (puzzleId) => {
         const puzzle = ALL_PUZZLES[puzzleId]
-        if (puzzle) {
-          // Reset all visual state before loading new puzzle
-          const reset: Record<string, unknown> = {
-            pieces: [...puzzle.setup.pieces],
-            tappedPositions: [],
-            highlightSquares: [],
-            highlightStyle: 'target' as const,
-            selectedPosition: null,
-            legalMoves: [],
-            puzzleFeedback: 'none',
-            showSolution: false,
-            puzzleAttempts: 0,
-            tfCurrentIndex: 0,
-            tfAnswers: [],
-            tfExplanation: '',
-          }
-          // For true_false_series, highlight the first position
-          if (puzzle.type === 'true_false_series' && puzzle.highlightPositions?.[0]) {
-            reset.highlightSquares = [puzzle.highlightPositions[0]]
-          }
-          set(reset)
-        }
+        if (!puzzle) return
+        // Reset all visual state then load new puzzle pieces
+        set({
+          pieces: [...puzzle.setup.pieces],
+          tappedPositions: [],
+          highlightSquares:
+            puzzle.type === 'true_false_series' && puzzle.highlightPositions?.[0]
+              ? [puzzle.highlightPositions[0]]
+              : [],
+          highlightStyle: 'target' as const,
+          selectedPosition: null,
+          legalMoves: [],
+          puzzleFeedback: 'none' as const,
+          showSolution: false,
+          puzzleAttempts: 0,
+          tfCurrentIndex: 0,
+          tfAnswers: [],
+          tfExplanation: '',
+        })
       },
 
       // Progress
