@@ -20,6 +20,8 @@ export const L1_P1: PuzzleDef = {
       p('ma', 'black', 4, 7),
       p('phao', 'red', 2, 4),
       p('tot', 'black', 4, 1),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
@@ -33,7 +35,12 @@ export const L1_P2: PuzzleDef = {
   type: 'find_the_move',
   prompt: 'The black Chariot is unprotected. Capture it in one move.',
   setup: {
-    pieces: [p('xe', 'red', 0, 0), p('xe', 'black', 0, 6)],
+    pieces: [
+      p('xe', 'red', 0, 0),
+      p('xe', 'black', 0, 6),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -48,7 +55,13 @@ export const L1_P3: PuzzleDef = {
   type: 'find_the_move',
   prompt: "Can the red Chariot capture the black Chariot? Find a path — you'll need two moves.",
   setup: {
-    pieces: [p('xe', 'red', 0, 0), p('tot', 'black', 0, 3), p('xe', 'black', 0, 7)],
+    pieces: [
+      p('xe', 'red', 0, 0),
+      p('tot', 'black', 0, 3),
+      p('xe', 'black', 0, 7),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -69,7 +82,13 @@ export const L1_P4: PuzzleDef = {
   type: 'find_best_move',
   prompt: 'Move the Chariot to threaten two enemy pieces at once.',
   setup: {
-    pieces: [p('xe', 'red', 4, 0), p('ma', 'black', 0, 4), p('phao', 'black', 4, 8)],
+    pieces: [
+      p('xe', 'red', 4, 0),
+      p('ma', 'black', 0, 4),
+      p('phao', 'black', 4, 8),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -86,7 +105,13 @@ export const L1_P5: PuzzleDef = {
   type: 'find_the_move',
   prompt: 'Your Chariot is under attack. Move it to safety while threatening an enemy piece.',
   setup: {
-    pieces: [p('xe', 'red', 3, 4), p('xe', 'black', 3, 8), p('ma', 'black', 7, 4)],
+    pieces: [
+      p('xe', 'red', 3, 4),
+      p('xe', 'black', 3, 8),
+      p('ma', 'black', 7, 4),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 4, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -109,6 +134,8 @@ export const L2_P1: PuzzleDef = {
       p('ma', 'red', 4, 4),
       p('tot', 'red', 4, 5), // blocks north leg
       p('tot', 'black', 3, 4), // blocks west leg
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
@@ -126,6 +153,8 @@ export const L2_P2: PuzzleDef = {
       p('ma', 'red', 4, 4),
       p('tot', 'red', 4, 5), // blocks north leg
       p('tot', 'black', 5, 4), // blocks east leg
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
@@ -148,7 +177,12 @@ export const L2_P3: PuzzleDef = {
   type: 'find_the_move',
   prompt: 'Capture the unprotected Chariot with your Horse.',
   setup: {
-    pieces: [p('ma', 'red', 2, 0), p('xe', 'black', 3, 2)],
+    pieces: [
+      p('ma', 'red', 2, 0),
+      p('xe', 'black', 3, 2),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -167,18 +201,29 @@ export const L2_P4: PuzzleDef = {
       p('ma', 'red', 4, 4),
       p('xe', 'red', 4, 5), // blocks Horse's north leg
       p('phao', 'black', 5, 6), // target for Horse at f7
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
   answer: {
     type: 'find_the_move',
-    // Move Xe away from e6 to unblock Horse's north direction
+    // Move Xe away from e6 to unblock Horse's north direction — any Xe move works
     moves: [
+      // Along row 5 (left)
       { from: { col: 4, row: 5 }, to: { col: 0, row: 5 } },
-      { from: { col: 4, row: 5 }, to: { col: 4, row: 9 } },
+      { from: { col: 4, row: 5 }, to: { col: 1, row: 5 } },
+      { from: { col: 4, row: 5 }, to: { col: 2, row: 5 } },
+      { from: { col: 4, row: 5 }, to: { col: 3, row: 5 } },
+      // Along row 5 (right — (5,5) is illegal: Phao pins through Xe to gen)
+      { from: { col: 4, row: 5 }, to: { col: 6, row: 5 } },
+      { from: { col: 4, row: 5 }, to: { col: 7, row: 5 } },
+      { from: { col: 4, row: 5 }, to: { col: 8, row: 5 } },
+      // Along col 4 (up — Ma at (4,4) blocks downward)
       { from: { col: 4, row: 5 }, to: { col: 4, row: 6 } },
       { from: { col: 4, row: 5 }, to: { col: 4, row: 7 } },
       { from: { col: 4, row: 5 }, to: { col: 4, row: 8 } },
+      { from: { col: 4, row: 5 }, to: { col: 4, row: 9 } },
     ],
   },
   teaches: 'Piece coordination — clearing blocking pieces',
@@ -191,7 +236,12 @@ export const L2_P5: PuzzleDef = {
   prompt:
     'Your Horse is attacked by a Chariot. Find the safe square that also threatens the Chariot.',
   setup: {
-    pieces: [p('ma', 'red', 4, 4), p('xe', 'black', 4, 8)],
+    pieces: [
+      p('ma', 'red', 4, 4),
+      p('xe', 'black', 4, 8),
+      p('tuong', 'red', 5, 0),
+      p('tuong', 'black', 3, 9),
+    ],
     playerSide: 'red',
   },
   answer: {
@@ -265,7 +315,7 @@ export const L3_P3: PuzzleDef = {
   type: 'tap_all_targets',
   prompt: 'Tap all intersections the Advisor can legally reach.',
   setup: {
-    pieces: [p('si', 'red', 4, 1), p('tuong', 'red', 4, 0), p('tuong', 'black', 4, 9)],
+    pieces: [p('si', 'red', 4, 1), p('tuong', 'red', 4, 0), p('tuong', 'black', 3, 9)],
     playerSide: 'red',
   },
   answer: { type: 'tap_all_targets' }, // computed
@@ -283,7 +333,7 @@ export const L3_P4: PuzzleDef = {
       p('tuong', 'red', 4, 0),
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 9),
-      p('si', 'black', 5, 8),
+      p('si', 'black', 5, 9),
     ],
     playerSide: 'red',
   },
@@ -305,7 +355,7 @@ export const L3_P5: PuzzleDef = {
       p('tuong', 'red', 4, 0),
       p('si', 'red', 3, 0),
       p('xe', 'black', 3, 5),
-      p('tuong', 'black', 4, 9),
+      p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
