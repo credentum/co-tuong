@@ -1,13 +1,11 @@
 import { create } from 'zustand'
 import type { Piece, Position, Side } from '@/types/game'
 import { INITIAL_POSITION } from '@/constants/initialPosition'
-import { getLegalMoves } from '@/lib/moves'
+import { getFullyLegalMoves, getGameResult, type GameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
+import { getRandomBotMove } from '@/lib/bot'
 
-export interface Toast {
-  id: string
-  messageKey: string
-}
+export type OpponentMode = 'pass-and-play' | 'random-bot'
 
 interface GameStore {
   pieces: Piece[]
@@ -16,30 +14,28 @@ interface GameStore {
   legalMoves: Position[]
   confirmMoveEnabled: boolean
   pendingMove: { from: Position; to: Position } | null
-  toasts: Toast[]
+  gameResult: GameResult
+  opponentMode: OpponentMode
 
   selectPosition: (pos: Position) => void
   confirmMove: () => void
   cancelMove: () => void
   toggleConfirmMove: () => void
-  dismissToast: (id: string) => void
+  setOpponentMode: (mode: OpponentMode) => void
   resetGame: () => void
 }
 
-function executeMove(
+function applyMove(
   pieces: Piece[],
   from: Position,
   to: Position,
   currentTurn: Side,
-): { pieces: Piece[]; currentTurn: Side } {
-  // Remove captured piece at destination
+): { pieces: Piece[]; currentTurn: Side; gameResult: GameResult } {
   const filtered = pieces.filter((p) => !posEq(p.position, to))
-  // Move the piece
   const updated = filtered.map((p) => (posEq(p.position, from) ? { ...p, position: to } : p))
-  return {
-    pieces: updated,
-    currentTurn: currentTurn === 'red' ? 'black' : 'red',
-  }
+  const nextTurn: Side = currentTurn === 'red' ? 'black' : 'red'
+  const gameResult = getGameResult(updated, nextTurn)
+  return { pieces: updated, currentTurn: nextTurn, gameResult }
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -49,24 +45,35 @@ export const useGameStore = create<GameStore>((set, get) => ({
   legalMoves: [],
   confirmMoveEnabled: false,
   pendingMove: null,
-  toasts: [],
+  gameResult: 'ongoing',
+  opponentMode: 'pass-and-play',
 
   selectPosition: (pos) => {
-    const { pieces, currentTurn, selectedPosition, legalMoves, confirmMoveEnabled } = get()
+    const {
+      pieces,
+      currentTurn,
+      selectedPosition,
+      legalMoves,
+      confirmMoveEnabled,
+      gameResult,
+      opponentMode,
+    } = get()
+
+    if (gameResult !== 'ongoing') return
+
+    // Block human input during bot's turn
+    if (opponentMode === 'random-bot' && currentTurn === 'black') return
+
     const tappedPiece = pieces.find((p) => posEq(p.position, pos))
 
     // Case 1: Nothing selected, tap own piece → select it
     if (!selectedPosition) {
       if (tappedPiece && tappedPiece.side === currentTurn) {
-        const moves = getLegalMoves(tappedPiece, pieces)
+        const moves = getFullyLegalMoves(tappedPiece, pieces)
         set({ selectedPosition: pos, legalMoves: moves, pendingMove: null })
         return
       }
-      if (tappedPiece && tappedPiece.side !== currentTurn) {
-        // Silently ignore — no toast, just let them keep tapping
-        return
-      }
-      // Tap empty square with nothing selected → ignore
+      // Silently ignore opponent pieces or empty squares
       return
     }
 
@@ -78,7 +85,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // Case 3: Already selected, tap different own piece → reselect
     if (tappedPiece && tappedPiece.side === currentTurn) {
-      const moves = getLegalMoves(tappedPiece, pieces)
+      const moves = getFullyLegalMoves(tappedPiece, pieces)
       set({ selectedPosition: pos, legalMoves: moves, pendingMove: null })
       return
     }
@@ -90,36 +97,45 @@ export const useGameStore = create<GameStore>((set, get) => ({
         set({ pendingMove: { from: selectedPosition, to: pos } })
         return
       }
-      const result = executeMove(pieces, selectedPosition, pos, currentTurn)
+      const result = applyMove(pieces, selectedPosition, pos, currentTurn)
       set({
-        pieces: result.pieces,
-        currentTurn: result.currentTurn,
+        ...result,
         selectedPosition: null,
         legalMoves: [],
         pendingMove: null,
       })
+      // Trigger bot move if needed
+      if (
+        result.gameResult === 'ongoing' &&
+        opponentMode === 'random-bot' &&
+        result.currentTurn === 'black'
+      ) {
+        scheduleBotMove()
+      }
       return
     }
 
     // Case 5: Already selected, tap illegal destination → just deselect
-    set({
-      selectedPosition: null,
-      legalMoves: [],
-      pendingMove: null,
-    })
+    set({ selectedPosition: null, legalMoves: [], pendingMove: null })
   },
 
   confirmMove: () => {
-    const { pieces, currentTurn, pendingMove } = get()
+    const { pieces, currentTurn, pendingMove, opponentMode } = get()
     if (!pendingMove) return
-    const result = executeMove(pieces, pendingMove.from, pendingMove.to, currentTurn)
+    const result = applyMove(pieces, pendingMove.from, pendingMove.to, currentTurn)
     set({
-      pieces: result.pieces,
-      currentTurn: result.currentTurn,
+      ...result,
       selectedPosition: null,
       legalMoves: [],
       pendingMove: null,
     })
+    if (
+      result.gameResult === 'ongoing' &&
+      opponentMode === 'random-bot' &&
+      result.currentTurn === 'black'
+    ) {
+      scheduleBotMove()
+    }
   },
 
   cancelMove: () => {
@@ -130,8 +146,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set((s) => ({ confirmMoveEnabled: !s.confirmMoveEnabled, pendingMove: null }))
   },
 
-  dismissToast: (id) => {
-    set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }))
+  setOpponentMode: (mode) => {
+    set({ opponentMode: mode })
+    // Reset game when changing mode
+    get().resetGame()
   },
 
   resetGame: () => {
@@ -141,7 +159,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
       selectedPosition: null,
       legalMoves: [],
       pendingMove: null,
-      toasts: [],
+      gameResult: 'ongoing',
     })
   },
 }))
+
+function scheduleBotMove() {
+  setTimeout(() => {
+    const { pieces, currentTurn, gameResult } = useGameStore.getState()
+    if (gameResult !== 'ongoing' || currentTurn !== 'black') return
+    const botMove = getRandomBotMove(pieces, 'black')
+    if (!botMove) return
+    const result = applyMove(pieces, botMove.from, botMove.to, currentTurn)
+    useGameStore.setState({
+      ...result,
+      selectedPosition: null,
+      legalMoves: [],
+      pendingMove: null,
+    })
+  }, 300)
+}

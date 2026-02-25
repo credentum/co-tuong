@@ -31,6 +31,10 @@
     "cancelMove": "Cancel",
     "newGame": "New game",
     "confirmModeOn": "Confirm moves: On",
-    "confirmModeOff": "Confirm moves: Off"
+    "confirmModeOff": "Confirm moves: Off",
+    "redWins": "Red wins!",
+    "blackWins": "Black wins!",
+    "passAndPlay": "2P",
+    "randomBot": "Bot"
   }
 }

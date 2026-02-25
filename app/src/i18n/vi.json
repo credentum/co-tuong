@@ -31,6 +31,10 @@
     "cancelMove": "Huỷ",
     "newGame": "Ván mới",
     "confirmModeOn": "Xác nhận nước đi: Bật",
-    "confirmModeOff": "Xác nhận nước đi: Tắt"
+    "confirmModeOff": "Xác nhận nước đi: Tắt",
+    "redWins": "Đỏ thắng!",
+    "blackWins": "Đen thắng!",
+    "passAndPlay": "2P",
+    "randomBot": "Bot"
   }
 }

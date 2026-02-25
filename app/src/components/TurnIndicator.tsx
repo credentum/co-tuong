@@ -4,6 +4,25 @@ import { useGameStore } from '@/store/useGameStore'
 export function TurnIndicator() {
   const { t } = useTranslation()
   const currentTurn = useGameStore((s) => s.currentTurn)
+  const gameResult = useGameStore((s) => s.gameResult)
+
+  if (gameResult === 'red_wins') {
+    return (
+      <div className="flex items-center gap-2 py-2">
+        <span className="inline-block h-3 w-3 rounded-full bg-red-600" />
+        <span className="text-lg font-bold text-red-700">{t('game.redWins')}</span>
+      </div>
+    )
+  }
+
+  if (gameResult === 'black_wins') {
+    return (
+      <div className="flex items-center gap-2 py-2">
+        <span className="inline-block h-3 w-3 rounded-full bg-stone-800" />
+        <span className="text-lg font-bold text-stone-800">{t('game.blackWins')}</span>
+      </div>
+    )
+  }
 
   const isRed = currentTurn === 'red'
   const label = isRed ? t('game.redTurn') : t('game.blackTurn')
