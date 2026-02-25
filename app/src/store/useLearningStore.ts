@@ -22,6 +22,7 @@ interface LearningStore {
 
   // Display mode for piece labels
   displayMode: DisplayMode
+  setDisplayMode: (mode: DisplayMode) => void
   cycleDisplayMode: () => void
 
   // Lesson state
@@ -115,6 +116,7 @@ export const useLearningStore = create<LearningStore>()(
 
       // Display mode for piece labels
       displayMode: 'english' as DisplayMode,
+      setDisplayMode: (mode: DisplayMode) => set({ displayMode: mode }),
       cycleDisplayMode: () => {
         const modes: DisplayMode[] = ['english', 'vietnamese', 'characters_only']
         const current = get().displayMode

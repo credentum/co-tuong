@@ -1,38 +1,29 @@
 import { useState } from 'react'
 import { Board } from './components/Board'
 import { TurnIndicator } from './components/TurnIndicator'
-import { GameControls } from './components/GameControls'
-import { ConfirmMoveBar } from './components/ConfirmMoveBar'
-import { MoveHistory } from './components/MoveHistory'
+import { ActionBar } from './components/ActionBar'
+import { SettingsPanel } from './components/SettingsPanel'
 import { Toast } from './components/Toast'
 import { PieceInfoCard } from './components/PieceInfoCard'
-import { CapturedPieces } from './components/CapturedPieces'
 import { LearningScreen } from './components/learning/LearningScreen'
-import { useGameStore } from './store/useGameStore'
 import { useLearningStore } from './store/useLearningStore'
 import type { PieceType } from '@/types/game'
 
 export default function App() {
   const [infoPiece, setInfoPiece] = useState<PieceType | null>(null)
-  const flipped = useGameStore((s) => s.boardFlipped)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const appMode = useLearningStore((s) => s.appMode)
 
   if (appMode === 'learning') {
     return <LearningScreen />
   }
 
-  const topSide = flipped ? 'red' : 'black'
-  const bottomSide = flipped ? 'black' : 'red'
-
   return (
-    <div className="flex h-[100dvh] flex-col items-center justify-center bg-amber-50">
+    <div className="flex h-[100dvh] flex-col items-center bg-amber-50">
       <TurnIndicator />
-      <CapturedPieces capturedFrom={topSide} />
       <Board onPieceInfo={(type) => setInfoPiece(type as PieceType)} />
-      <CapturedPieces capturedFrom={bottomSide} />
-      <GameControls />
-      <ConfirmMoveBar />
-      <MoveHistory />
+      <ActionBar onOpenSettings={() => setSettingsOpen(true)} />
+      <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <Toast />
       {infoPiece && <PieceInfoCard pieceType={infoPiece} onClose={() => setInfoPiece(null)} />}
     </div>

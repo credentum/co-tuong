@@ -1,4 +1,5 @@
 import { BoardSVG } from './BoardSVG'
+import { ConfirmMoveBar } from './ConfirmMoveBar'
 
 interface BoardProps {
   onPieceInfo?: (type: string) => void
@@ -6,8 +7,9 @@ interface BoardProps {
 
 export function Board({ onPieceInfo }: BoardProps) {
   return (
-    <div className="flex w-full max-w-md flex-1 items-center justify-center p-2">
+    <div className="relative flex w-full max-w-lg flex-1 items-center justify-center px-1">
       <BoardSVG onPieceInfo={onPieceInfo} />
+      <ConfirmMoveBar />
     </div>
   )
 }

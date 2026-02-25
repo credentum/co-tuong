@@ -10,16 +10,16 @@ export function ConfirmMoveBar() {
   if (!pendingMove) return null
 
   return (
-    <div className="flex gap-3 py-2">
+    <div className="absolute inset-x-0 bottom-2 z-10 flex justify-center gap-3">
       <button
         onClick={cancelMove}
-        className="rounded-lg border border-stone-300 bg-white px-6 py-2 text-sm font-medium text-stone-700"
+        className="rounded-lg border border-stone-300 bg-white px-6 py-2 text-sm font-medium text-stone-700 shadow"
       >
         {t('game.cancelMove')}
       </button>
       <button
         onClick={confirmMove}
-        className="rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white"
+        className="rounded-lg bg-red-600 px-6 py-2 text-sm font-medium text-white shadow"
       >
         {t('game.confirmMove')}
       </button>
