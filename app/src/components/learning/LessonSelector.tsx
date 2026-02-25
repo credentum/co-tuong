@@ -9,14 +9,14 @@ export function LessonSelector() {
   const isUnlocked = useLearningStore((s) => s.isLessonUnlocked)
   const lessonProgress = useLearningStore((s) => s.lessonProgress)
 
+  // Only count implemented phases (see_it + test_it for now)
+  const TOTAL_PHASES = 2
   const getProgress = (id: LessonId) => {
     const p = lessonProgress.find((lp) => lp.lessonId === id)
     if (!p) return 0
     let count = 0
     if (p.seeItComplete) count++
-    if (p.tryItComplete) count++
     if (p.testItComplete) count++
-    if (p.useItComplete) count++
     return count
   }
 
@@ -53,8 +53,9 @@ export function LessonSelector() {
                   {lesson.seeIt.characterDisplay.join(' ')}
                   {unlocked && progress > 0 && (
                     <span className="ml-2 text-green-600">
-                      {'●'.repeat(progress)}
-                      {'○'.repeat(4 - progress)}
+                      {progress >= TOTAL_PHASES
+                        ? ' ✓'
+                        : '●'.repeat(progress) + '○'.repeat(TOTAL_PHASES - progress)}
                     </span>
                   )}
                 </div>
