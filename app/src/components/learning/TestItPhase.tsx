@@ -155,7 +155,7 @@ export function TestItPhase() {
 
           {canNext && (
             <button
-              onClick={isLastPuzzle ? backToSelector : nextPuzzle}
+              onClick={nextPuzzle}
               className="flex-1 rounded-lg bg-red-600 py-2.5 text-sm font-semibold text-white"
             >
               {isLastPuzzle ? t('learning.backToLessons') : t('learning.next')}
