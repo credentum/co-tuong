@@ -21,5 +21,16 @@
     "intersection": "Intersection {{col}}, {{row}}",
     "pieceAt": "{{side}} {{piece}} at {{col}}, {{row}}",
     "emptyAt": "Empty at {{col}}, {{row}}"
+  },
+  "game": {
+    "redTurn": "Red's turn",
+    "blackTurn": "Black's turn",
+    "wrongTurn": "Not your turn",
+    "illegalMove": "Illegal move",
+    "confirmMove": "Confirm",
+    "cancelMove": "Cancel",
+    "newGame": "New game",
+    "confirmModeOn": "Confirm moves: On",
+    "confirmModeOff": "Confirm moves: Off"
   }
 }

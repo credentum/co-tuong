@@ -3,12 +3,14 @@ import { useGameStore } from '@/store/useGameStore'
 import { BOARD_HEIGHT, BOARD_PADDING, BOARD_WIDTH, CELL_SIZE, COLS, ROWS } from '@/constants/board'
 import { boardToSVG } from '@/lib/coordinates'
 import { Piece } from './Piece'
+import { MoveHighlight } from './MoveHighlight'
 import { TapTarget } from './TapTarget'
 
 export function BoardSVG() {
   const { t } = useTranslation()
   const pieces = useGameStore((s) => s.pieces)
   const selectedPosition = useGameStore((s) => s.selectedPosition)
+  const legalMoves = useGameStore((s) => s.legalMoves)
   const selectPosition = useGameStore((s) => s.selectPosition)
 
   // Helper: get piece at board position
@@ -145,6 +147,9 @@ export function BoardSVG() {
           />
         )
       })}
+
+      {/* Legal move highlights */}
+      {selectedPosition && <MoveHighlight moves={legalMoves} pieces={pieces} />}
 
       {/* Tap targets (rendered on top of everything for input capture) */}
       {Array.from({ length: ROWS }, (_, row) =>

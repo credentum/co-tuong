@@ -13,6 +13,11 @@ export interface Piece {
   position: Position
 }
 
+export interface Move {
+  from: Position
+  to: Position
+}
+
 export interface BoardState {
   pieces: Piece[]
   currentTurn: Side

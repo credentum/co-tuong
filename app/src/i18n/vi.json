@@ -21,5 +21,16 @@
     "intersection": "Giao điểm {{col}}, {{row}}",
     "pieceAt": "{{side}} {{piece}} tại {{col}}, {{row}}",
     "emptyAt": "Trống tại {{col}}, {{row}}"
+  },
+  "game": {
+    "redTurn": "Lượt Đỏ",
+    "blackTurn": "Lượt Đen",
+    "wrongTurn": "Chưa đến lượt bạn",
+    "illegalMove": "Nước đi không hợp lệ",
+    "confirmMove": "Xác nhận",
+    "cancelMove": "Huỷ",
+    "newGame": "Ván mới",
+    "confirmModeOn": "Xác nhận nước đi: Bật",
+    "confirmModeOff": "Xác nhận nước đi: Tắt"
   }
 }
