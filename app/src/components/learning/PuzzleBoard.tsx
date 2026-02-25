@@ -22,8 +22,9 @@ export function PuzzleBoard() {
     }
   }
 
-  // Combine tapped positions with highlight squares for display
-  const allHighlights = [...tappedPositions.map((p) => p), ...highlightSquares]
+  // Only show tapped positions for tap_all_targets puzzles
+  const taps = puzzle?.type === 'tap_all_targets' ? tappedPositions : []
+  const allHighlights = [...taps, ...highlightSquares]
 
   return (
     <BoardRenderer
