@@ -51,6 +51,12 @@ export function GameControls() {
         {t('game.randomBot')}
       </button>
       <button
+        onClick={() => setOpponentMode('medium')}
+        className={opponentMode === 'medium' ? activeBtnClass : btnClass}
+      >
+        {t('game.mediumBot')}
+      </button>
+      <button
         onClick={() => setOpponentMode('minimax')}
         className={opponentMode === 'minimax' ? activeBtnClass : btnClass}
       >

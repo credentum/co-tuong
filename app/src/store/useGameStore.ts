@@ -8,7 +8,7 @@ import { getMinimaxMove } from '@/lib/ai'
 import { boardToFen } from '@/lib/fen'
 import { moveToWxf } from '@/lib/wxf'
 
-export type OpponentMode = 'pass-and-play' | 'random-bot' | 'minimax'
+export type OpponentMode = 'pass-and-play' | 'random-bot' | 'medium' | 'minimax'
 
 export interface MoveRecord {
   wxf: string
@@ -234,8 +234,16 @@ function scheduleAiMove(mode: OpponentMode) {
     const { pieces, currentTurn, gameResult } = state
     if (gameResult !== 'ongoing' || currentTurn !== 'black') return
 
-    const aiMove =
-      mode === 'minimax' ? getMinimaxMove(pieces, 'black', 2) : getRandomBotMove(pieces, 'black')
+    let aiMove
+    if (mode === 'minimax') {
+      aiMove = getMinimaxMove(pieces, 'black', 2)
+    } else if (mode === 'medium') {
+      // 40% mistake rate: plays like a café beginner
+      aiMove =
+        Math.random() < 0.4 ? getRandomBotMove(pieces, 'black') : getMinimaxMove(pieces, 'black', 2)
+    } else {
+      aiMove = getRandomBotMove(pieces, 'black')
+    }
     if (!aiMove) return
 
     const result = applyMoveLogic(pieces, aiMove.from, aiMove.to, currentTurn)
