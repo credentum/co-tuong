@@ -7,16 +7,20 @@ import { MoveHistory } from './components/MoveHistory'
 import { Toast } from './components/Toast'
 import { PieceInfoCard } from './components/PieceInfoCard'
 import { CapturedPieces } from './components/CapturedPieces'
+import { LearningScreen } from './components/learning/LearningScreen'
 import { useGameStore } from './store/useGameStore'
+import { useLearningStore } from './store/useLearningStore'
 import type { PieceType } from '@/types/game'
 
 export default function App() {
   const [infoPiece, setInfoPiece] = useState<PieceType | null>(null)
   const flipped = useGameStore((s) => s.boardFlipped)
+  const appMode = useLearningStore((s) => s.appMode)
 
-  // Top captures = pieces taken from the side at the top of the board
-  // Normal: Black at top, so show Black's captured pieces at top
-  // Flipped: Red at top, so show Red's captured pieces at top
+  if (appMode === 'learning') {
+    return <LearningScreen />
+  }
+
   const topSide = flipped ? 'red' : 'black'
   const bottomSide = flipped ? 'black' : 'red'
 

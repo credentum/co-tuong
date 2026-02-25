@@ -50,5 +50,24 @@
     "phao": "Pháo đi thẳng như Xe khi không bắt quân. Để bắt quân, phải nhảy qua đúng một quân (\"ngòi\") rồi hạ quân đối phương phía sau.",
     "ma": "Mã đi hình chữ L: một bước thẳng rồi một bước chéo ra ngoài. Nếu ô thẳng liền kề bị chặn thì hướng đó không đi được (\"cản Mã\").",
     "tot": "Tốt đi một bước tiến trước khi qua sông. Sau khi qua sông, có thể đi ngang (trái hoặc phải). Không bao giờ đi lùi."
+  },
+  "learning": {
+    "title": "Học",
+    "backToGame": "← Chơi",
+    "backToLessons": "Về danh sách",
+    "lessonLocked": "Hoàn thành bài trước",
+    "seeIt": "Học",
+    "tryIt": "Luyện",
+    "testIt": "Kiểm tra",
+    "useIt": "Chơi",
+    "gotIt": "Hiểu rồi — Cho tôi thử!",
+    "submit": "Nộp",
+    "next": "Tiếp",
+    "showSolution": "Đáp án — hãy nghiên cứu, rồi tiếp tục.",
+    "correct": "Đúng rồi!",
+    "tryAgain": "Chưa đúng — thử lại!",
+    "puzzleProgress": "Bài {{current}} / {{total}}",
+    "hint": "Gợi ý",
+    "lessonComplete": "Hoàn thành bài học!"
   }
 }

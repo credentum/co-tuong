@@ -50,5 +50,24 @@
     "phao": "The Cannon moves like the Chariot for non-capture moves (sliding orthogonally). To capture, it must jump over exactly one piece (the \"screen\") and land on an enemy piece behind it.",
     "ma": "The Horse (Knight) moves in an L-shape: one step orthogonally, then one step diagonally away. If the adjacent orthogonal square is occupied, that direction is blocked (\"leg block\").",
     "tot": "The Soldier (Pawn) moves one step forward before crossing the river. After crossing the river, it can also move one step sideways (left or right). It never moves backward."
+  },
+  "learning": {
+    "title": "Learn",
+    "backToGame": "← Game",
+    "backToLessons": "Back to Lessons",
+    "lessonLocked": "Complete previous lesson",
+    "seeIt": "Learn",
+    "tryIt": "Practice",
+    "testIt": "Test",
+    "useIt": "Play",
+    "gotIt": "Got it — Let me try!",
+    "submit": "Submit",
+    "next": "Next",
+    "showSolution": "Solution shown — study it, then continue.",
+    "correct": "Correct!",
+    "tryAgain": "Not quite — try again!",
+    "puzzleProgress": "Puzzle {{current}} of {{total}}",
+    "hint": "Hint",
+    "lessonComplete": "Lesson Complete!"
   }
 }

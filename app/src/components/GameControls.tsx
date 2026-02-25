@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useGameStore } from '@/store/useGameStore'
+import { useLearningStore } from '@/store/useLearningStore'
 
 export function GameControls() {
   const { t, i18n } = useTranslation()
+  const setAppMode = useLearningStore((s) => s.setAppMode)
   const confirmMoveEnabled = useGameStore((s) => s.confirmMoveEnabled)
   const toggleConfirmMove = useGameStore((s) => s.toggleConfirmMove)
   const resetGame = useGameStore((s) => s.resetGame)
@@ -20,7 +22,10 @@ export function GameControls() {
     'rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700'
 
   return (
-    <div className="flex items-center gap-3 py-2">
+    <div className="flex flex-wrap items-center justify-center gap-2 py-2">
+      <button onClick={() => setAppMode('learning')} className={activeBtnClass}>
+        {t('learning.title')}
+      </button>
       <button onClick={toggleLanguage} className={btnClass}>
         {i18n.language === 'vi' ? 'EN' : 'VI'}
       </button>
