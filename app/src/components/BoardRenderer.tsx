@@ -146,22 +146,6 @@ export function BoardRenderer({
         )
       })()}
 
-      {/* Custom highlight squares (for puzzles) */}
-      {highlightSquares?.map((pos) => {
-        const { x, y } = boardToSVG(pos.col, pos.row, flipped)
-        const color = HIGHLIGHT_COLORS[highlightStyle ?? 'target']
-        return (
-          <circle
-            key={`hs-${pos.col}-${pos.row}`}
-            cx={x}
-            cy={y}
-            r={30}
-            fill={color}
-            opacity={0.35}
-          />
-        )
-      })}
-
       {/* Pieces */}
       {pieces.map((piece) => {
         const isSelected =
@@ -173,6 +157,36 @@ export function BoardRenderer({
             piece={piece}
             isSelected={isSelected}
             flipped={flipped}
+          />
+        )
+      })}
+
+      {/* Custom highlight squares (for puzzles) — rendered on top of pieces */}
+      {highlightSquares?.map((pos) => {
+        const { x, y } = boardToSVG(pos.col, pos.row, flipped)
+        const color = HIGHLIGHT_COLORS[highlightStyle ?? 'target']
+        const hasPiece = pieces.some(
+          (p) => p.position.col === pos.col && p.position.row === pos.row,
+        )
+        return hasPiece ? (
+          <circle
+            key={`hs-${pos.col}-${pos.row}`}
+            cx={x}
+            cy={y}
+            r={28}
+            fill="none"
+            stroke={color}
+            strokeWidth={5}
+            opacity={0.7}
+          />
+        ) : (
+          <circle
+            key={`hs-${pos.col}-${pos.row}`}
+            cx={x}
+            cy={y}
+            r={30}
+            fill={color}
+            opacity={0.35}
           />
         )
       })}
