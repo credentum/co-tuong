@@ -17,15 +17,16 @@ export const L1_P1: PuzzleDef = {
   setup: {
     pieces: [
       p('xe', 'red', 4, 4),
-      p('ma', 'black', 4, 7),
-      p('phao', 'red', 2, 4),
-      p('tot', 'black', 4, 1),
+      p('phao', 'red', 4, 6), // blocks col 4 north
+      p('tot', 'red', 4, 2), // blocks col 4 south
+      p('ma', 'black', 6, 4), // blocks row 4 east (capture)
+      p('tot', 'black', 2, 4), // blocks row 4 west (capture)
       p('tuong', 'red', 5, 0),
       p('tuong', 'black', 3, 9),
     ],
     playerSide: 'red',
   },
-  answer: { type: 'tap_all_targets' }, // computed dynamically
+  answer: { type: 'tap_all_targets' }, // computed dynamically — 6 targets
   teaches: 'Chariot moves along ranks and files, stops at first piece',
 }
 
@@ -116,8 +117,16 @@ export const L1_P5: PuzzleDef = {
   },
   answer: {
     type: 'find_the_move',
-    // Move to h5 — escapes black Xe and threatens the Horse
-    moves: [{ from: { col: 3, row: 4 }, to: { col: 7, row: 4 } }],
+    // Any move along row 4 escapes col 3 and threatens/captures Ma at (7,4)
+    moves: [
+      { from: { col: 3, row: 4 }, to: { col: 0, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 1, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 2, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 4, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 5, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 6, row: 4 } },
+      { from: { col: 3, row: 4 }, to: { col: 7, row: 4 } }, // captures Ma
+    ],
   },
   teaches: 'Retreat with a counter-threat',
 }
@@ -330,16 +339,17 @@ export const L3_P4: PuzzleDef = {
   setup: {
     pieces: [
       p('xe', 'red', 0, 8),
-      p('tuong', 'red', 4, 0),
+      p('ma', 'red', 3, 6), // protects (4,8) via north leg — gen can't capture Xe
+      p('tuong', 'red', 3, 0),
       p('tuong', 'black', 4, 9),
-      p('si', 'black', 3, 9),
-      p('si', 'black', 5, 9),
+      p('tot', 'black', 3, 9), // blocks gen left
+      p('tot', 'black', 5, 9), // blocks gen right
     ],
     playerSide: 'red',
   },
   answer: {
     type: 'find_the_move',
-    // Xe to e9 — checkmate
+    // Xe to e9 — checkmate (gen trapped by Tots, Xe protected by Ma)
     moves: [{ from: { col: 0, row: 8 }, to: { col: 4, row: 8 } }],
   },
   teaches: 'Chariot delivers checkmate in the palace',
