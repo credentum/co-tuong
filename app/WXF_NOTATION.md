@@ -1,7 +1,7 @@
 # WXF Notation Convention
 
 ## Decision
-This project uses **WXF (World Xiangqi Federation) standard notation** for all move representation.
+This project uses **WXF (World Cờ Tướng Federation) standard notation** for all move representation.
 
 ## Rationale
 WXF is the international standard for Cờ tướng notation, used in Vietnamese tournament play. Western algebraic notation (Files A-I, Ranks 0-9) is a chess-world invention with no cultural connection to the game. Since this app teaches the real Vietnamese game, WXF is the appropriate choice.
