@@ -1,123 +1,173 @@
 {
-  "project_name": "English-First Cờ tướng (Vietnamese Chess) Web App (iPhone-First)",
+  "project_name": "Cờ Tướng Learning App — Vietnamese Chess for Expats (iPhone-First PWA)",
+  "cultural_context": "This is a Vietnamese game. All cultural references, piece names, and terminology are Vietnamese. English serves as the teaching gloss for expat learners, not the source language. Piece names: Tướng (General), Sĩ (Advisor), Tượng (Elephant), Xe (Chariot), Pháo (Cannon), Mã (Horse), Tốt/Binh (Soldier).",
+  "target_audience": "Expats in Vietnam learning Cờ tướng at coffee shops. The app teaches the real Vietnamese game with Vietnamese terminology, not a sanitized English abstraction.",
+  "target_device": {
+    "floor": "iPhone 8 (A11 chip)",
+    "rationale": "Most common older iPhone still circulating in Vietnam. SE 1st gen screen is too small for the board. iPhone 8 provides solid CSS transform performance and sets a reasonable SVG complexity budget.",
+    "network_assumption": "$7/month 5G plan at coffee shops — app must work fully offline after first load"
+  },
   "tech_stack": {
-    "framework": "React (Vite)",
+    "framework": "React (Vite) + TypeScript",
     "styling": "Tailwind CSS (using 100dvh for mobile Safari UI)",
     "state_management": "Zustand (using FEN-like strings for lightweight state snapshots)",
     "board_rendering": "Responsive SVG board + GPU-accelerated CSS transforms (translate) for pieces",
     "testing": "Vitest (unit tests) + Playwright (mobile smoke tests)",
-    "deployment": "Vercel or GitHub Pages (Early deployment in Sprint 1 for physical device testing)"
+    "deployment": "Vercel with service worker precaching (PWA offline-first)",
+    "i18n": "Vietnamese as source language, English as teaching gloss. String extraction from Sprint 1.",
+    "linting": "ESLint + Prettier, configured in Sprint 1"
+  },
+  "notation_decision": {
+    "convention": "WXF standard",
+    "rationale": "WXF is the international standard for Cờ tướng notation, used in Vietnamese tournament play. Western algebraic (A-I, 0-9) is a chess-world invention with no cultural connection to the game. Deciding upfront so move generation, history display, and puzzle definitions use consistent notation from day one.",
+    "decided_in": "Sprint 1 (moved from Sprint 4 — too late to defer)"
   },
   "sprint_plan": [
     {
       "sprint_id": 1,
-      "sprint_name": "Mobile Battlefield & Early Deploy",
+      "sprint_name": "Mobile Battlefield, PWA & Foundation",
       "duration": "1 Week",
       "goals": [
-        "Initialize Vite project with Tailwind CSS using h-[100dvh] for the main layout",
+        "Initialize Vite + TypeScript project with Tailwind CSS, ESLint, Prettier",
         "Configure meta viewport tag with touch-action: manipulation (preserves pinch-to-zoom accessibility while preventing double-tap zoom)",
-        "Implement an auto-scaling SVG Cờ tướng board with proper ARIA labels for accessibility",
+        "Set up i18n string extraction with Vietnamese as source language, English as teaching gloss",
+        "Implement an auto-scaling SVG Cờ tướng board with Vietnamese piece names (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt) and ARIA labels",
+        "Use h-[100dvh] for the main layout to prevent bottom-sheet hiding on iOS Safari",
         "Define internal coordinate system mapped to screen positions using CSS transform: translate(x, y)",
         "Create minimum 44x44px invisible tap targets for each intersection to support finger input",
-        "Deploy MVP to Vercel/GitHub Pages for immediate physical iPhone testing of the bottom sheet layout"
+        "Add service worker with precaching for full offline support (Workbox or vite-plugin-pwa)",
+        "Deploy to Vercel for immediate physical iPhone 8 testing of touch targets, 100dvh layout, and offline behavior",
+        "Commit WXF notation convention decision to codebase documentation"
       ],
-      "deliverable": "A static, accessible, auto-scaling board deployed live to verify touch targets and 100dvh layout.",
-      "changes_from_original": "Replaced user-scalable=0 with touch-action: manipulation for better accessibility."
+      "deliverable": "A static, accessible, offline-capable, auto-scaling board with Vietnamese piece names deployed live. PWA installable from Safari. Verified on iPhone 8.",
+      "changes_from_original": "Added PWA/service worker, i18n setup, ESLint/Prettier, TypeScript, notation decision. Moved notation decision here from Sprint 4."
     },
     {
       "sprint_id": 2,
-      "sprint_name": "Tap-to-Play Basics",
+      "sprint_name": "Tap-to-Play Basics & Pass-and-Play",
       "duration": "1 Week",
       "goals": [
         "Implement tap-to-select and tap-to-move interaction (primary input method)",
-        "Stub pointerdown/pointermove handlers on pieces for future drag-and-drop (disabled by default, wired to CSS translate)",
+        "Design move system to accept (from, to) coordinates — any input method (tap, drag, AI) plugs in cleanly",
         "Add optional 'Confirm Move' toggle: select -> target -> confirm",
-        "Implement pseudo-legal move generation for Chariot, General, Advisor, Soldier",
-        "Add touch-optimized legal-move highlights and an ARIA-announced 'selected piece' callout",
-        "Add English illegal-move feedback via bottom-sheet toasts (e.g., 'Blocked path')",
+        "Implement pseudo-legal move generation for Xe (Chariot), Tướng (General), Sĩ (Advisor), Tốt (Soldier)",
+        "Add touch-optimized legal-move highlights and an ARIA-announced 'selected piece' callout using Vietnamese piece names",
+        "Add bilingual illegal-move feedback via bottom-sheet toasts (Vietnamese name + English explanation, e.g., 'Tượng — Cannot cross the river')",
+        "Implement pass-and-play mode (two humans, one phone, alternating turns)",
         "Add first Playwright mobile smoke test: board renders, tap selects piece, legal moves highlight"
       ],
-      "deliverable": "A touch-first board where basic pieces move smoothly using GPU acceleration, with Playwright test baseline established.",
-      "changes_from_original": "Added drag-and-drop stub for future enablement. Added first Playwright smoke test to establish testing pattern."
+      "deliverable": "A touch-first board where basic pieces move smoothly, playable by two people passing the phone. Playwright test baseline established.",
+      "changes_from_original": "Replaced drag-and-drop stub with clean (from, to) coordinate design. Added pass-and-play. Used Vietnamese piece names in UI feedback."
     },
     {
       "sprint_id": "3A",
       "sprint_name": "Complex Piece Logic",
       "duration": "1 Week",
       "goals": [
-        "Implement Cannon movement and capture logic (the 'screen' rule)",
-        "Implement Horse movement with leg-block rule and visual blocking indicators",
-        "Implement Elephant movement with eye-block and river restrictions",
+        "Implement Pháo (Cannon) movement and capture logic (the 'screen' rule)",
+        "Implement Mã (Horse) movement with leg-block rule and visual blocking indicators",
+        "Implement Tượng (Elephant) movement with eye-block and river restrictions",
         "Write Vitest unit tests specifically for these edge-case heavy pieces"
       ],
-      "deliverable": "All pieces move accurately according to their individual physical constraints."
+      "deliverable": "All pieces move accurately according to their individual physical constraints. Vietnamese piece names used in all test descriptions and error messages."
     },
     {
       "sprint_id": "3B",
-      "sprint_name": "Board-Wide Legality & Basic AI",
+      "sprint_name": "Board-Wide Legality",
       "duration": "1 Week",
       "goals": [
-        "Implement 'Flying General' rule (Generals cannot face each other on an open file)",
-        "Upgrade General-safety to full simulation: apply move -> validate not in check",
-        "Implement stalemate detection (treated as a loss for the side with no legal moves — add code comment noting this differs from chess draw rules)",
-        "Implement a random-legal-move bot as the simplest possible AI opponent",
-        "Add basic minimax AI (depth 2-3) with material evaluation for solo practice",
+        "Implement 'Flying General' rule (Tướng cannot face each other on an open file)",
+        "Upgrade Tướng-safety to full simulation: apply move -> validate not in check",
+        "Implement stalemate detection (treated as a loss for the side with no legal moves — code comment noting this is standard Cờ tướng rules, differs from Western chess draw rules)",
+        "Implement a random-legal-move bot as the simplest possible AI opponent for solo practice",
         "Write Vitest unit tests for check validations and edge cases"
       ],
-      "deliverable": "A complete, rule-perfect Cờ tướng engine enforcing General-safety, playable solo against a basic AI.",
-      "changes_from_original": "Added random bot and simple minimax AI to enable solo play by end of week 4."
+      "deliverable": "A complete, rule-perfect Cờ tướng engine enforcing Tướng-safety, playable solo against a random bot.",
+      "changes_from_original": "Moved minimax AI to Sprint 3C. Reduced scope to legality + random bot only."
+    },
+    {
+      "sprint_id": "3C",
+      "sprint_name": "Teaching AI Opponent",
+      "duration": "1 Week",
+      "goals": [
+        "Implement minimax AI (depth 2-3) with material evaluation",
+        "Tune material values for Cờ tướng piece hierarchy (Xe > Pháo > Mã > Sĩ/Tượng > Tốt)",
+        "Add AI difficulty selector: Random vs Minimax",
+        "Write Vitest unit tests for AI move selection and edge cases",
+        "Add Playwright test: play full game against AI to completion"
+      ],
+      "deliverable": "A teaching-strength AI opponent suitable for beginners learning at a coffee shop. Strong enough that a new expat won't beat it for weeks.",
+      "backlog": "Alpha-beta pruning with transposition tables — not a sprint commitment, but documented as the upgrade path when depth 2-3 becomes too easy."
     },
     {
       "sprint_id": 4,
-      "sprint_name": "State Management & Notation",
+      "sprint_name": "State Management & History",
       "duration": "1 Week",
       "goals": [
         "Define Cờ tướng FEN string format to compress board states",
         "Implement Undo/Redo by pushing FEN strings to a Zustand array (preventing memory bloat)",
-        "Add move history display using chosen notation convention",
-        "Document notation choice: decide between Western algebraic (Files A-I, Ranks 0-9) vs WXF standard and commit to one, with rationale documented in codebase"
+        "Add move history display using WXF notation",
+        "Write Vitest unit tests for FEN parsing, serialization, and undo/redo state transitions"
       ],
-      "deliverable": "Robust, memory-efficient state management with undo/redo and documented notation convention.",
-      "changes_from_original": "Reduced scope from original Sprint 4 — moved educational UI to Sprint 5. Added notation convention decision point."
+      "deliverable": "Robust, memory-efficient state management with undo/redo and WXF move history.",
+      "changes_from_original": "Notation decision moved to Sprint 1. Added explicit test requirements."
     },
     {
       "sprint_id": 5,
       "sprint_name": "Teacher UX & Educational Polish",
       "duration": "1 Week",
       "goals": [
-        "Add a bottom-sheet 'Why illegal?' explanation panel with English rule snippets",
-        "Implement long-press on a piece to open a 'How this piece moves' card",
-        "Add contextual tips for common beginner mistakes (e.g., Cannon capture without screen, Horse leg block)",
-        "Polish move history panel for readability on mobile"
+        "Add a bottom-sheet 'Why illegal?' explanation panel — Vietnamese rule name + English explanation",
+        "Implement long-press on a piece to open a 'How this piece moves' card (Vietnamese name, movement diagram, English description)",
+        "Add contextual tips for common beginner mistakes (e.g., Pháo capture without screen, Mã leg block, Tượng river crossing)",
+        "Polish move history panel for readability on mobile",
+        "Write Playwright tests for educational overlay interactions"
       ],
-      "deliverable": "An educational UI layer that teaches Cờ tướng rules in context as you play.",
-      "changes_from_original": "New sprint — extracted educational UI from the overloaded original Sprint 4."
+      "deliverable": "An educational UI layer that teaches Cờ tướng rules in context as you play, using Vietnamese terminology with English explanations.",
+      "changes_from_original": "All educational content uses Vietnamese as primary language with English gloss. Added Playwright tests."
     },
     {
       "sprint_id": 6,
       "sprint_name": "Mobile Learning Mode (Puzzles)",
       "duration": "1 Week",
       "goals": [
-        "Add a curated puzzle set (JSON format): mate-in-1, mate-in-2, win-material",
-        "Create a mobile puzzle UI: goal text, reset, hint, and solution reveal",
+        "Add a curated puzzle set (JSON format): chiếu bí (checkmate) in 1, chiếu bí in 2, win-material",
+        "Create a mobile puzzle UI: goal text (bilingual), reset, hint, and solution reveal",
         "Implement shareable puzzle links by safely Base64-encoding FEN strings into the URL",
-        "Add progress tracking using localStorage (completed puzzles, attempts) with fallback for Safari private browsing",
-        "Document future migration path: URL-encoded progress string for cross-device portability without a server"
+        "Add progress tracking using localStorage (completed puzzles, attempts) with sessionStorage fallback for Safari private browsing and in-memory fallback as last resort",
+        "Document future migration path: URL-encoded progress string for cross-device portability without a server",
+        "Write Vitest unit tests for FEN Base64 encoding/decoding and progress persistence",
+        "Write Playwright tests for puzzle flow: load, attempt, hint, solve, share"
       ],
-      "deliverable": "A standalone, highly shareable puzzle mode that teaches Cờ tướng patterns quickly.",
-      "changes_from_original": "Added localStorage fallback handling and documented serverless portability path for progress data."
+      "deliverable": "A standalone, offline-capable, shareable puzzle mode that teaches Cờ tướng patterns. Works at a coffee shop with no connection.",
+      "changes_from_original": "Specified Safari private browsing fallback chain. Added explicit test requirements. Vietnamese puzzle terminology."
     }
   ],
   "mobile_ui_notes": {
     "viewport_and_layout": "touch-action: manipulation prevents double-tap zoom while preserving pinch-to-zoom for accessibility. Strict use of 100dvh to prevent bottom-sheet hiding on iOS Safari.",
-    "performance": "CSS transform: translate used exclusively for piece rendering to ensure 60fps on older iPhones.",
-    "accessibility": "ARIA labels on all interactive SVG elements. Pinch-to-zoom preserved for low-vision users. Minimum 44x44px tap targets.",
-    "drag_and_drop": "Pointer event handlers stubbed in Sprint 2, can be enabled as a toggle in a future sprint without architectural changes."
+    "performance": "CSS transform: translate used exclusively for piece rendering to ensure 60fps on iPhone 8 (A11 chip). SVG complexity budgeted for A11 GPU.",
+    "accessibility": "ARIA labels on all interactive SVG elements using Vietnamese piece names. Pinch-to-zoom preserved for low-vision users. Minimum 44x44px tap targets.",
+    "input_architecture": "Move system accepts (from, to) coordinates. Any input method (tap, drag, voice, AI) can produce these coordinates without architectural changes."
   },
   "ruleset_notes": {
     "state_history": "Moves are not reverse-calculated. Entire board states are saved as lightweight FEN string snapshots.",
-    "legality": "Enforced via state simulation. Stalemate equals loss (per standard Cờ tướng rules — differs from chess).",
-    "notation": "Convention to be decided in Sprint 4: Western algebraic (A-I, 0-9) vs WXF standard. Decision and rationale to be documented.",
-    "ai_opponent": "Random-legal-move bot available from Sprint 3B. Minimax (depth 2-3, material eval) for meaningful solo practice."
+    "legality": "Enforced via state simulation. Stalemate equals loss (per standard Vietnamese Cờ tướng rules — differs from Western chess).",
+    "notation": "WXF standard. Decided in Sprint 1, used consistently across all sprints.",
+    "ai_opponent": "Random-legal-move bot available from Sprint 3B. Minimax (depth 2-3, material eval) from Sprint 3C. Alpha-beta with transposition tables on backlog."
+  },
+  "i18n_strategy": {
+    "source_language": "Vietnamese",
+    "teaching_language": "English",
+    "approach": "Vietnamese is the native language of the game. Piece names, rule names, and game terminology appear in Vietnamese first. English explanations serve as the teaching layer for expat learners. This is not a translation — it's the authentic game with an educational English overlay.",
+    "piece_names": {
+      "Tướng": "General",
+      "Sĩ": "Advisor",
+      "Tượng": "Elephant",
+      "Xe": "Chariot",
+      "Pháo": "Cannon",
+      "Mã": "Horse",
+      "Tốt": "Soldier (Red side)",
+      "Binh": "Soldier (Black side)"
+    }
   }
 }

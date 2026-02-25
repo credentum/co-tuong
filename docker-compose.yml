@@ -1,0 +1,21 @@
+# Cờ Tướng — Vietnamese Chess Learning App
+#
+# Pure client-side PWA. No backend needed.
+# AI opponent, game engine, and puzzles all run in the browser.
+#
+# Usage:
+#   docker compose up -d
+#   Open http://localhost:3090
+
+services:
+  co-tuong:
+    image: ghcr.io/credentum/co-tuong:latest
+    ports:
+      - "3090:3090"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3090/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 5s
+      retries: 3
