@@ -80,5 +80,29 @@
     "no": "No",
     "tfProgress": "Question {{current}} of {{total}}",
     "lessonComplete": "Lesson Complete!"
+  },
+  "practice": {
+    "title": "Practice",
+    "backToGame": "← Game",
+    "backToPicker": "← Difficulties",
+    "chooseDifficulty": "Choose Difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "easyDesc": "One-move tactics",
+    "mediumDesc": "Two-move combinations",
+    "hardDesc": "Three to four move sequences",
+    "puzzleProgress": "Puzzle {{current}} of {{total}}",
+    "opponentThinking": "Opponent responding…",
+    "correct": "Correct!",
+    "tryAgain": "Not quite — try again!",
+    "showSolution": "Solution shown — study it, then continue.",
+    "hint": "Hint",
+    "next": "Next",
+    "skip": "Skip",
+    "sessionComplete": "Session Complete!",
+    "practiceAgain": "Practice Again",
+    "changeDifficulty": "Change Difficulty",
+    "score": "{{correct}} of {{total}} correct"
   }
 }

@@ -6,6 +6,7 @@ import { SettingsPanel } from './components/SettingsPanel'
 import { Toast } from './components/Toast'
 import { PieceInfoCard } from './components/PieceInfoCard'
 import { LearningScreen } from './components/learning/LearningScreen'
+import { PracticeScreen } from './components/practice/PracticeScreen'
 import { useLearningStore } from './store/useLearningStore'
 import type { PieceType } from '@/types/game'
 
@@ -16,6 +17,10 @@ export default function App() {
 
   if (appMode === 'learning') {
     return <LearningScreen />
+  }
+
+  if (appMode === 'practice') {
+    return <PracticeScreen />
   }
 
   return (

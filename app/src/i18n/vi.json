@@ -80,5 +80,29 @@
     "no": "Không",
     "tfProgress": "Câu {{current}} / {{total}}",
     "lessonComplete": "Hoàn thành bài học!"
+  },
+  "practice": {
+    "title": "Luyện tập",
+    "backToGame": "← Chơi",
+    "backToPicker": "← Độ khó",
+    "chooseDifficulty": "Chọn độ khó",
+    "easy": "Dễ",
+    "medium": "Vừa",
+    "hard": "Khó",
+    "easyDesc": "Chiến thuật một nước",
+    "mediumDesc": "Tổ hợp hai nước",
+    "hardDesc": "Chuỗi ba đến bốn nước",
+    "puzzleProgress": "Bài {{current}} / {{total}}",
+    "opponentThinking": "Đối thủ đang đi…",
+    "correct": "Đúng rồi!",
+    "tryAgain": "Chưa đúng — thử lại!",
+    "showSolution": "Đáp án — hãy nghiên cứu, rồi tiếp tục.",
+    "hint": "Gợi ý",
+    "next": "Tiếp",
+    "skip": "Bỏ qua",
+    "sessionComplete": "Hoàn thành phiên!",
+    "practiceAgain": "Luyện lại",
+    "changeDifficulty": "Đổi độ khó",
+    "score": "{{correct}} / {{total}} đúng"
   }
 }

@@ -17,8 +17,8 @@ import { advanceBox, resetBox } from '@/lib/learningProgress'
 
 interface LearningStore {
   // Navigation
-  appMode: 'game' | 'learning'
-  setAppMode: (mode: 'game' | 'learning') => void
+  appMode: 'game' | 'learning' | 'practice'
+  setAppMode: (mode: 'game' | 'learning' | 'practice') => void
 
   // Display mode for piece labels
   displayMode: DisplayMode
