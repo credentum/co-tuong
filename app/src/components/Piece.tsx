@@ -12,11 +12,12 @@ import { boardToSVG } from '@/lib/coordinates'
 interface PieceProps {
   piece: PieceType
   isSelected: boolean
+  aiHighlight?: boolean
   flipped?: boolean
   labelMode?: DisplayMode
 }
 
-export function Piece({ piece, isSelected, flipped, labelMode }: PieceProps) {
+export function Piece({ piece, isSelected, aiHighlight, flipped, labelMode }: PieceProps) {
   const { t } = useTranslation()
   const { x, y } = boardToSVG(piece.position.col, piece.position.row, flipped)
   const chars = PIECE_CHARS[piece.type]
@@ -55,6 +56,11 @@ export function Piece({ piece, isSelected, flipped, labelMode }: PieceProps) {
       {/* Selection ring */}
       {isSelected && (
         <circle r={PIECE_RADIUS + 6} fill="none" stroke="#2563eb" strokeWidth={3} opacity={0.8} />
+      )}
+
+      {/* AI move highlight ring */}
+      {aiHighlight && (
+        <circle r={PIECE_RADIUS + 6} fill="none" stroke="#f59e0b" strokeWidth={4} opacity={0.9} />
       )}
 
       {/* Traditional Hán tự character */}

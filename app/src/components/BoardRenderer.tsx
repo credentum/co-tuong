@@ -189,7 +189,8 @@ export function BoardRenderer({
           <Piece
             key={`${piece.side}-${piece.type}-${piece.position.col}-${piece.position.row}`}
             piece={piece}
-            isSelected={isSelected || isAiHighlight}
+            isSelected={isSelected}
+            aiHighlight={isAiHighlight}
             flipped={flipped}
             labelMode={labelMode}
           />

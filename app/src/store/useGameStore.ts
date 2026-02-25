@@ -277,9 +277,9 @@ function scheduleAiMove(mode: OpponentMode) {
       aiHighlightPos: aiMove.to,
       pendingMove: null,
     })
-    // Clear the highlight ring after 500ms
+    // Clear the highlight ring after 1 second
     setTimeout(() => {
       useGameStore.setState({ aiHighlightPos: null })
-    }, 500)
+    }, 1000)
   }, 500)
 }
