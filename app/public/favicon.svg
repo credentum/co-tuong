@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <circle cx="32" cy="32" r="30" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
-  <text x="32" y="33" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold" fill="#dc2626" font-family="sans-serif">Tướng</text>
+  <text x="32" y="32" text-anchor="middle" dominant-baseline="central" font-size="32" font-weight="bold" fill="#dc2626" font-family="serif">帥</text>
 </svg>
