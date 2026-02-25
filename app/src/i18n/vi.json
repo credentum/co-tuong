@@ -1,0 +1,25 @@
+{
+  "app": {
+    "title": "Cờ Tướng"
+  },
+  "pieces": {
+    "tuong": "Tướng",
+    "si": "Sĩ",
+    "tuongVoi": "Tượng",
+    "xe": "Xe",
+    "phao": "Pháo",
+    "ma": "Mã",
+    "tot": "Tốt"
+  },
+  "sides": {
+    "red": "Đỏ",
+    "black": "Đen"
+  },
+  "board": {
+    "title": "Bàn cờ tướng",
+    "river": "Sông",
+    "intersection": "Giao điểm {{col}}, {{row}}",
+    "pieceAt": "{{side}} {{piece}} tại {{col}}, {{row}}",
+    "emptyAt": "Trống tại {{col}}, {{row}}"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "app": {
+    "title": "Cờ Tướng"
+  },
+  "pieces": {
+    "tuong": "General",
+    "si": "Advisor",
+    "tuongVoi": "Elephant",
+    "xe": "Chariot",
+    "phao": "Cannon",
+    "ma": "Horse",
+    "tot": "Soldier"
+  },
+  "sides": {
+    "red": "Red",
+    "black": "Black"
+  },
+  "board": {
+    "title": "Cờ tướng board",
+    "river": "River",
+    "intersection": "Intersection {{col}}, {{row}}",
+    "pieceAt": "{{side}} {{piece}} at {{col}}, {{row}}",
+    "emptyAt": "Empty at {{col}}, {{row}}"
+  }
+}
