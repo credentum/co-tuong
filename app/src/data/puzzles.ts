@@ -174,6 +174,12 @@ export const L2_P2: PuzzleDef = {
     { col: 3, row: 2 }, // south free → Yes
     { col: 6, row: 5 }, // east blocked → No
   ],
+  tfExplanations: [
+    'No — the Soldier above the Horse blocks the north leg. The Horse cannot jump upward.',
+    'No — same leg block. The Soldier above still blocks any jump that starts by going north.',
+    'Yes — nothing blocks the south leg. The Horse steps down first, then diagonally to reach this square.',
+    'No — the black Soldier to the right blocks the east leg. The Horse cannot jump rightward.',
+  ],
   answer: {
     type: 'true_false_series',
     booleans: [false, false, true, false],

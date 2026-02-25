@@ -47,6 +47,7 @@ interface LearningStore {
   // True/false series state
   tfCurrentIndex: number
   tfAnswers: boolean[]
+  tfExplanation: string
   submitTfAnswer: (answer: boolean) => void
 
   // Progress (persisted)
@@ -124,6 +125,7 @@ export const useLearningStore = create<LearningStore>()(
           legalMoves: [],
           tfCurrentIndex: 0,
           tfAnswers: [],
+          tfExplanation: '',
         }),
       setPhase: (phase) => {
         set({
@@ -138,6 +140,7 @@ export const useLearningStore = create<LearningStore>()(
           legalMoves: [],
           tfCurrentIndex: 0,
           tfAnswers: [],
+          tfExplanation: '',
         })
         // Load first puzzle if entering test_it
         if (phase === 'test_it') {
@@ -213,6 +216,7 @@ export const useLearningStore = create<LearningStore>()(
       tappedPositions: [],
       tfCurrentIndex: 0,
       tfAnswers: [],
+      tfExplanation: '',
 
       tapPosition: (pos) => {
         const state = get()
@@ -326,8 +330,10 @@ export const useLearningStore = create<LearningStore>()(
         if (!isCorrect) {
           const attempts = state.puzzleAttempts + 1
           const showSol = attempts >= 2
+          const explanation = puzzle.tfExplanations?.[idx] ?? ''
           set({
             tfAnswers: newAnswers,
+            tfExplanation: explanation,
             puzzleFeedback: 'incorrect',
             puzzleAttempts: attempts,
             showSolution: showSol,
@@ -346,6 +352,7 @@ export const useLearningStore = create<LearningStore>()(
           set({
             tfAnswers: newAnswers,
             tfCurrentIndex: idx + 1,
+            tfExplanation: '',
             puzzleFeedback: 'correct',
             highlightSquares: positions,
             highlightStyle: 'correct',
@@ -356,6 +363,7 @@ export const useLearningStore = create<LearningStore>()(
           set({
             tfAnswers: newAnswers,
             tfCurrentIndex: idx + 1,
+            tfExplanation: '',
             highlightSquares: [positions[idx + 1]!],
             highlightStyle: 'target',
           })
@@ -386,6 +394,7 @@ export const useLearningStore = create<LearningStore>()(
           legalMoves: [],
           tfCurrentIndex: 0,
           tfAnswers: [],
+          tfExplanation: '',
         })
         get().loadPuzzle(nextId)
       },
@@ -401,6 +410,7 @@ export const useLearningStore = create<LearningStore>()(
               highlightStyle: 'target',
               tfCurrentIndex: 0,
               tfAnswers: [],
+              tfExplanation: '',
             })
           }
         }

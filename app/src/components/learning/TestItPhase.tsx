@@ -14,6 +14,7 @@ export function TestItPhase() {
   const nextPuzzle = useLearningStore((s) => s.nextPuzzle)
   const backToSelector = useLearningStore((s) => s.backToSelector)
   const tfCurrentIndex = useLearningStore((s) => s.tfCurrentIndex)
+  const tfExplanation = useLearningStore((s) => s.tfExplanation)
   const submitTfAnswer = useLearningStore((s) => s.submitTfAnswer)
 
   if (!puzzle) {
@@ -96,7 +97,10 @@ export function TestItPhase() {
           <p className="mb-3 text-sm font-semibold text-green-600">{t('learning.correct')}</p>
         )}
         {puzzleFeedback === 'incorrect' && !showSolution && (
-          <p className="mb-3 text-sm font-semibold text-red-600">{t('learning.tryAgain')}</p>
+          <div className="mb-3">
+            <p className="text-sm font-semibold text-red-600">{t('learning.tryAgain')}</p>
+            {tfExplanation && <p className="mt-1 text-sm text-stone-600">{tfExplanation}</p>}
+          </div>
         )}
         {showSolution && (
           <p className="mb-3 text-sm text-stone-500">{t('learning.showSolution')}</p>
@@ -159,8 +163,8 @@ export function TestItPhase() {
           )}
         </div>
 
-        {/* Teaches hint */}
-        {puzzle.teaches && (puzzleFeedback === 'correct' || showSolution) && (
+        {/* Teaches hint — show on any feedback */}
+        {puzzle.teaches && puzzleFeedback !== 'none' && (
           <p className="mt-2 text-xs text-stone-400 italic">{puzzle.teaches}</p>
         )}
       </BottomSheet>

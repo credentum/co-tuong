@@ -32,6 +32,8 @@ export interface PuzzleDef {
   teaches?: string
   /** For true_false_series: positions to highlight one at a time */
   highlightPositions?: Position[]
+  /** For true_false_series: explanation shown after wrong answer for each position */
+  tfExplanations?: string[]
 }
 
 export interface SeeItContent {
