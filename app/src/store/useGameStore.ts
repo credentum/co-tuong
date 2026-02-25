@@ -26,8 +26,6 @@ interface GameStore {
   resetGame: () => void
 }
 
-let toastCounter = 0
-
 function executeMove(
   pieces: Piece[],
   from: Position,
@@ -65,8 +63,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         return
       }
       if (tappedPiece && tappedPiece.side !== currentTurn) {
-        const id = String(++toastCounter)
-        set((s) => ({ toasts: [...s.toasts, { id, messageKey: 'game.wrongTurn' }] }))
+        // Silently ignore — no toast, just let them keep tapping
         return
       }
       // Tap empty square with nothing selected → ignore
@@ -104,14 +101,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return
     }
 
-    // Case 5: Already selected, tap illegal destination → toast, deselect
-    const id = String(++toastCounter)
-    set((s) => ({
+    // Case 5: Already selected, tap illegal destination → just deselect
+    set({
       selectedPosition: null,
       legalMoves: [],
       pendingMove: null,
-      toasts: [...s.toasts, { id, messageKey: 'game.illegalMove' }],
-    }))
+    })
   },
 
   confirmMove: () => {

@@ -8,8 +8,8 @@ i18n.use(initReactI18next).init({
     vi: { translation: vi },
     en: { translation: en },
   },
-  lng: 'vi',
-  fallbackLng: 'en',
+  lng: 'en',
+  fallbackLng: 'vi',
   interpolation: {
     escapeValue: false,
   },
