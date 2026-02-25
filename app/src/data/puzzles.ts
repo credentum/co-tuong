@@ -156,7 +156,8 @@ export const L2_P2: PuzzleDef = {
   puzzleId: 'L2_P2',
   title: 'Blocked or Free?',
   type: 'true_false_series',
-  prompt: 'Can the Horse reach each highlighted intersection? (Yes/No)',
+  prompt:
+    'Can the Horse reach each highlighted intersection? Remember: if a piece blocks the first step of the L-shape, the Horse cannot jump that direction.',
   setup: {
     pieces: [
       p('ma', 'red', 4, 4),
