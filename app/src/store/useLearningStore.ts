@@ -209,6 +209,12 @@ export const useLearningStore = create<LearningStore>()(
         if (!puzzle || puzzle.type !== 'tap_all_targets') return
         if (state.puzzleFeedback !== 'none') return
 
+        // Ignore taps on own pieces (can't move there)
+        const ownPiece = state.pieces.find(
+          (p) => p.side === puzzle.setup.playerSide && posEq(p.position, pos),
+        )
+        if (ownPiece) return
+
         const already = state.tappedPositions.findIndex((p) => posEq(p, pos))
         if (already >= 0) {
           // Un-tap
