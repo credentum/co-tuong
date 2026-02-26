@@ -302,11 +302,11 @@ export const PR_M1: PracticePuzzleDef = {
 
 export const PR_M2: PracticePuzzleDef = {
   puzzleId: 'PR_M2',
-  title: 'Chariot-Cannon Mate',
+  title: 'Double Chariot Mate',
   difficulty: 'medium',
   prompt: 'Checkmate in 2 -- Red to move',
   concept: 'checkmate_in_2',
-  hint: 'Use the Chariot to drive the General onto the Cannon firing line.',
+  hint: 'Check with one Chariot to force the General aside, then deliver mate with the other.',
   setup: {
     playerSide: 'red',
     // Red gen(3,0), Xe(8,8), Phao(5,2). Black gen(4,9), Si(3,8), Si(3,9), tot(5,6).
@@ -852,7 +852,7 @@ export const PR_H2: PracticePuzzleDef = {
   difficulty: 'hard',
   prompt: 'Checkmate in 3 -- Red to move',
   concept: 'checkmate_in_3',
-  hint: 'Use the Chariot to chase the General across the palace, then deliver checkmate with the second Chariot.',
+  hint: 'Chase the General back and forth with the Chariot, then fire the Cannon through the screen for checkmate.',
   setup: {
     playerSide: 'red',
     // Red gen(3,0), Xe(0,7), Xe(0,9). Black gen(4,9), Si(3,8), Si(5,8), tot(4,6).
