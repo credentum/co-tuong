@@ -72,23 +72,17 @@ export const PR_E1: PracticePuzzleDef = {
     // Xe(8,9)->(4,9)? No, Si(4,8) not blocking row 9 between col 5 and col 4.
     // Xe slides from col 8 to col 5 on row 9? (5,9) has gen. Xe captures gen? That's not how puzzles work.
     // Let me just use a classic smothered/confined position.
-    // Final design: Red gen(3,0), Xe(8,7). Black gen(4,9), Si(3,9), Si(5,9), Si(4,8).
-    // Xe(8,7)->(4,7) check on col 4. Gen is completely boxed: (3,9)=Si, (5,9)=Si, (4,8)=Si, (4,7)=Xe.
-    // No escape. CHECKMATE. Alt: Xe(8,7) can also go to other squares on row 7 or col 8.
-    // Does Xe(8,7)->(8,9) check? Gen is at (4,9) -- Xe at (8,9) attacks row 9.
-    // (8,9) to (4,9) on row 9: Si at (5,9) is between. So no check. Good.
-    // Does Xe(8,7)->(8,8) check? No, gen not on col 8 or row 8 (gen at row 9, col 4).
-    // Does Xe(8,7)->(3,7) check on col 3? Gen not on col 3. No check.
-    // Only col 4 check: Xe(8,7)->(4,7). Anything between? Nothing on row 7 between col 4 and col 8 (clear).
-    // Flying gen check: Red gen(3,0) col 3, Black gen(4,9) col 4 -- different, fine.
-    // This is clean! Only one checking move.
+    // Final design: Red gen(3,0), Xe(8,7). Black gen(4,9), Si(3,9), Si(5,9), tuongVoi(4,7 area).
+    // Xe(8,7)->(4,7) check on col 4. Gen is completely boxed: (3,9)=Si, (5,9)=Si, (4,8)=tuongVoi, (4,7)=Xe.
+    // No escape. CHECKMATE.
+    // tuongVoi replaces the 3rd Si (illegal) — Elephants can occupy (4,8) on black's side.
     pieces: [
       p('tuong', 'red', 3, 0),
       p('xe', 'red', 8, 7),
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 9),
       p('si', 'black', 5, 9),
-      p('si', 'black', 4, 8),
+      p('tuongVoi', 'black', 4, 8),
     ],
   },
   solution: [{ playerMove: { from: { col: 8, row: 7 }, to: { col: 4, row: 7 } } }],
