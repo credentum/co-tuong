@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { BoardRenderer } from '../BoardRenderer'
 import { useLearningStore } from '@/store/useLearningStore'
 import { useLossStore } from '@/store/useLossStore'
@@ -31,6 +31,7 @@ export function ReviewScreen() {
   const reviewLossId = useLearningStore((s) => s.reviewLossId)
   const reviewFen = useLearningStore((s) => s.reviewFen)
   const reviewDifficulty = useLearningStore((s) => s.reviewDifficulty)
+  const displayMode = useLearningStore((s) => s.displayMode)
   const setAppMode = useLearningStore((s) => s.setAppMode)
   const losses = useLossStore((s) => s.losses)
   const markReviewed = useLossStore((s) => s.markReviewed)
@@ -93,6 +94,31 @@ export function ReviewScreen() {
     },
     [aiDifficulty, playerSide],
   )
+
+  // Trigger AI move on mount if the position starts on the AI's turn
+  useEffect(() => {
+    if (gameResult !== 'ongoing') return
+    if (currentTurn === playerSide) return
+    if (aiPendingRef.current) return
+
+    aiPendingRef.current = true
+    setTimeout(() => {
+      if (!aiPendingRef.current) return
+      aiPendingRef.current = false
+      const aiMove = getAiMove(pieces, currentTurn, aiDifficulty)
+      if (!aiMove) return
+
+      const afterAi = applyMove(pieces, aiMove.from, aiMove.to)
+      const turnAfterAi: Side = currentTurn === 'red' ? 'black' : 'red'
+      const resultAfterAi = getGameResult(afterAi, turnAfterAi)
+
+      setPieces(afterAi)
+      setCurrentTurn(turnAfterAi)
+      setGameResult(resultAfterAi)
+      setLastMove({ from: aiMove.from, to: aiMove.to })
+      setHistory((h) => [...h, { pieces: afterAi, currentTurn: turnAfterAi }])
+    }, 400)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleTapSquare = useCallback(
     (pos: Position) => {
@@ -216,6 +242,7 @@ export function ReviewScreen() {
         legalMoves={legalMoves}
         lastMove={lastMove}
         onTapSquare={handleTapSquare}
+        labelMode={displayMode}
       />
 
       {/* Controls */}
