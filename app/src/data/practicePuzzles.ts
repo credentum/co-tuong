@@ -1341,6 +1341,952 @@ export const PR_H5: PracticePuzzleDef = {
   ],
 }
 
+// ==================== MEDIUM (continued) -- 2-move puzzles ====================
+
+// M6: Two Xe coordinate. Xe1 checks on col, forces gen to corner. Xe2 captures Si, checks on col for mate.
+export const PR_M6: PracticePuzzleDef = {
+  puzzleId: 'PR_M6',
+  title: 'Chariot Squeeze',
+  difficulty: 'medium',
+  prompt: 'Checkmate in 2 -- Red to move',
+  concept: 'checkmate_in_2',
+  hint: 'Use one Chariot to force the General aside, then the other Chariot delivers checkmate.',
+  setup: {
+    playerSide: 'red',
+    // Red gen(4,0), Xe(0,8), Xe(8,7). Black gen(4,9), Si(3,7), Si(5,7), tot(3,9).
+    // Xe1(0,8)->(4,8) check on col 4. Gen can only go (5,9). Xe2(8,7)->(5,7) captures Si, mate.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 8),
+      p('xe', 'red', 8, 7),
+      p('tuong', 'black', 4, 9),
+      p('si', 'black', 3, 7),
+      p('si', 'black', 5, 7),
+      p('tot', 'black', 3, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 8 }, to: { col: 4, row: 8 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 8, row: 7 }, to: { col: 5, row: 7 } },
+    },
+  ],
+}
+
+// M7: Xe checks gen on row 9, gen moves up, Xe captures Phao behind gen.
+export const PR_M7: PracticePuzzleDef = {
+  puzzleId: 'PR_M7',
+  title: 'Chariot Skewer',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'skewer',
+  hint: 'Check the General with the Chariot, then capture what is behind.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,9)->(4,9) check. Gen(5,9)->(5,8). Xe(4,9)->(8,9) captures Phao.
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 5, 9),
+      p('phao', 'black', 8, 9),
+      p('si', 'black', 4, 8),
+      p('si', 'black', 5, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 4, row: 9 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 5, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 9 }, to: { col: 8, row: 9 } },
+    },
+  ],
+}
+
+// M8: Ma forks gen and Xe. Gen escapes, Ma captures Xe.
+export const PR_M8: PracticePuzzleDef = {
+  puzzleId: 'PR_M8',
+  title: 'Horse Trap',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'horse_fork',
+  hint: 'The Horse can attack two pieces at once.',
+  setup: {
+    playerSide: 'red',
+    // Ma(5,5)->(6,7) eye(5,6). Forks gen(5,9) via eye(6,8) and Xe(8,8) via eye(7,7).
+    // Gen can't go (4,9) — flying gen with red gen(4,0). Goes to (5,8). Ma captures Xe.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('ma', 'red', 5, 5),
+      p('tuong', 'black', 5, 9),
+      p('xe', 'black', 8, 8),
+      p('si', 'black', 4, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 5, row: 5 }, to: { col: 6, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 5, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 6, row: 7 }, to: { col: 8, row: 8 } },
+    },
+  ],
+}
+
+// M9: Xe1 checks on col forcing gen to corner. Xe2 captures Si with check, flying gen prevents capture. Mate.
+export const PR_M9: PracticePuzzleDef = {
+  puzzleId: 'PR_M9',
+  title: 'Flying General Trap',
+  difficulty: 'medium',
+  prompt: 'Checkmate in 2 -- Red to move',
+  concept: 'checkmate_in_2',
+  hint: 'Force the General into the corner, then use the flying generals rule.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,7)->(5,7) check on col 5. Gen(5,9)->(4,9). Si(4,8) blocks Xe(4,3) from attacking (4,9).
+    // Xe(4,3)->(4,8) captures Si, check. Flying gen prevents capture. tot(3,9) blocks escape. Mate.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 4, 3),
+      p('xe', 'red', 0, 7),
+      p('tuong', 'black', 5, 9),
+      p('si', 'black', 4, 8),
+      p('tot', 'black', 3, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 3 }, to: { col: 4, row: 8 } },
+    },
+  ],
+}
+
+// M10: Ma checks gen, gen escapes to corner, Xe slides in for mate.
+export const PR_M10: PracticePuzzleDef = {
+  puzzleId: 'PR_M10',
+  title: 'Horse and Chariot Mate',
+  difficulty: 'medium',
+  prompt: 'Checkmate in 2 -- Red to move',
+  concept: 'checkmate_in_2',
+  hint: 'Check with the Horse first, then finish with the Chariot.',
+  setup: {
+    playerSide: 'red',
+    // Ma(6,6)->(7,8) eye(6,7). Checks gen(5,9) via left2up1 eye(6,8).
+    // Gen can't go (5,8)=tot. Goes to (4,9).
+    // Xe(3,5)->(3,9) captures Si, check on row 9. Gen: (5,9)=Ma attacks, (4,8)=tot blocks. MATE.
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 3, 5),
+      p('ma', 'red', 6, 6),
+      p('tuong', 'black', 5, 9),
+      p('tot', 'black', 4, 8),
+      p('si', 'black', 3, 9),
+      p('tot', 'black', 5, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 6, row: 6 }, to: { col: 7, row: 8 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 3, row: 5 }, to: { col: 3, row: 9 } },
+    },
+  ],
+}
+
+// M11: Xe pins Ma to gen on col. Opp tries to save, Xe captures Ma.
+export const PR_M11: PracticePuzzleDef = {
+  puzzleId: 'PR_M11',
+  title: 'Chariot Pin',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'pin',
+  hint: 'Check the General, then sweep the back rank.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,9)->(3,9) check gen(4,9). Gen can't flee along row 9 (Xe sees through).
+    // Gen->(4,8) only escape. Xe(3,9)->(7,9) captures Ma.
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 4, 9),
+      p('ma', 'black', 7, 9),
+      p('si', 'black', 5, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 3, row: 9 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 4, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 3, row: 9 }, to: { col: 7, row: 9 } },
+    },
+  ],
+}
+
+// M12: Tot (crossed river) forks two Xe. Opp saves one, tot captures the other.
+export const PR_M12: PracticePuzzleDef = {
+  puzzleId: 'PR_M12',
+  title: 'Soldier Fork',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'material_gain',
+  hint: 'The Soldier can attack sideways after crossing the river.',
+  setup: {
+    playerSide: 'red',
+    // Red gen at col 3 avoids col-4 Xe check. Tot at (5,5) moves forward to (5,6),
+    // forking Xe(4,6) and Xe(6,6). Opp saves one, tot captures the other.
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('tot', 'red', 5, 5),
+      p('tuong', 'black', 4, 9),
+      p('xe', 'black', 4, 6),
+      p('xe', 'black', 6, 6),
+      p('si', 'black', 3, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 5, row: 5 }, to: { col: 5, row: 6 } },
+      opponentResponse: { from: { col: 4, row: 6 }, to: { col: 4, row: 7 } },
+    },
+    {
+      playerMove: { from: { col: 5, row: 6 }, to: { col: 6, row: 6 } },
+    },
+  ],
+}
+
+// M13: Phao fires through new screen after Xe creates it. Material win.
+export const PR_M13: PracticePuzzleDef = {
+  puzzleId: 'PR_M13',
+  title: 'Cannon Screen Setup',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'cannon_screen',
+  hint: 'Move a piece to create a screen for your Cannon.',
+  setup: {
+    playerSide: 'red',
+    // Red gen(3,0), Phao(3,3), tot(3,5). Black gen(5,9), Xe(3,9), Si(4,8), Si(5,7).
+    // Phao on col 3. No screen between Phao and Xe(3,9) currently — just tot(3,5).
+    // Actually Phao(3,3) to Xe(3,9): between = (3,4), (3,5)=tot, (3,6)...(3,8). 1 screen = tot.
+    // Phao fires through tot to capture Xe(3,9)! But that's 1-step.
+    // Need 2-step: first create screen, then fire. Remove tot(3,5).
+    // Red gen(3,0), Phao(3,3), tot(5,5). Black gen(5,9), Xe(3,9), Si(4,8).
+    // No screen on col 3 for Phao. Step 1: tot(5,5)->(4,5) or move another piece to col 3.
+    // tot can't reach col 3 in 1 move from (5,5). It can go forward to (5,6) or sideways to (4,5)/(6,5).
+    // If tot->(4,5): still not on col 3.
+    // Different approach: Red gen(3,0), Phao(0,9), Xe(4,5). Black gen(5,9), Xe(8,9), Si(4,8), Si(3,7).
+    // No screen on row 9 for Phao(0,9) to reach Xe(8,9).
+    // Step 1: Xe(4,5)->(4,9). Now on row 9. Phao(0,9) has screen Xe(4,9) on row 9.
+    // Phao fires through Xe to capture... what's at (8,9)? Xe. But between Xe(4,9) and Xe(8,9):
+    // (5,9)=gen! Gen is between. Phao fires through Xe(4,9) and hits gen(5,9). CHECK!
+    // That's check on gen, not capture of Xe(8,9).
+    // But the check IS good for a puzzle. Gen must move. Then Phao can capture?
+    // After gen moves, Phao(0,9) through Xe(4,9) to... (5,9) now empty, next is (8,9)=Xe.
+    // But there are 2 things between Phao and Xe(8,9) now: Xe(4,9) and empty (5,9)... no.
+    // Only 1 screen (Xe at (4,9)). Next piece after screen = Xe(8,9). Phao attacks (8,9). Phao can capture!
+    // Wait, gen moved. So (5,9) is empty. Phao(0,9) on row 9: first piece = Xe(4,9) = screen.
+    // After screen: (5,9) empty, ..., (8,9)=Xe. Phao captures Xe(8,9)? Yes! Phao jumps over screen.
+    // Step 1: Xe(4,5)->(4,9). Check gen(5,9) on row 9. Gen must move.
+    // But wait — is Xe(4,5) move to (4,9) legal? col 4, (4,5) to (4,9): (4,6),(4,7),(4,8)=Si. Si(4,8) blocks! Can't slide past.
+    // Remove Si(4,8) or move Xe differently.
+    // Red gen(3,0), Phao(0,9), Xe(4,3). Black gen(5,9), Xe(8,9), Si(3,7).
+    // Xe(4,3)->(4,9). Col 4: (4,4)...(4,8) must be clear. (4,4),(4,5),(4,6),(4,7),(4,8) all empty. ✓
+    // Xe(4,9) on row 9, check gen(5,9). ✓
+    // Gen escapes: (5,8) open. Flying gen: col 5 vs col 3. Fine. Gen->(5,8).
+    // Step 2: Phao(0,9)->(8,9) through screen Xe(4,9). Captures Xe(8,9). Material win!
+    // Between Phao(0,9) and Xe(8,9) on row 9: (1,9)...(3,9) empty, (4,9)=Xe screen, (5,9)...(7,9) empty. ✓
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('phao', 'red', 0, 9),
+      p('xe', 'red', 4, 3),
+      p('tuong', 'black', 5, 9),
+      p('xe', 'black', 8, 9),
+      p('si', 'black', 3, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 4, row: 3 }, to: { col: 4, row: 9 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 5, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 8, row: 9 } },
+    },
+  ],
+}
+
+// M14: Remove defender then capture. Xe takes Si defending Phao, opp responds, Xe takes Phao.
+export const PR_M14: PracticePuzzleDef = {
+  puzzleId: 'PR_M14',
+  title: 'Remove the Guard',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'tactical_capture',
+  hint: "Capture the piece defending Black's valuable piece first.",
+  setup: {
+    playerSide: 'red',
+    // Red gen(3,0), Xe(0,7). Black gen(5,9), Si(3,7) defending Phao(2,8)? Si moves diagonally.
+    // Si at (3,7) can move to (4,8),(2,8),(4,6),(2,6). Si defends (2,8) if it can reach there.
+    // Xe(0,7)->(3,7) captures Si. Check? No, different col/row from gen.
+    // Opp responds. Then Xe(3,7)->(2,7)? or captures Phao.
+    // Actually: Red gen(3,0), Xe(0,7). Black gen(5,9), Si(3,7), Phao(3,5), Si(4,8).
+    // Xe(0,7)->(3,7) captures Si. Now Phao(3,5) on col 3 is undefended.
+    // But Xe is now at (3,7), Phao at (3,5). Xe on col 3 can go to (3,5) next turn. ✓
+    // Opp: gen does nothing useful. Opp moves Si(4,8)->(5,7) or something.
+    // Step 2: Xe(3,7)->(3,5) captures Phao. Won Phao (value 45) for Si (value 20).
+    // But opp response is not forced. Opp could move Phao away!
+    // Phao(3,5) could flee. So this isn't a forcing sequence.
+    // Need to make step 1 a check so opp MUST respond to check, can't save Phao.
+    // Red gen(4,0), Xe(0,9). Black gen(3,9), Si(4,8), Phao(7,9).
+    // Xe(0,9)->(3,9)? Captures gen? No, (3,9) has gen. That just captures the gen directly. Weird.
+    // Xe(0,9)->(2,9) check. Gen(3,9): (4,9) open, (3,8) open. Gen->(4,9).
+    // Xe(2,9)->(7,9) captures Phao. ✓
+    // Flying gen: col 4 vs col 3 at start. Fine. After gen moves to (4,9): col 4 same as red gen(4,0).
+    // Between on col 4: (4,1)...(4,8)=Si. Si(4,8) between. ✓ No flying gen issue.
+    // But can gen go to (4,9)? Flying gen check: red gen(4,0) col 4, black gen(4,9) col 4. Si(4,8) between. ✓ Legal.
+    // Or gen->(3,8): leaving Xe at (2,9) can still capture Phao. Same result.
+    // Step 2: Xe(2,9)->(7,9) captures Phao. Path on row 9: (3,9) empty (gen moved), (4,9)=gen or (3,8)?
+    // If gen->(4,9): path (3,9),(4,9)=gen. Blocked! Xe can't pass.
+    // If gen->(3,8): path (3,9) empty. (4,9)...(6,9) empty. ✓
+    // So opp response must be gen->(3,8) for the puzzle to work. But gen could go (4,9) instead.
+    // Need to prevent gen from going to (4,9). Flying gen prevents if no piece between.
+    // Remove Si(4,8): then gen at (4,9) with red gen(4,0) on col 4, nothing between. Flying gen! Can't.
+    // But then (3,8) is the only escape.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 3, 9),
+      p('phao', 'black', 7, 9),
+      p('si', 'black', 3, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 2, row: 9 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 3, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 2, row: 9 }, to: { col: 7, row: 9 } },
+    },
+  ],
+}
+
+// M15: Xe back rank check drives gen sideways, second check delivers mate.
+export const PR_M15: PracticePuzzleDef = {
+  puzzleId: 'PR_M15',
+  title: 'Back Rank Drive',
+  difficulty: 'medium',
+  prompt: 'Checkmate in 2 -- Red to move',
+  concept: 'checkmate_in_2',
+  hint: 'Check on a column, then close the trap on the back rank.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,8)->(3,8) check gen(3,9) on col 3. Gen->(4,9) (tot(4,8) blocks flying gen).
+    // Xe(6,3)->(6,9) checks gen(4,9) on row 9 from 2 squares away.
+    // Gen: (3,9) Xe(3,8) attacks, (4,8)=tot, (5,9) Xe(6,9) attacks. Mate.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 8),
+      p('xe', 'red', 6, 3),
+      p('tuong', 'black', 3, 9),
+      p('tot', 'black', 4, 8),
+      p('si', 'black', 5, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 8 }, to: { col: 3, row: 8 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 6, row: 3 }, to: { col: 6, row: 9 } },
+    },
+  ],
+}
+
+// ==================== MEDIUM (continued) -- M16-M20 ====================
+
+// M16: Xe check on row 9, gen flees up, Xe sweeps to capture Phao.
+export const PR_M16: PracticePuzzleDef = {
+  puzzleId: 'PR_M16',
+  title: 'Chariot Sweep',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'tactical_capture',
+  hint: 'Check the General, then capture the unprotected piece.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,9)->(2,9) check gen(3,9). Gen can't flee along row 9 (Xe sees through).
+    // Gen->(3,8) only. Xe(2,9)->(6,9) captures Phao.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 3, 9),
+      p('phao', 'black', 6, 9),
+      p('si', 'black', 4, 8),
+      p('si', 'black', 3, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 2, row: 9 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 3, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 2, row: 9 }, to: { col: 6, row: 9 } },
+    },
+  ],
+}
+
+// M17: Xe check forces gen up, Xe captures Phao on back rank.
+export const PR_M17: PracticePuzzleDef = {
+  puzzleId: 'PR_M17',
+  title: 'Chariot Raid',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'tactical_capture',
+  hint: 'Check the General, then capture while it recovers.',
+  setup: {
+    playerSide: 'red',
+    // Xe(0,9)->(4,9) check gen(5,9). Gen->(5,8) only escape (can't stay on row 9).
+    // Xe(4,9)->(8,9) captures Phao. Path clear since gen moved off row 9.
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 5, 9),
+      p('phao', 'black', 8, 9),
+      p('si', 'black', 5, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 4, row: 9 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 5, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 9 }, to: { col: 8, row: 9 } },
+    },
+  ],
+}
+
+// M18: Xe check forces gen up, sweep row 9 to capture Phao.
+export const PR_M18: PracticePuzzleDef = {
+  puzzleId: 'PR_M18',
+  title: 'Back Rank Sweep',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'tactical_capture',
+  hint: 'Check the General from the side, then capture along the back rank.',
+  setup: {
+    playerSide: 'red',
+    // Xe(8,9)->(6,9) check gen(5,9). Gen->(5,8) only (can't flee along row 9).
+    // Xe(6,9)->(2,9) captures Phao. Path: (5,9)(4,9)(3,9) empty. ✓
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 8, 9),
+      p('tuong', 'black', 5, 9),
+      p('phao', 'black', 2, 9),
+      p('si', 'black', 4, 8),
+      p('si', 'black', 5, 7),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 9 }, to: { col: 6, row: 9 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 5, row: 8 } },
+    },
+    {
+      playerMove: { from: { col: 6, row: 9 }, to: { col: 2, row: 9 } },
+    },
+  ],
+}
+
+// M19: Ma check, gen forced by flying generals, Xe captures unprotected piece.
+export const PR_M19: PracticePuzzleDef = {
+  puzzleId: 'PR_M19',
+  title: 'Horse Raid',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'material_gain',
+  hint: 'Check with the Horse, then capture while the opponent recovers.',
+  setup: {
+    playerSide: 'red',
+    // Red gen(4,0), Ma(5,5), Xe(8,5). Black gen(4,9), Xe(1,9), Si(4,8), Si(3,7).
+    // Ma(5,5)->(3,6) eye(4,5). Ma at (3,6) checks gen? Doesn't attack (4,9).
+    // Ma(5,5)->(6,7) eye(5,6). Ma at (6,7) attacks: (5,9) eye(6,8)? ✓ if empty.
+    // Gen at (4,9). Ma(6,7) attacks (4,8) eye(5,7)? (5,7) empty. ✓ Attacks Si(4,8). Not check on gen.
+    // Ma(5,5)->(4,7) eye(5,6). Ma at (4,7) attacks: (5,9) eye(4,8)=Si? Blocked!
+    // (3,9) eye(4,8)=Si? Blocked! Doesn't check gen(4,9).
+    // Ma(5,5)->(7,6) eye(6,5). Ma at (7,6) attacks (5,7) eye(6,7)? Not useful.
+    // From (5,5): up2right1=(6,7), up2left1=(4,7), right2up1=(7,6), left2up1=(3,6),
+    //   down2right1=(6,3), down2left1=(4,3), right2down1=(7,4), left2down1=(3,4).
+    // None of these land on a square that checks gen(4,9).
+    // Need different start. For Ma to check gen(4,9), Ma needs to reach a square attacking (4,9).
+    // Squares attacking (4,9): (3,7) eye(4,8)=Si blocked, (5,7) eye(4,8)=Si blocked,
+    //   (2,8) eye(3,9), (6,8) eye(5,9)?, (3,1)... too far, (5,1)... too far.
+    // With Si(4,8), the eye at (4,8) blocks many checks on (4,9). Remove Si(4,8)?
+    // Without Si: squares attacking (4,9): (3,7) eye(4,8) ✓, (5,7) eye(4,8) ✓,
+    //   (2,8) eye(3,9) ✓, (6,8) eye(5,9) ✓.
+    // Ma(5,5)->(6,7) then checks via (6,7) to where? (6,7) attacks (4,8) eye(5,7), (4,6) eye(5,7), ...
+    // Not (4,9). From (6,7): attacks (5,9) eye(6,8), (7,9) eye(6,8), (8,8) eye(7,7), (8,6) eye(7,7), (4,8) eye(5,7), (4,6) eye(5,7).
+    // Doesn't attack (4,9).
+    // How about: Ma(5,5)->(3,6) then (3,6) attacks (4,8) eye(3,7)=Si.  blocked.
+    // Forget it. Let me try a different Ma starting position.
+    // Ma(6,7). Ma(6,7)->(4,8) eye(5,7)? captures Si? Or checks?
+    // Ma at (4,8) attacks (3,6) eye(4,7), (5,6) eye(4,7), ... gen at (4,9)? (4,8) to (4,9) not L-shape.
+    // Ma at different spot. Let me try gen at (5,9) instead.
+    // Ma(7,7). Ma(7,7)->(5,8) eye(6,7)? (5,8) is where? Ma at (5,8) attacks (3,9) eye(4,8)?
+    // Actually I should think about which Ma positions check gen(5,9):
+    // Squares attacking (5,9): (4,7) eye(5,8), (6,7) eye(5,8), (3,8) eye(4,9), (7,8) eye(6,9)...
+    // Ma(7,7)->(6,9) eye(7,8)? Gen at (5,9)? (6,9) to (5,9): not adjacent L-shape.
+    // Ma at (7,8) attacks (5,9) eye(6,8)? left2up1. Yes if (6,8) empty.
+    // Ma at (3,8) attacks (5,9)? right2up1=(5,9) eye(4,8). If (4,8) empty. ✓
+    // So I need Ma to reach (7,8) or (3,8) to check gen(5,9).
+    // Ma(5,7)->(7,8) eye(6,7). right2up1. Eye empty? ✓
+    // Ma at (7,8) checks gen(5,9) via left2up1 eye(6,8). ✓ if (6,8) empty.
+    // OK: Red gen(3,0), Ma(5,7), Xe(0,5). Black gen(5,9), Xe(2,9), Si(4,8).
+    // Ma(5,7)->(7,8) eye(6,7) ✓. Check gen(5,9) via (6,8) ✓.
+    // Gen escapes: (4,9) — flying gen? Red gen(3,0) col 3, gen(4,9) col 4. Fine. Can go.
+    // (5,8) open. (4,8)=Si. Hmm, two escapes (4,9) and (5,8).
+    // Need to force one. Block (5,8) with black piece? tot(5,8).
+    // Gen must go to (4,9). Opp: gen->(4,9).
+    // Step 2: Xe(0,5)->(0,9)? No, we want to capture Xe(2,9). Xe(0,5)->(2,5)? Nah.
+    // Actually: Xe(0,5) is on col 0. Black Xe at (2,9). Not easy to reach.
+    // Put Xe on row 9 instead. But then it might check at start.
+    // Red gen(3,0), Ma(5,7), Xe(0,9). Xe at (0,9) and gen(5,9) on row 9. Check? Between (0,9) and (5,9): (1,9),(2,9)=Xe_black,(3,9),(4,9). Xe(0,9) attacks (2,9)=Xe_black first. Blocked. No check. ✓
+    // Step 1: Ma(5,7)->(7,8) check. Gen->(4,9).
+    // Step 2: Xe(0,9)->(2,9) captures black Xe. Path: (1,9) empty. ✓ Material win!
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('ma', 'red', 5, 7),
+      p('xe', 'red', 0, 9),
+      p('tuong', 'black', 5, 9),
+      p('xe', 'black', 2, 9),
+      p('si', 'black', 4, 8),
+      p('tot', 'black', 5, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 5, row: 7 }, to: { col: 7, row: 8 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 9 }, to: { col: 2, row: 9 } },
+    },
+  ],
+}
+
+// M20: Xe captures piece then Phao fires through new screen position for check/capture.
+export const PR_M20: PracticePuzzleDef = {
+  puzzleId: 'PR_M20',
+  title: 'Chariot and Cannon Team',
+  difficulty: 'medium',
+  prompt: 'Win material -- Red to move',
+  concept: 'cannon_screen',
+  hint: 'Use the Chariot to create a screen for the Cannon.',
+  setup: {
+    playerSide: 'red',
+    // Red gen(3,0), Xe(0,7), Phao(0,3). Black gen(5,9), Ma(5,7), Xe(0,9), Si(4,8).
+    // Step 1: Xe(0,7)->(5,7) captures Ma. Check gen(5,9) on col 5. Between (5,7) and (5,9): (5,8) empty. Check ✓.
+    // Gen escapes: (4,9) open, (5,8) Xe attacks on col 5 ✗. Gen->(4,9).
+    // Flying gen: col 4 vs col 3. Fine.
+    // Step 2: Phao(0,3)->(0,9) captures Xe? Phao on col 0 from (0,3) to (0,9): need exactly 1 screen between. Between = (0,4)...(0,8). Need piece there. Nothing! No screen. Can't fire.
+    // Or Phao moves on row 3? Not useful.
+    // Put something on col 0 as screen. red tot(0,5)?
+    // Phao(0,3) through tot(0,5) to Xe(0,9): between = (0,4) empty, (0,5)=tot screen, (0,6)...(0,8) empty. 1 screen. Phao captures Xe(0,9). ✓
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 0, 7),
+      p('phao', 'red', 0, 3),
+      p('tot', 'red', 0, 5),
+      p('tuong', 'black', 5, 9),
+      p('ma', 'black', 5, 7),
+      p('xe', 'black', 0, 9),
+      p('si', 'black', 4, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 3 }, to: { col: 0, row: 9 } },
+    },
+  ],
+}
+
+// ==================== HARD (continued) -- 3-move puzzles ====================
+
+// H6: Two Xe drive gen across back rank (gen 5->4->3, mate col 5).
+export const PR_H6: PracticePuzzleDef = {
+  puzzleId: 'PR_H6',
+  title: 'Double Chariot Squeeze',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Drive the General sideways with one Chariot, then close the trap with the second.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 5, 3),
+      p('xe', 'red', 0, 8),
+      p('tot', 'red', 4, 5),
+      p('tuong', 'black', 5, 9),
+      p('si', 'black', 5, 7),
+      p('si', 'black', 4, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 5, row: 3 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 8 }, to: { col: 4, row: 8 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 3, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 5, row: 7 }, to: { col: 5, row: 9 } },
+    },
+  ],
+}
+
+// H7: Xe shuttles gen between cols 4/5, Phao fires col 4 through screen.
+export const PR_H7: PracticePuzzleDef = {
+  puzzleId: 'PR_H7',
+  title: 'Xe Shuttle Phao Mate',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Bounce the General back and forth with the Chariot, then fire the Cannon for mate.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 0, 7),
+      p('xe', 'red', 8, 8),
+      p('phao', 'red', 0, 2),
+      p('tot', 'red', 4, 6),
+      p('tuong', 'black', 4, 9),
+      p('phao', 'black', 3, 9),
+      p('phao', 'black', 7, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 7 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 2 }, to: { col: 4, row: 2 } },
+    },
+  ],
+}
+
+// H8: Xe shuttles gen between cols 5/4, Phao fires col 5 through screen.
+export const PR_H8: PracticePuzzleDef = {
+  puzzleId: 'PR_H8',
+  title: 'Back Rank Grind',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Chase the General back and forth, then line up the Cannon shot.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 0, 7),
+      p('xe', 'red', 8, 8),
+      p('phao', 'red', 0, 2),
+      p('tot', 'red', 5, 5),
+      p('tuong', 'black', 5, 9),
+      p('phao', 'black', 3, 9),
+      p('phao', 'black', 7, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 5, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 2 }, to: { col: 5, row: 2 } },
+    },
+  ],
+}
+
+// H9: Xe shuttles gen between cols 3/4, Phao fires col 3 through screen.
+export const PR_H9: PracticePuzzleDef = {
+  puzzleId: 'PR_H9',
+  title: 'Cannon Column Mate',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Shepherd the General with the Chariot, then the Cannon delivers the final blow.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 5, 0),
+      p('xe', 'red', 8, 7),
+      p('xe', 'red', 0, 8),
+      p('phao', 'red', 8, 2),
+      p('tot', 'red', 3, 6),
+      p('tuong', 'black', 3, 9),
+      p('phao', 'black', 5, 9),
+      p('phao', 'black', 1, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 7 }, to: { col: 3, row: 7 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 3, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 3, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 8, row: 2 }, to: { col: 3, row: 2 } },
+    },
+  ],
+}
+
+// H10: Xe shuttles gen between cols 4/3, Phao fires col 4 through screen.
+export const PR_H10: PracticePuzzleDef = {
+  puzzleId: 'PR_H10',
+  title: 'Mirrored Shuttle',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Push the General back and forth, then fire the Cannon down the column.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 5, 0),
+      p('xe', 'red', 8, 7),
+      p('xe', 'red', 0, 8),
+      p('phao', 'red', 8, 2),
+      p('tot', 'red', 4, 6),
+      p('tuong', 'black', 4, 9),
+      p('phao', 'black', 5, 9),
+      p('phao', 'black', 1, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 3, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 7 }, to: { col: 3, row: 7 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 8, row: 2 }, to: { col: 4, row: 2 } },
+    },
+  ],
+}
+
+// H11: Two Xe squeeze mirror of H6 (gen 3->4->5, mate on col 3).
+export const PR_H11: PracticePuzzleDef = {
+  puzzleId: 'PR_H11',
+  title: 'Double Squeeze Wide',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Use both Chariots to push the General into a corner, capturing defenders along the way.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 3, 3),
+      p('xe', 'red', 8, 8),
+      p('tot', 'red', 4, 5),
+      p('tuong', 'black', 3, 9),
+      p('si', 'black', 3, 7),
+      p('si', 'black', 4, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 3, row: 3 }, to: { col: 3, row: 7 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 8, row: 8 }, to: { col: 4, row: 8 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 3, row: 7 }, to: { col: 3, row: 9 } },
+    },
+  ],
+}
+
+// H12: Xe from right + Phao from left, gen shuttles 5->4->5, Phao fires col 5.
+export const PR_H12: PracticePuzzleDef = {
+  puzzleId: 'PR_H12',
+  title: 'Cannon Corridor',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Drive the General with the Chariot, then bring the Cannon into position for the kill.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 8, 8),
+      p('phao', 'red', 0, 3),
+      p('tot', 'red', 5, 6),
+      p('tuong', 'black', 5, 9),
+      p('si', 'black', 4, 8),
+      p('si', 'black', 3, 9),
+      p('phao', 'black', 7, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 8 }, to: { col: 5, row: 8 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 5, row: 8 }, to: { col: 4, row: 8 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 3 }, to: { col: 5, row: 3 } },
+    },
+  ],
+}
+
+// H13: Xe + Ma — Xe drives gen sideways, Ma delivers checkmate (mirror of H5).
+export const PR_H13: PracticePuzzleDef = {
+  puzzleId: 'PR_H13',
+  title: 'Horse Finishing Blow II',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: "Use the Chariot to herd the General into the Horse's striking range.",
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 5, 0),
+      p('xe', 'red', 8, 7),
+      p('ma', 'red', 0, 7),
+      p('tuong', 'black', 4, 9),
+      p('si', 'black', 5, 9),
+      p('ma', 'black', 4, 8),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 3, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 7 }, to: { col: 3, row: 7 } },
+      opponentResponse: { from: { col: 3, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 2, row: 8 } },
+    },
+  ],
+}
+
+// H14: Xe shuttles gen 4->5->4, Phao fires col 4 (different red gen position).
+export const PR_H14: PracticePuzzleDef = {
+  puzzleId: 'PR_H14',
+  title: 'Cannon Crossfire II',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'Drive the General onto the Cannon firing line using the Chariot.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 5, 0),
+      p('xe', 'red', 8, 8),
+      p('phao', 'red', 8, 2),
+      p('tot', 'red', 4, 5),
+      p('tot', 'red', 5, 4),
+      p('tuong', 'black', 4, 9),
+      p('phao', 'black', 3, 9),
+      p('phao', 'black', 6, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 8, row: 8 }, to: { col: 4, row: 8 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 8 }, to: { col: 5, row: 8 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 8, row: 2 }, to: { col: 4, row: 2 } },
+    },
+  ],
+}
+
+// H15: Two Xe + Phao — row 8 Xe covers escape, Phao fires col 4.
+export const PR_H15: PracticePuzzleDef = {
+  puzzleId: 'PR_H15',
+  title: 'Chariot Pair Cannon',
+  difficulty: 'hard',
+  prompt: 'Checkmate in 3 -- Red to move',
+  concept: 'checkmate_in_3',
+  hint: 'One Chariot chases, the other covers the escape. Then the Cannon finishes the job.',
+  setup: {
+    playerSide: 'red',
+    pieces: [
+      p('tuong', 'red', 3, 0),
+      p('xe', 'red', 0, 7),
+      p('xe', 'red', 0, 8),
+      p('phao', 'red', 0, 3),
+      p('tot', 'red', 4, 6),
+      p('tuong', 'black', 4, 9),
+      p('phao', 'black', 3, 9),
+      p('ma', 'black', 7, 9),
+    ],
+  },
+  solution: [
+    {
+      playerMove: { from: { col: 0, row: 7 }, to: { col: 4, row: 7 } },
+      opponentResponse: { from: { col: 4, row: 9 }, to: { col: 5, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 4, row: 7 }, to: { col: 5, row: 7 } },
+      opponentResponse: { from: { col: 5, row: 9 }, to: { col: 4, row: 9 } },
+    },
+    {
+      playerMove: { from: { col: 0, row: 3 }, to: { col: 4, row: 3 } },
+    },
+  ],
+}
+
 // ==================== REGISTRY ====================
 
 export const ALL_PRACTICE_PUZZLES: Record<string, PracticePuzzleDef> = {
@@ -1354,15 +2300,77 @@ export const ALL_PRACTICE_PUZZLES: Record<string, PracticePuzzleDef> = {
   PR_M3,
   PR_M4,
   PR_M5,
+  PR_M6,
+  PR_M7,
+  PR_M8,
+  PR_M9,
+  PR_M10,
+  PR_M11,
+  PR_M12,
+  PR_M13,
+  PR_M14,
+  PR_M15,
+  PR_M16,
+  PR_M17,
+  PR_M18,
+  PR_M19,
+  PR_M20,
   PR_H1,
   PR_H2,
   PR_H3,
   PR_H4,
   PR_H5,
+  PR_H6,
+  PR_H7,
+  PR_H8,
+  PR_H9,
+  PR_H10,
+  PR_H11,
+  PR_H12,
+  PR_H13,
+  PR_H14,
+  PR_H15,
 }
 
 export const PRACTICE_PUZZLES_BY_DIFFICULTY: Record<PracticeDifficulty, string[]> = {
   easy: ['PR_E1', 'PR_E2', 'PR_E3', 'PR_E4', 'PR_E5'],
-  medium: ['PR_M1', 'PR_M2', 'PR_M3', 'PR_M4', 'PR_M5'],
-  hard: ['PR_H1', 'PR_H2', 'PR_H3', 'PR_H4', 'PR_H5'],
+  medium: [
+    'PR_M1',
+    'PR_M2',
+    'PR_M3',
+    'PR_M4',
+    'PR_M5',
+    'PR_M6',
+    'PR_M7',
+    'PR_M8',
+    'PR_M9',
+    'PR_M10',
+    'PR_M11',
+    'PR_M12',
+    'PR_M13',
+    'PR_M14',
+    'PR_M15',
+    'PR_M16',
+    'PR_M17',
+    'PR_M18',
+    'PR_M19',
+    'PR_M20',
+  ],
+  hard: [
+    'PR_H1',
+    'PR_H2',
+    'PR_H3',
+    'PR_H4',
+    'PR_H5',
+    'PR_H6',
+    'PR_H7',
+    'PR_H8',
+    'PR_H9',
+    'PR_H10',
+    'PR_H11',
+    'PR_H12',
+    'PR_H13',
+    'PR_H14',
+    'PR_H15',
+  ],
 }

@@ -13,14 +13,14 @@ function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
 describe('Practice puzzles', () => {
   const puzzles = Object.values(ALL_PRACTICE_PUZZLES)
 
-  it('has 15 puzzles total', () => {
-    expect(puzzles).toHaveLength(15)
+  it('has 20 puzzles total', () => {
+    expect(puzzles).toHaveLength(40)
   })
 
-  it('has 5 per difficulty', () => {
+  it('has expected count per difficulty', () => {
     expect(PRACTICE_PUZZLES_BY_DIFFICULTY.easy).toHaveLength(5)
-    expect(PRACTICE_PUZZLES_BY_DIFFICULTY.medium).toHaveLength(5)
-    expect(PRACTICE_PUZZLES_BY_DIFFICULTY.hard).toHaveLength(5)
+    expect(PRACTICE_PUZZLES_BY_DIFFICULTY.medium).toHaveLength(20)
+    expect(PRACTICE_PUZZLES_BY_DIFFICULTY.hard).toHaveLength(15)
   })
 
   it('all puzzle IDs in difficulty map exist in ALL_PRACTICE_PUZZLES', () => {
