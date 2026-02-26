@@ -1,0 +1,659 @@
+{
+  "feature_name": "Patterns — Structured Tactical Progression",
+  "description": "A 20-pattern curriculum that teaches the most common tactical themes in Cờ tướng. Separate from Practice mode (random puzzles). Patterns is a structured course — you work through it in order because each concept builds on the last. Connected to the coaching engine: when you fall for a pattern in a real game, the app nudges you back here.",
+
+  "menu_position": {
+    "order": ["Learn", "Patterns", "Practice", "Play"],
+    "icon": "🎯 or crosshair",
+    "description": "Sits between Learn (piece movement tutorials) and Practice (random puzzles). Learn teaches rules. Patterns teaches concepts. Practice tests recall. Play applies everything."
+  },
+
+  "structure": {
+    "two_levels": {
+      "level_1": {
+        "name": "Survival",
+        "subtitle": "Stop getting killed by these",
+        "patterns": "1-10",
+        "focus": "Defensive — recognize traps and escape them",
+        "unlock": "Available immediately after completing Learn tutorial"
+      },
+      "level_2": {
+        "name": "Attack",
+        "subtitle": "Learn to deliver these",
+        "patterns": "11-20",
+        "focus": "Offensive — find and create tactical combinations",
+        "unlock": "Available after completing all 10 Survival patterns"
+      }
+    },
+    "sequential_unlock": "Patterns unlock one at a time within each level. Complete pattern 3 to unlock pattern 4.",
+    "exception": "If coaching engine detects a specific pattern in a real game loss, that pattern unlocks early with a prompt: 'You just fell for this in your game. Want to learn it now?'"
+  },
+
+  "per_pattern_flow": {
+    "description": "Each pattern follows a 3-step learning flow. Takes about 5-8 minutes total.",
+    "steps": [
+      {
+        "step": 1,
+        "name": "See It",
+        "type": "animated_replay",
+        "description": "Watch the pattern play out on the board. 4-6 moves, auto-animated with pause/replay controls.",
+        "content": {
+          "board": "Standard board component loaded with a FEN position",
+          "animation": "Moves play automatically at 1.5 second intervals",
+          "annotations": "Each move has a text callout explaining what's happening and why",
+          "controls": "Play/pause, step forward, step back, restart"
+        },
+        "duration": "~1 minute"
+      },
+      {
+        "step": 2,
+        "name": "Spot It",
+        "type": "puzzle_set",
+        "description": "3 puzzles where you recognize the pattern and find the winning/saving move. Engine-validated (multiple correct solutions accepted).",
+        "puzzle_count": 3,
+        "validation": "Run minimax on position after player's move. If eval confirms the pattern is exploited/escaped correctly, move is accepted.",
+        "difficulty_curve": "Puzzle 1 is obvious, puzzle 2 has a slight twist, puzzle 3 requires seeing one move deeper",
+        "duration": "~3 minutes"
+      },
+      {
+        "step": 3,
+        "name": "Survive It / Deliver It",
+        "type": "puzzle_set",
+        "description": "2 puzzles from the opposite perspective. Survival patterns: you're the one escaping. Attack patterns: you're building the setup from scratch.",
+        "puzzle_count": 2,
+        "validation": "Engine-validated, multiple solutions accepted",
+        "difficulty_curve": "Harder than Spot It — requires planning 2-3 moves ahead",
+        "duration": "~2 minutes"
+      }
+    ],
+    "completion": {
+      "all_5_puzzles_solved": "Pattern marked complete, next pattern unlocks",
+      "partial": "Progress saved, can resume later",
+      "replay": "Completed patterns can be replayed anytime for review"
+    }
+  },
+
+  "patterns": {
+    "level_1_survival": [
+      {
+        "pattern_id": 1,
+        "name": "Opening Cannon Trap",
+        "vietnamese": "Bẫy Pháo Khai Cuộc",
+        "category": "opening",
+        "concept": "Cannons can attack your Horses from move one using a piece as a screen. This is the most common way beginners lose material in the opening.",
+        "see_it": {
+          "starting_fen": "Standard opening position",
+          "moves": "4-5 move sequence showing Central Cannon opening attacking an undeveloped Horse",
+          "annotations": [
+            "Red moves Cannon to center file — this is the most popular opening in Cờ tướng",
+            "The Cannon now has a screen (the Soldier on the same file)",
+            "Black's Horse on b10 is a target — it's sitting on the Cannon's attack line",
+            "If Black doesn't develop the Elephant to block the screen, the Horse is lost"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Horse is under attack from the Cannon. Find the Elephant move that blocks the screen.",
+          "puzzle_2": "The Cannon has two possible screens. Which piece should you move to remove both threats?",
+          "puzzle_3": "The opponent set up the Central Cannon. You have one move to protect your Horse — but one option walks into a different trap."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Your Horse is already attacked and can't be saved. Find the counter-threat that wins material back.",
+          "puzzle_2": "You've lost one Horse to the Cannon trap. Reorganize your remaining pieces to prevent losing the second Horse."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "early_horse_loss",
+          "trigger": "Horse captured in moves 1-6"
+        }
+      },
+      {
+        "pattern_id": 2,
+        "name": "Accidental Screen",
+        "vietnamese": "Tạo Bệ Pháo Nhầm",
+        "category": "midgame",
+        "concept": "You move a piece into a line between the opponent's Cannon and your General (or another valuable piece), accidentally creating a screen for the Cannon to capture.",
+        "see_it": {
+          "annotations": [
+            "Black's Cannon is on the same file as Red's General, but there's no screen — safe for now",
+            "Red moves a Horse to a central position for development",
+            "That Horse is now sitting between the Cannon and the General — it's a screen",
+            "The Cannon captures the General through the screen — checkmate"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "You want to move your Horse forward. Will this create a screen for the enemy Cannon? Find the safe square instead.",
+          "puzzle_2": "The enemy Cannon is aiming at your General. Two of your pieces could move — which one doesn't create a screen?",
+          "puzzle_3": "You need to develop your Elephant. One diagonal creates a Cannon screen, the other doesn't. Find the safe path."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "You accidentally created a screen. The Cannon will capture next move. Find the only escape.",
+          "puzzle_2": "Your Advisor became a screen for the enemy Cannon. Move a piece to break the screen line before it's too late."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "cannon_screen_awareness",
+          "trigger": "Player moves a piece that becomes an opponent's Cannon screen"
+        }
+      },
+      {
+        "pattern_id": 3,
+        "name": "Flying General Pin",
+        "vietnamese": "Ghim Đối Mặt Tướng",
+        "category": "midgame",
+        "concept": "A piece standing on the file between the two Generals cannot move — it's pinned by the Flying General rule. Moving it would leave the Generals facing each other, which is illegal.",
+        "see_it": {
+          "annotations": [
+            "Both Generals are on the same file (the e-file)",
+            "Red's Horse is the only piece between them",
+            "The Horse CANNOT move — any move exposes the Generals to each other",
+            "Black's Chariot captures the pinned Horse for free — it can't run"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your opponent's Chariot is pinned by the Flying General rule. Capture it for free.",
+          "puzzle_2": "Which of your pieces is pinned? Identify it before moving.",
+          "puzzle_3": "Your Cannon is pinned on the e-file. Find a way to move your General off the file to unpin it."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Your Horse is pinned and under attack. Move your General sideways to release the pin before the Horse is captured.",
+          "puzzle_2": "Two of your pieces are on the same file as both Generals. Move one piece to break the pin on the other."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "flying_general_pins_missed",
+          "trigger": "Player attempts to move a piece pinned by Flying General rule"
+        }
+      },
+      {
+        "pattern_id": 4,
+        "name": "The Sneaky Elephant",
+        "vietnamese": "Tượng Phục Kích",
+        "category": "midgame",
+        "concept": "The Elephant looks passive and defensive, but it controls key diagonals on its side of the board. Moving a piece into its capture zone is a common beginner mistake.",
+        "see_it": {
+          "annotations": [
+            "Black's Elephant on c8 looks like it's just sitting there",
+            "Red advances a Horse to a strong-looking central square",
+            "That square is exactly 2 diagonal steps from the Elephant",
+            "The Elephant captures the Horse — a piece Red forgot could even reach that square"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "You want to move your Horse forward. Is the destination square in the enemy Elephant's capture range? Find the safe alternative.",
+          "puzzle_2": "The enemy Elephant's eye is blocked. Is it safe to move into its diagonal now? Verify before moving.",
+          "puzzle_3": "Two squares look equally good for your Cannon. One is in the Elephant's range, one isn't. Find the safe one."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Your piece is under attack by the Elephant. Capture the Elephant or move to safety.",
+          "puzzle_2": "Block the Elephant's eye to prevent it from capturing your advanced piece."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "elephant_capture_walked_into",
+          "trigger": "Player moves a piece to a square that is immediately captured by an Elephant"
+        }
+      },
+      {
+        "pattern_id": 5,
+        "name": "Hanging Piece",
+        "vietnamese": "Quân Không Được Bảo Vệ",
+        "category": "fundamentals",
+        "concept": "A piece with no defender is a free capture for the opponent. Before every move, ask: is the piece I'm moving to still protected? And does my move leave another piece unprotected?",
+        "see_it": {
+          "annotations": [
+            "Red moves a Chariot forward to attack Black's Soldier",
+            "But Red's Chariot was also defending a Horse on the other side of the board",
+            "Now the Horse is unprotected — hanging",
+            "Black captures the Horse for free. Red won a Soldier but lost a Horse — terrible trade."
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "The opponent has a hanging piece. Find the free capture.",
+          "puzzle_2": "You want to move your Chariot. Does this leave any of your other pieces unprotected? Find the safe move.",
+          "puzzle_3": "Two enemy pieces are hanging. Which one should you capture first? (One has a hidden defender.)"
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "You just realized your Horse is hanging. Defend it, move it, or create a bigger counter-threat.",
+          "puzzle_2": "You have two hanging pieces. You can only save one. Which is more valuable?"
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "hung_piece",
+          "trigger": "Player moves a piece to an undefended square where it is captured next move"
+        }
+      },
+      {
+        "pattern_id": 6,
+        "name": "Exposed General",
+        "vietnamese": "Tướng Bị Lộ",
+        "category": "defense",
+        "concept": "Trading away both Advisors or pulling them out of position leaves your General vulnerable to Cannon attacks and Chariot invasions. Keep at least one Advisor in the palace.",
+        "see_it": {
+          "annotations": [
+            "Red trades both Advisors for Black's minor pieces — seems equal on material",
+            "But now the General has no bodyguards in the palace",
+            "Black's Cannon aims at the palace — with no Advisor to block, it's check",
+            "The General has nowhere to hide — checkmate"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "The opponent offers to trade your last Advisor. Should you accept? Evaluate the resulting position.",
+          "puzzle_2": "Your General is exposed. Find the defensive move that blocks the Cannon's attack line.",
+          "puzzle_3": "Both your Advisors are on the edge of the palace. Reposition one to protect the General from a file attack."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Both Advisors are gone. Find the only piece that can block the Cannon's checkmate.",
+          "puzzle_2": "Your General is in check with no Advisors. Use a piece to interpose and create a counter-threat simultaneously."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "undefended_general",
+          "trigger": "General has no Advisor support when under attack"
+        }
+      },
+      {
+        "pattern_id": 7,
+        "name": "Horse Leg Blindspot",
+        "vietnamese": "Điểm Mù Cản Mã",
+        "category": "fundamentals",
+        "concept": "The Horse's leg-block rule is the most commonly forgotten rule for beginners from Western chess. A piece adjacent to the Horse in the orthogonal direction blocks that L-jump.",
+        "see_it": {
+          "annotations": [
+            "Red's Horse on e5 looks like it can jump to f7 to capture Black's Cannon",
+            "But there's a Soldier on e6 — that's the Horse's 'leg' for the northward jump",
+            "The Horse is blocked in that direction",
+            "Red must either move the blocking Soldier first or find a different plan"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Horse has 8 theoretical destinations. How many are actually legal? Tap all reachable squares.",
+          "puzzle_2": "You need your Horse on a specific square to deliver check. It's blocked. Find the move that clears the leg.",
+          "puzzle_3": "The opponent's Horse looks like it threatens your piece. Is the leg actually blocked? Verify before panicking."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Block the enemy Horse's leg to prevent it from capturing your piece next move.",
+          "puzzle_2": "Your Horse is surrounded by pieces. Find the one move that unblocks the most useful jumping direction."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "horse_leg_block_missed",
+          "trigger": "Player attempts a Horse move that is blocked by the leg rule"
+        }
+      },
+      {
+        "pattern_id": 8,
+        "name": "Elephant Eye Blindspot",
+        "vietnamese": "Điểm Mù Cản Tượng",
+        "category": "fundamentals",
+        "concept": "The Elephant moves exactly 2 diagonals, but a piece on the midpoint ('eye') blocks the move entirely. Similar to the Horse leg-block but for Elephants.",
+        "see_it": {
+          "annotations": [
+            "Red's Elephant on c1 wants to move to a3 to defend the left flank",
+            "But there's a Soldier on b2 — that's the Elephant's 'eye'",
+            "The Elephant can't make that diagonal jump",
+            "Red must move the blocking piece first or use a different Elephant route"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Elephant has 4 theoretical destinations. Which are blocked by eye pieces? Tap only the legal ones.",
+          "puzzle_2": "You need the Elephant on a specific defensive square. The eye is blocked. Find the clearing move.",
+          "puzzle_3": "The opponent moved a piece into your Elephant's eye. Is this accidental or a deliberate strategy to weaken your defense?"
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "Block the enemy Elephant's eye to prevent it from reaching a defensive position.",
+          "puzzle_2": "Your Elephant is stuck because both useful eyes are blocked. Reroute through a different path."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "elephant_eye_block_missed",
+          "trigger": "Player attempts an Elephant move that is blocked by the eye rule"
+        }
+      },
+      {
+        "pattern_id": 9,
+        "name": "Premature Attack",
+        "vietnamese": "Tấn Công Sớm",
+        "category": "opening",
+        "concept": "Attacking with one or two pieces while the rest of your army is undeveloped. The attack fails and you've wasted moves while your opponent developed freely.",
+        "see_it": {
+          "annotations": [
+            "Red sends a Cannon on an adventure — moving it 3 times in the opening",
+            "Meanwhile Black develops Horse, Elephant, Chariot — three different pieces",
+            "Red's Cannon attacks are easily blocked because Black has more pieces in play",
+            "Red is now behind in development with a lonely Cannon and no support"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "You have two options: attack with your Cannon (already moved twice) or develop your Horse. Which is better?",
+          "puzzle_2": "The opponent has only developed one piece aggressively. Find the developing move that also defends the threat.",
+          "puzzle_3": "Count: how many of your pieces have moved? How many of the opponent's? If you're behind on development, find the developing move."
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "You've overextended your Cannon and it's now trapped. Find the retreat that saves it while developing another piece.",
+          "puzzle_2": "Your opponent has attacked prematurely. Punish their underdevelopment by opening a line to their undefended back rank."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "premature_attack",
+          "trigger": "Same piece moved 3+ times in the first 8 moves while other pieces remain on starting squares"
+        }
+      },
+      {
+        "pattern_id": 10,
+        "name": "Repetition Trap",
+        "vietnamese": "Bẫy Lặp Nước",
+        "category": "midgame",
+        "concept": "Getting stuck in a cycle where both sides repeat the same moves. In Cờ tướng, the chasing side must break the cycle or lose. Knowing when you're the chaser vs the defender matters.",
+        "see_it": {
+          "annotations": [
+            "Red's Chariot checks Black's General. Black moves the General back.",
+            "Red checks again from a different angle. Black retreats again.",
+            "This repeats — Red is perpetually checking",
+            "Under Cờ tướng rules, Red (the chaser) must stop or forfeit. Black is fine."
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "You're checking the General repeatedly. Is there a move that breaks the cycle and actually checkmates instead?",
+          "puzzle_2": "The opponent is chasing your piece back and forth. You don't need to do anything — they must stop. But can you find a counter-attack while they're forced to break the cycle?",
+          "puzzle_3": "Both sides are repeating. Who is the chaser? Who must break the cycle?"
+        },
+        "survive_it_puzzles": {
+          "puzzle_1": "You've been perpetually checking and must stop. Find the non-check move that maintains your advantage.",
+          "puzzle_2": "The opponent is forcing a repetition to save a lost position. Find the winning move that avoids the cycle entirely."
+        },
+        "coaching_engine_link": {
+          "pattern_tracker_id": "repetition_detected",
+          "trigger": "Same position appears 3 times in a game"
+        }
+      }
+    ],
+
+    "level_2_attack": [
+      {
+        "pattern_id": 11,
+        "name": "General's Smile",
+        "vietnamese": "Đối Mặt Tướng (Cười)",
+        "category": "checkmate",
+        "concept": "Use the Flying General rule as an offensive weapon. Clear the file between the two Generals — your General 'attacks' along the open file, supporting a piece to deliver checkmate.",
+        "see_it": {
+          "annotations": [
+            "Both Generals are on the e-file with one piece between them",
+            "Red moves that piece away — now the Generals face each other",
+            "But wait — Red's Soldier is right next to the Black General",
+            "The Soldier delivers check, and the General can't capture it because it's 'protected' by the Red General across the board — checkmate"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Clear the file to use your General as support. Find the checkmate.",
+          "puzzle_2": "Move a piece off the e-file to create the General's Smile — but which piece? One move checkmates, the other doesn't.",
+          "puzzle_3": "Your General and the enemy General are on the same file with two pieces between them. Remove one to create a devastating pin."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Set up the General's Smile from scratch. First move your General to the same file, then clear the path.",
+          "puzzle_2": "The Generals are on different files. Maneuver in 3 moves to create the Smile checkmate."
+        }
+      },
+      {
+        "pattern_id": 12,
+        "name": "Double Cannons",
+        "vietnamese": "Trùng Pháo",
+        "category": "checkmate",
+        "concept": "Two Cannons on the same file. The front Cannon is the screen for the back Cannon. Devastating and hard to defend against.",
+        "see_it": {
+          "annotations": [
+            "Red places both Cannons on the e-file, one behind the other",
+            "The front Cannon serves as the screen for the back Cannon",
+            "Black's General is at the end of the file — the back Cannon delivers check through the front Cannon as screen",
+            "Even if Black blocks, the front Cannon can capture the blocker, maintaining the attack"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your two Cannons are on the same file. Find the checkmate.",
+          "puzzle_2": "One Cannon is in position. Find where to place the second Cannon to create the Double Cannon attack.",
+          "puzzle_3": "The opponent blocked your Double Cannon with an Advisor. Capture the Advisor with the front Cannon — does the checkmate still work?"
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Your Cannons are on different files. Reposition them onto the same file targeting the General in 2 moves.",
+          "puzzle_2": "Create the Double Cannon setup while also blocking the opponent's counter-attack."
+        }
+      },
+      {
+        "pattern_id": 13,
+        "name": "Smothered Cannon Mate",
+        "vietnamese": "Muội Pháo (Bức Sát)",
+        "category": "checkmate",
+        "concept": "The Cannon delivers checkmate because the General is surrounded by its own pieces and can't escape. The General is 'smothered' by its own army.",
+        "see_it": {
+          "annotations": [
+            "Black's General is boxed in by its own Advisors and Elephants",
+            "Red's Cannon uses one of Black's own pieces as a screen",
+            "Check — and the General has no escape because its own pieces block every exit",
+            "Checkmate. Black's defense became its own prison."
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "The enemy General is smothered. Find the Cannon move that delivers mate.",
+          "puzzle_2": "The General has one escape square. Drive a piece there first to close the escape, then deliver the Smothered Cannon mate.",
+          "puzzle_3": "Force the opponent to block their own General's escape by making a threat they must respond to with an Advisor."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "The General isn't smothered yet. Force the opponent to block their own escape in 2 moves, then deliver mate.",
+          "puzzle_2": "Sacrifice a piece to force the opponent's Advisor into a blocking position, then smother with the Cannon."
+        }
+      },
+      {
+        "pattern_id": 14,
+        "name": "Horse-Cannon Checkmate",
+        "vietnamese": "Mã Hậu Pháo",
+        "category": "checkmate",
+        "concept": "The Horse controls the General's escape squares while the Cannon delivers check from behind. Classic combination — the Horse does the dirty work, the Cannon finishes.",
+        "see_it": {
+          "annotations": [
+            "Red's Horse is on d8 — right next to Black's palace",
+            "The Horse controls e10 and f9 — two of the General's escape squares",
+            "Red's Cannon fires down the e-file with a screen — check",
+            "The General can't move to the squares the Horse covers — checkmate"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Horse is already next to the palace. Find the Cannon move that checkmates.",
+          "puzzle_2": "Your Cannon is in position but the Horse isn't. Move the Horse to the right square to complete the checkmate.",
+          "puzzle_3": "Set up the Horse-Cannon mate, but the Horse's leg is blocked. Clear the leg first."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Neither piece is in position. Maneuver both into the Horse-Cannon checkmate in 3 moves.",
+          "puzzle_2": "Sacrifice your Chariot to distract the defense, then deliver the Horse-Cannon mate."
+        }
+      },
+      {
+        "pattern_id": 15,
+        "name": "Chariot Back-Rank Mate",
+        "vietnamese": "Xe Chiếu Hàng Cuối",
+        "category": "checkmate",
+        "concept": "The Chariot drives to the enemy's back rank and delivers checkmate. The General is trapped in the palace with no escape.",
+        "see_it": {
+          "annotations": [
+            "Red's Chariot is on an open file with no obstacles",
+            "It drives all the way to the last rank — right next to Black's palace",
+            "The General is trapped — Advisors block its escape on the diagonals",
+            "Chariot delivers checkmate on the back rank"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "The back rank is open. Drive your Chariot in for checkmate.",
+          "puzzle_2": "One piece blocks your Chariot's path to the back rank. Capture it first, then checkmate.",
+          "puzzle_3": "The back rank has a defender. Sacrifice a piece to remove the defender, then deliver the back-rank mate."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Open a file for your Chariot by trading off the piece that's blocking it, then checkmate on the back rank.",
+          "puzzle_2": "Your Chariot is on the back rank but the General has an escape. Use another piece to cover the escape, then deliver mate."
+        }
+      },
+      {
+        "pattern_id": 16,
+        "name": "Horse Fork",
+        "vietnamese": "Mã Chĩa Đôi",
+        "category": "tactics",
+        "concept": "The Horse attacks two valuable pieces at once. The opponent can only save one. You win material.",
+        "see_it": {
+          "annotations": [
+            "Red's Horse jumps to a central square",
+            "From this position it simultaneously attacks Black's Chariot on one side and Black's Cannon on the other",
+            "Black can only move one piece — the other is captured",
+            "Red wins material through the fork"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Find the square where your Horse forks two enemy pieces.",
+          "puzzle_2": "Your Horse can fork, but its leg is blocked. Clear the leg and deliver the fork next move.",
+          "puzzle_3": "The opponent's General and Chariot are both vulnerable. Find the Horse fork that attacks both."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Set up the fork in 2 moves. First threaten something to force the opponent's piece to a forkable square, then fork.",
+          "puzzle_2": "Sacrifice a Soldier to lure the enemy Chariot to a square where your Horse forks it with the General."
+        }
+      },
+      {
+        "pattern_id": 17,
+        "name": "Chariot-Cannon Battery",
+        "vietnamese": "Xe Pháo Liên Hoàn",
+        "category": "tactics",
+        "concept": "Chariot and Cannon on the same file or rank, working together. The Chariot can serve as the Cannon's screen, and both attack the same target. Extremely powerful combination.",
+        "see_it": {
+          "annotations": [
+            "Red's Chariot and Cannon are both on the e-file",
+            "The Chariot advances to attack — and it's also now a screen for the Cannon behind it",
+            "Black must deal with both threats simultaneously",
+            "The Chariot captures a defender, and now the Cannon has a clear shot at the General"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Chariot and Cannon are on the same file. Find the Chariot move that creates a double threat.",
+          "puzzle_2": "Align your Cannon behind your Chariot on the same file. What threat does this create?",
+          "puzzle_3": "The opponent has a Chariot-Cannon battery aimed at you. Break the battery by removing the screen."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Place your Chariot and Cannon on the same file in 2 moves to create an unstoppable attack.",
+          "puzzle_2": "Use the Chariot-Cannon battery to force checkmate. The Chariot sacrifices itself to create a screen for the Cannon's killing blow."
+        }
+      },
+      {
+        "pattern_id": 18,
+        "name": "Crossed-River Soldier Mate",
+        "vietnamese": "Tốt Qua Sông Chiếu Bí",
+        "category": "checkmate",
+        "concept": "A Soldier that has crossed the river can move forward and sideways. Near the palace, it becomes a serious mating threat — especially with support from the Flying General rule.",
+        "see_it": {
+          "annotations": [
+            "Red's Soldier has crossed the river and advanced deep into Black's territory",
+            "It's right next to the palace — moving sideways to deliver check",
+            "The General can't capture it because the Red General supports it via the Flying General rule",
+            "The Soldier — the weakest piece — delivers checkmate"
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Soldier is next to the enemy palace. Find the checkmate.",
+          "puzzle_2": "Two Soldiers have crossed the river. Which one should advance to deliver mate?",
+          "puzzle_3": "Your Soldier can check the General, but is it actually checkmate or can the General escape? Verify before committing."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Your Soldier is 2 moves from the palace. Advance it for a checkmate while using the Flying General for support.",
+          "puzzle_2": "Sacrifice your Chariot to clear the path for the Soldier to deliver the final blow."
+        }
+      },
+      {
+        "pattern_id": 19,
+        "name": "Clearance Sacrifice",
+        "vietnamese": "Hy Sinh Mở Đường",
+        "category": "tactics",
+        "concept": "Sacrifice a piece to clear a file, rank, or diagonal for another piece to deliver a decisive attack. The sacrifice looks like a mistake, but it opens the killing lane.",
+        "see_it": {
+          "annotations": [
+            "Red's own Soldier is blocking the Chariot's path to the back rank",
+            "Red advances the Soldier into a capture — Black takes it, thinking it's a free piece",
+            "The file is now open — Red's Chariot drives straight to the back rank",
+            "Checkmate. The 'free' Soldier was bait to clear the line."
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Your Chariot is blocked by your own piece. Sacrifice it to open the file, then checkmate.",
+          "puzzle_2": "A piece is blocking your Cannon's screen line. Move it into a sacrifice that also creates a threat.",
+          "puzzle_3": "Find the counter-intuitive sacrifice that loses material but forces checkmate in 2."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Plan a 3-move sequence: sacrifice to clear, attack to penetrate, checkmate to finish.",
+          "puzzle_2": "The position looks equal. Find the sacrifice that turns it into a forced win."
+        }
+      },
+      {
+        "pattern_id": 20,
+        "name": "Double Check",
+        "vietnamese": "Chiếu Đôi",
+        "category": "checkmate",
+        "concept": "Two pieces deliver check at the same time. The General can't capture both, can't block both, and must move. If there's nowhere to move — checkmate.",
+        "see_it": {
+          "annotations": [
+            "Red moves a piece that was blocking a Cannon's line — discovered check from the Cannon",
+            "But the piece that moved ALSO delivers check — it's a Horse landing next to the palace",
+            "Two checks at once. Black can't block both.",
+            "The General has no escape square — double check, checkmate."
+          ]
+        },
+        "spot_it_puzzles": {
+          "puzzle_1": "Find the move that delivers double check and checkmate.",
+          "puzzle_2": "Your Cannon is aimed at the General but blocked by your own Horse. Move the Horse to a square that also delivers check.",
+          "puzzle_3": "Set up a discovered check from the Chariot while the moved piece also checks. Two checks, no escape."
+        },
+        "deliver_it_puzzles": {
+          "puzzle_1": "Position your pieces over 2 moves to create the double check scenario on move 3.",
+          "puzzle_2": "Sacrifice a piece to force the General to a square where your double check works. Find the whole sequence."
+        }
+      }
+    ]
+  },
+
+  "puzzle_generation": {
+    "description": "Each pattern needs 5 puzzle positions. 20 patterns × 5 puzzles = 100 puzzles total.",
+    "method": "Use minimax engine to validate all puzzles. Each puzzle must have at least one forced winning solution at the required depth. Multiple correct solutions are accepted — engine validates by checking if the resulting position maintains the winning advantage.",
+    "fen_format": "Standard Cờ tướng FEN for each starting position",
+    "initial_generation": "Use Claude CLI to generate candidate positions for each pattern, then validate with the game engine. Discard positions with no clean solution.",
+    "future_expansion": "Pattern tracker can identify real game positions that match each pattern category and add them as bonus puzzles."
+  },
+
+  "ui_specification": {
+    "pattern_selector": {
+      "layout": "Two sections — Survival (1-10) and Attack (11-20). Vertical scrolling list.",
+      "per_pattern_card": {
+        "content": "Pattern number, name, Vietnamese name, lock/unlock icon, progress (0/5 puzzles solved)",
+        "locked_style": "Grayed out with lock icon. Tap shows: 'Complete pattern {n-1} to unlock'",
+        "unlocked_style": "Full color with pattern name and progress bar",
+        "completed_style": "Gold border or checkmark, shows 'Completed' with option to replay"
+      }
+    },
+    "see_it_screen": {
+      "layout": "Board with animated moves + annotation text below in a scrollable area",
+      "controls": "Play/Pause, Step Forward, Step Back, Restart",
+      "completion": "After watching, 'Start puzzles' button appears"
+    },
+    "puzzle_screen": {
+      "layout": "Same as Practice mode puzzle screen — board + prompt + hint/skip buttons",
+      "progress": "Shows 'Puzzle 2 of 5' at top",
+      "validation": "Engine-validated (not hardcoded solutions)"
+    }
+  },
+
+  "coaching_engine_integration": {
+    "description": "The coaching engine's pattern tracker maps directly to these 20 patterns. When a tracked pattern fires, it links the player to the corresponding Pattern lesson.",
+    "flow": "Player loses a game → post-game analysis detects 'early_horse_loss' → pattern tracker notes it → post-game card says: 'You fell for the Opening Cannon Trap again. Practice it?' → tap goes to Pattern #1",
+    "early_unlock": "If a pattern is detected in a real game but hasn't been unlocked yet in the progression, it unlocks early. Learning from your own mistakes takes priority over sequential order."
+  },
+
+  "implementation_notes": {
+    "dependencies": [
+      "Game engine with minimax for puzzle validation — DONE",
+      "Board rendering — DONE",
+      "Puzzle interaction (tap to select, tap to move, engine responds) — DONE (from Practice mode)",
+      "Coaching engine pattern tracker — from coaching_engine_spec"
+    ],
+    "new_code_needed": [
+      "Pattern data loader — load pattern JSON with see_it animations and puzzle FENs",
+      "See It animation player — auto-play moves with annotations on the existing board",
+      "Pattern selector UI with lock/unlock state",
+      "Sequential unlock logic — track completion in player profile",
+      "Early unlock hook from coaching engine pattern tracker",
+      "100 puzzle positions (20 patterns × 5 puzzles each)"
+    ],
+    "estimated_effort": "1.5 weeks. The board, puzzle interaction, and engine are all reusable. Main work is creating the 100 puzzle positions and the See It animations."
+  }
+}
