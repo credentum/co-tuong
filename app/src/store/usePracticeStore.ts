@@ -241,6 +241,8 @@ export const usePracticeStore = create<PracticeStore>()(
                 phaseStatus: 'awaiting_player_move',
                 lastMoveHighlight: { from: opp.from, to: opp.to },
                 _piecesAtStepStart: afterOpp,
+                attempts: 0,
+                highlightSquares: [],
               })
             }, 400)
           } else {
