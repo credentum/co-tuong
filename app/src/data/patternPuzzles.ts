@@ -48,31 +48,33 @@ export const PAT_01_S1: PracticePuzzleDef = {
 
 export const PAT_01_S2: PracticePuzzleDef = {
   puzzleId: 'PAT_01_S2',
-  title: 'Remove the Screen',
+  title: 'Capture the Attacker',
   difficulty: 'easy',
-  prompt: 'The Cannon threatens your Horse. Capture its screen piece.',
+  prompt: 'The Cannon threatens your Horse through a screen. Capture the Cannon directly.',
   concept: 'cannon_screen',
-  hint: 'If you capture the screen, the Cannon loses its attack.',
+  hint: 'Your Chariot can capture the Cannon along its row.',
   setup: {
     playerSide: 'black',
-    // Red phao(2,0) on col 2. Screen: red tot(2,4). Target: black ma(2,7).
+    // Red phao(7,2) fires through tot(7,5) at black ma(7,8).
+    // Black xe at (0,2) can capture phao(7,2) along row 2 — clear path.
     // Generals on different columns to avoid flying generals.
-    // Black xe at (2,5) can capture the screen at (2,4).
+    // NOTE: "capture the screen" doesn't work — the capturing piece becomes the new screen.
+    // Instead, capture the cannon itself to remove the threat entirely.
     pieces: [
       p('tuong', 'red', 5, 0),
-      p('phao', 'red', 2, 0), // cannon aiming down col 2
-      p('tot', 'red', 2, 4), // screen
+      p('phao', 'red', 7, 2), // cannon aiming down col 7
+      p('tot', 'red', 7, 5), // screen (crossed river)
       p('tuong', 'black', 4, 9),
-      p('ma', 'black', 2, 7), // target
-      p('xe', 'black', 0, 4), // can capture the screen at (2,4) along row 4
+      p('ma', 'black', 7, 8), // target horse
+      p('xe', 'black', 0, 2), // can capture cannon along row 2
       p('si', 'black', 3, 8),
       p('si', 'black', 5, 8),
     ],
   },
-  goal: { type: 'find_capture', targetPos: { col: 2, row: 4 } },
+  goal: { type: 'find_capture', targetPos: { col: 7, row: 2 } },
   solution: [
-    // Capture the screen: xe(0,4) captures tot(2,4) along row 4
-    { playerMove: { from: { col: 0, row: 4 }, to: { col: 2, row: 4 } } },
+    // Capture the cannon: xe(0,2) captures phao(7,2) along row 2
+    { playerMove: { from: { col: 0, row: 2 }, to: { col: 7, row: 2 } } },
   ],
 }
 
