@@ -29,14 +29,17 @@ function getAiMove(pieces: Piece[], side: Side, mode: OpponentMode) {
 
 export function ReviewScreen() {
   const reviewLossId = useLearningStore((s) => s.reviewLossId)
+  const reviewFen = useLearningStore((s) => s.reviewFen)
+  const reviewDifficulty = useLearningStore((s) => s.reviewDifficulty)
   const setAppMode = useLearningStore((s) => s.setAppMode)
   const losses = useLossStore((s) => s.losses)
   const markReviewed = useLossStore((s) => s.markReviewed)
 
-  const loss = losses.find((l) => l.id === reviewLossId)
+  const loss = reviewLossId ? losses.find((l) => l.id === reviewLossId) : null
 
-  // Parse initial position
-  const initial = loss ? fenToBoard(loss.fen) : null
+  // Parse initial position — from saved loss or direct FEN
+  const fenSource = loss?.fen ?? reviewFen
+  const initial = fenSource ? fenToBoard(fenSource) : null
 
   const [pieces, setPieces] = useState<Piece[]>(initial?.pieces ?? [])
   const [currentTurn, setCurrentTurn] = useState<Side>(initial?.currentTurn ?? 'red')
@@ -51,7 +54,7 @@ export function ReviewScreen() {
   const aiPendingRef = useRef(false)
 
   const playerSide = 'red' as Side
-  const aiDifficulty = loss?.aiDifficulty ?? 'medium'
+  const aiDifficulty = loss?.aiDifficulty ?? reviewDifficulty ?? 'medium'
 
   const executeMove = useCallback(
     (from: Position, to: Position, pcs: Piece[], turn: Side) => {
@@ -152,7 +155,7 @@ export function ReviewScreen() {
     setAppMode('game')
   }
 
-  if (!loss || !initial) {
+  if (!initial) {
     return (
       <div className="flex h-[100dvh] flex-col items-center justify-center gap-4">
         <p className="text-stone-500">Loss not found</p>

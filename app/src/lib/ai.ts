@@ -21,7 +21,7 @@ function soldierBonus(piece: Piece): number {
 }
 
 /** Evaluate board from Red's perspective (positive = Red advantage) */
-function evaluate(pieces: Piece[]): number {
+export function evaluate(pieces: Piece[]): number {
   let score = 0
   for (const p of pieces) {
     const value = PIECE_VALUES[p.type]! + soldierBonus(p)

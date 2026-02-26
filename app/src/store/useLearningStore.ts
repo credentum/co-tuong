@@ -9,6 +9,7 @@ import type {
   PuzzleDef,
 } from '@/types/learning'
 import type { DisplayMode } from '@/constants/board'
+import type { OpponentMode } from '@/store/useGameStore'
 import { getFullyLegalMoves } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { ALL_PUZZLES } from '@/data/puzzles'
@@ -22,7 +23,10 @@ interface LearningStore {
   appMode: AppMode
   setAppMode: (mode: AppMode) => void
   reviewLossId: string | null
+  reviewFen: string | null
+  reviewDifficulty: OpponentMode | null
   startReview: (lossId: string) => void
+  startReviewFromFen: (fen: string, difficulty: OpponentMode) => void
 
   // Display mode for piece labels
   displayMode: DisplayMode
@@ -116,9 +120,20 @@ export const useLearningStore = create<LearningStore>()(
     (set, get) => ({
       // Navigation
       appMode: 'game',
-      setAppMode: (mode) => set({ appMode: mode, reviewLossId: null }),
+      setAppMode: (mode) =>
+        set({ appMode: mode, reviewLossId: null, reviewFen: null, reviewDifficulty: null }),
       reviewLossId: null,
-      startReview: (lossId) => set({ appMode: 'review', reviewLossId: lossId }),
+      reviewFen: null,
+      reviewDifficulty: null,
+      startReview: (lossId) =>
+        set({ appMode: 'review', reviewLossId: lossId, reviewFen: null, reviewDifficulty: null }),
+      startReviewFromFen: (fen, difficulty) =>
+        set({
+          appMode: 'review',
+          reviewLossId: null,
+          reviewFen: fen,
+          reviewDifficulty: difficulty,
+        }),
 
       // Display mode for piece labels
       displayMode: 'english' as DisplayMode,

@@ -4,7 +4,8 @@ import { INITIAL_POSITION } from '@/constants/initialPosition'
 import { getFullyLegalMoves, getGameResult, type GameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { getRandomBotMove } from '@/lib/bot'
-import { getMinimaxMove, getMediumMove } from '@/lib/ai'
+import { getMinimaxMove, getMediumMove, evaluate } from '@/lib/ai'
+import type { EvalSnapshot } from '@/types/analysis'
 import { boardToFen } from '@/lib/fen'
 import { moveToWxf } from '@/lib/wxf'
 
@@ -61,6 +62,45 @@ function isAiTurn(mode: OpponentMode, turn: Side): boolean {
 }
 
 const initialFen = boardToFen(INITIAL_POSITION, 'red')
+
+// Module-level eval tracking (ephemeral — cleared on resetGame)
+let evalHistory: EvalSnapshot[] = []
+let playerMoveCount = 0
+
+export function getEvalHistory(): EvalSnapshot[] {
+  return [...evalHistory]
+}
+
+export function clearEvalHistory(): void {
+  evalHistory = []
+  playerMoveCount = 0
+}
+
+function trackPlayerMove(
+  pieces: Piece[],
+  from: Position,
+  to: Position,
+  currentTurn: Side,
+  resultPieces: Piece[],
+  resultTurn: Side,
+) {
+  const movingPiece = pieces.find((p) => posEq(p.position, from))
+  if (!movingPiece) return
+  const evalBefore = evaluate(pieces)
+  const evalAfter = evaluate(resultPieces)
+  playerMoveCount++
+  evalHistory.push({
+    moveNumber: playerMoveCount,
+    fenBefore: boardToFen(pieces, currentTurn),
+    fenAfter: boardToFen(resultPieces, resultTurn),
+    evalBefore,
+    evalAfter,
+    evalDrop: evalBefore - evalAfter,
+    pieceType: movingPiece.type,
+    from,
+    to,
+  })
+}
 
 function recordMove(
   state: GameStore,
@@ -139,6 +179,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
         return
       }
       const result = applyMoveLogic(pieces, selectedPosition, pos, currentTurn)
+      if (currentTurn === 'red') {
+        trackPlayerMove(
+          pieces,
+          selectedPosition,
+          pos,
+          currentTurn,
+          result.pieces,
+          result.currentTurn,
+        )
+      }
       const record = recordMove(state, selectedPosition, pos, result)
       set({
         ...result,
@@ -162,6 +212,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { pieces, currentTurn, pendingMove, opponentMode } = state
     if (!pendingMove) return
     const result = applyMoveLogic(pieces, pendingMove.from, pendingMove.to, currentTurn)
+    if (currentTurn === 'red') {
+      trackPlayerMove(
+        pieces,
+        pendingMove.from,
+        pendingMove.to,
+        currentTurn,
+        result.pieces,
+        result.currentTurn,
+      )
+    }
     const record = recordMove(state, pendingMove.from, pendingMove.to, result)
     set({
       ...result,
@@ -190,6 +250,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
+    clearEvalHistory()
     set({
       pieces: INITIAL_POSITION,
       currentTurn: 'red',
@@ -211,6 +272,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const newIndex = historyIndex - 1
     const fen = history[newIndex]!
     const { pieces, currentTurn } = fenToBoard(fen)
+    // Trim eval history: count how many player moves are in the remaining history
+    const playerMovesRemaining = Math.ceil(newIndex / 2)
+    evalHistory = evalHistory.slice(0, playerMovesRemaining)
+    playerMoveCount = playerMovesRemaining
     set({
       pieces,
       currentTurn,
