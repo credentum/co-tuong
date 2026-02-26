@@ -48,7 +48,12 @@
     "flipBoard": "Flip",
     "labelEnglish": "English",
     "labelVietnamese": "Tiếng Việt",
-    "labelTraditional": "漢字"
+    "labelTraditional": "漢字",
+    "legalMoveDots": "Move Dots",
+    "dotsAlways": "Always",
+    "dotsAdaptive": "Adaptive",
+    "dotsOnRequest": "On Request",
+    "dotsOff": "Off"
   },
   "pieceInfo": {
     "tuong": "The General (King) moves one step orthogonally — up, down, left, or right. It must stay inside the 3×3 palace. If both Generals face each other on the same column with no pieces between them, the move is illegal (\"flying generals\" rule).",

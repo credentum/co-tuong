@@ -48,7 +48,12 @@
     "flipBoard": "Lật",
     "labelEnglish": "English",
     "labelVietnamese": "Tiếng Việt",
-    "labelTraditional": "漢字"
+    "labelTraditional": "漢字",
+    "legalMoveDots": "Chấm nước đi",
+    "dotsAlways": "Luôn hiện",
+    "dotsAdaptive": "Tự động",
+    "dotsOnRequest": "Khi yêu cầu",
+    "dotsOff": "Ẩn"
   },
   "pieceInfo": {
     "tuong": "Tướng đi một bước theo chiều ngang hoặc dọc. Phải ở trong cung 3×3. Nếu hai Tướng đối mặt trên cùng một cột mà không có quân nào ở giữa thì nước đi không hợp lệ (luật \"đối mặt Tướng\").",

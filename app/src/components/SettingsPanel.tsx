@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGameStore } from '@/store/useGameStore'
 import { useLearningStore } from '@/store/useLearningStore'
+import { usePlayerStore, type DotMode } from '@/store/usePlayerStore'
 import type { DisplayMode } from '@/constants/board'
 import type { OpponentMode } from '@/store/useGameStore'
 
@@ -23,6 +24,8 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   const moveList = useGameStore((s) => s.moveList)
   const displayMode = useLearningStore((s) => s.displayMode)
   const setDisplayMode = useLearningStore((s) => s.setDisplayMode)
+  const dotMode = usePlayerStore((s) => s.dotMode)
+  const setDotMode = usePlayerStore((s) => s.setDotMode)
 
   useEffect(() => {
     if (!open) return
@@ -47,6 +50,13 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     { mode: 'characters_only', label: t('game.labelTraditional') },
     { mode: 'english', label: t('game.labelEnglish') },
     { mode: 'vietnamese', label: t('game.labelVietnamese') },
+  ]
+
+  const dotModes: { mode: DotMode; label: string }[] = [
+    { mode: 'always', label: t('game.dotsAlways') },
+    { mode: 'adaptive', label: t('game.dotsAdaptive') },
+    { mode: 'on_request', label: t('game.dotsOnRequest') },
+    { mode: 'off', label: t('game.dotsOff') },
   ]
 
   const difficulties: { mode: OpponentMode; label: string }[] = [
@@ -140,6 +150,24 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
             <button onClick={toggleLanguage} className={btnOff}>
               {i18n.language === 'vi' ? 'EN' : 'VI'}
             </button>
+          </div>
+        </section>
+
+        {/* Move Dots */}
+        <section className="mb-4">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            {t('game.legalMoveDots')}
+          </h3>
+          <div className="flex gap-2">
+            {dotModes.map((d) => (
+              <button
+                key={d.mode}
+                onClick={() => setDotMode(d.mode)}
+                className={dotMode === d.mode ? btnOn : btnOff}
+              >
+                {d.label}
+              </button>
+            ))}
           </div>
         </section>
 

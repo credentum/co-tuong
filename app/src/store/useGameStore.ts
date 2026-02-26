@@ -8,6 +8,7 @@ import { getMinimaxMove, getMediumMove, evaluate } from '@/lib/ai'
 import type { EvalSnapshot } from '@/types/analysis'
 import { boardToFen } from '@/lib/fen'
 import { moveToWxf } from '@/lib/wxf'
+import { usePlayerStore } from './usePlayerStore'
 
 export type OpponentMode = 'pass-and-play' | 'random-bot' | 'medium' | 'minimax'
 
@@ -137,6 +138,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   moveList: [],
 
   selectPosition: (pos) => {
+    usePlayerStore.getState().setShowDotsOverride(false)
+
     const state = get()
     const {
       pieces,
@@ -188,6 +191,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           result.pieces,
           result.currentTurn,
         )
+        const movingPiece = pieces.find((p) => posEq(p.position, selectedPosition))
+        if (movingPiece) usePlayerStore.getState().recordLegalMove(movingPiece.type)
       }
       const record = recordMove(state, selectedPosition, pos, result)
       set({
@@ -204,6 +209,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return
     }
 
+    if (currentTurn === 'red') {
+      const selected = pieces.find((p) => posEq(p.position, selectedPosition))
+      if (selected) usePlayerStore.getState().recordIllegalAttempt(selected.type)
+    }
     set({ selectedPosition: null, legalMoves: [], pendingMove: null })
   },
 
@@ -221,6 +230,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         result.pieces,
         result.currentTurn,
       )
+      const movingPiece = pieces.find((p) => posEq(p.position, pendingMove.from))
+      if (movingPiece) usePlayerStore.getState().recordLegalMove(movingPiece.type)
     }
     const record = recordMove(state, pendingMove.from, pendingMove.to, result)
     set({
@@ -250,6 +261,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
+    const { gameResult } = get()
+    if (gameResult !== 'ongoing') {
+      usePlayerStore.getState().onGameEnd()
+    }
     clearEvalHistory()
     set({
       pieces: INITIAL_POSITION,
