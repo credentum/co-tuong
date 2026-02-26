@@ -3,6 +3,7 @@ import { lossToPuzzle } from '../lossToPuzzle'
 import { boardToFen } from '../fen'
 import type { SavedLoss } from '@/types/loss'
 import type { Piece } from '@/types/game'
+import type { EvalSnapshot } from '@/types/analysis'
 
 const p = (type: Piece['type'], side: Piece['side'], col: number, row: number): Piece => ({
   type,
@@ -10,7 +11,11 @@ const p = (type: Piece['type'], side: Piece['side'], col: number, row: number): 
   position: { col, row },
 })
 
-function makeLoss(fen: string, turn: 'red' | 'black' = 'red'): SavedLoss {
+function makeLoss(
+  fen: string,
+  turn: 'red' | 'black' = 'red',
+  opts?: { evalHistory?: EvalSnapshot[]; turningPointDrop?: number },
+): SavedLoss {
   return {
     id: 'test_loss_1',
     fen,
@@ -21,6 +26,7 @@ function makeLoss(fen: string, turn: 'red' | 'black' = 'red'): SavedLoss {
     reviewed: false,
     convertedToPuzzle: false,
     playerNotes: null,
+    ...opts,
   }
 }
 
@@ -121,5 +127,51 @@ describe('lossToPuzzle', () => {
     expect(puzzle).not.toBeNull()
     // The AI should find capturing the horse is the best move
     // Concept should be tactical_capture since capturing is best
+  })
+
+  it('uses eval-enriched prompt when turningPointDrop is present', () => {
+    const pieces: Piece[] = [
+      p('tuong', 'red', 4, 0),
+      p('tuong', 'black', 4, 9),
+      p('xe', 'red', 0, 5),
+      p('si', 'black', 3, 8),
+    ]
+    const fen = boardToFen(pieces, 'red')
+    const evalSnap: EvalSnapshot = {
+      moveNumber: 5,
+      fenBefore: fen,
+      fenAfter: 'some_fen',
+      evalBefore: 50,
+      evalAfter: -10,
+      evalDrop: 60,
+      pieceType: 'xe',
+      from: { col: 0, row: 5 },
+      to: { col: 0, row: 9 },
+    }
+    const loss = makeLoss(fen, 'red', {
+      evalHistory: [evalSnap],
+      turningPointDrop: 60,
+    })
+    const puzzle = lossToPuzzle(loss)
+
+    expect(puzzle).not.toBeNull()
+    expect(puzzle!.prompt).toBe('You lost a major piece here. Find the safe move.')
+    expect(puzzle!.hint).toBe('Your Chariot was left vulnerable after this move.')
+  })
+
+  it('falls back to concept prompt when no eval data', () => {
+    const pieces: Piece[] = [
+      p('tuong', 'red', 4, 0),
+      p('tuong', 'black', 4, 9),
+      p('xe', 'red', 0, 5),
+      p('si', 'black', 3, 8),
+    ]
+    const fen = boardToFen(pieces, 'red')
+    const loss = makeLoss(fen, 'red')
+    const puzzle = lossToPuzzle(loss)
+
+    expect(puzzle).not.toBeNull()
+    // No eval data — should use concept-based prompt, not eval-based
+    expect(puzzle!.prompt).not.toContain('lost a major piece')
   })
 })

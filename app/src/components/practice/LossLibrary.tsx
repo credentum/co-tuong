@@ -53,6 +53,13 @@ function LossEntry({
           vs {difficultyLabel(loss.aiDifficulty)} AI
           {loss.reviewed ? ' — reviewed' : ''}
         </div>
+        {loss.turningPointDrop != null ? (
+          <div className="mt-0.5 text-xs text-red-500">
+            Lost {loss.turningPointDrop} points on a single move
+          </div>
+        ) : loss.evalHistory && loss.evalHistory.length > 0 ? (
+          <div className="mt-0.5 text-xs text-stone-400">Position near game end</div>
+        ) : null}
       </button>
       <div className="ml-3 flex gap-1">
         {!loss.convertedToPuzzle && (

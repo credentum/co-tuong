@@ -1,5 +1,6 @@
 import type { Side } from './game'
 import type { OpponentMode } from '@/store/useGameStore'
+import type { EvalSnapshot } from '@/types/analysis'
 
 export interface SavedLoss {
   id: string
@@ -11,4 +12,6 @@ export interface SavedLoss {
   reviewed: boolean
   convertedToPuzzle: boolean
   playerNotes: string | null
+  evalHistory?: EvalSnapshot[]
+  turningPointDrop?: number
 }

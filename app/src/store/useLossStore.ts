@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { SavedLoss } from '@/types/loss'
-import { useGameStore } from './useGameStore'
+import { useGameStore, getEvalHistory } from './useGameStore'
 import { fenToBoard } from '@/lib/fen'
 
 const MAX_LOSSES = 50
@@ -28,10 +28,22 @@ export const useLossStore = create<LossStore>()(
         if (gameResult === 'ongoing') return null
         if (opponentMode === 'pass-and-play') return null
 
-        // Walk back 3 half-moves from current position
-        const walkback = Math.min(3, historyIndex)
-        const targetIndex = historyIndex - walkback
-        const fen = history[targetIndex]
+        const evalSnaps = getEvalHistory()
+
+        // Smart rewind: find the largest eval drop >= 15
+        let fen: string | undefined
+        let turningPointDrop: number | undefined
+        const significantDrops = evalSnaps.filter((s) => s.evalDrop >= 15)
+        if (significantDrops.length > 0) {
+          const worst = significantDrops.reduce((a, b) => (b.evalDrop > a.evalDrop ? b : a))
+          fen = worst.fenBefore
+          turningPointDrop = worst.evalDrop
+        } else {
+          // Fallback: walk back 3 half-moves
+          const walkback = Math.min(3, historyIndex)
+          const targetIndex = historyIndex - walkback
+          fen = history[targetIndex]
+        }
         if (!fen) return null
 
         const { currentTurn } = fenToBoard(fen)
@@ -51,6 +63,8 @@ export const useLossStore = create<LossStore>()(
           reviewed: false,
           convertedToPuzzle: false,
           playerNotes: null,
+          evalHistory: evalSnaps.length > 0 ? evalSnaps : undefined,
+          turningPointDrop,
         }
 
         const losses = [...get().losses, entry]

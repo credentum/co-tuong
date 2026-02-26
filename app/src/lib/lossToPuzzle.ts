@@ -1,6 +1,7 @@
 import type { Piece, Side } from '@/types/game'
 import type { PracticePuzzleDef, SolutionStep } from '@/types/practice'
 import type { SavedLoss } from '@/types/loss'
+import type { EvalSnapshot } from '@/types/analysis'
 import { fenToBoard } from './fen'
 import { getMinimaxMove } from './ai'
 import { getGameResult } from './moves/legality'
@@ -83,15 +84,19 @@ export function lossToPuzzle(loss: SavedLoss): PracticePuzzleDef | null {
 
   const puzzleId = `LOSS_${loss.id}`
 
+  // Use eval context for enriched prompts/hints when available
+  const evalPrompt = loss.turningPointDrop != null ? evalBasedPrompt(loss.turningPointDrop) : null
+  const evalHint = loss.evalHistory ? evalBasedHint(loss.evalHistory, loss.fen) : null
+
   return {
     puzzleId,
     title: 'From Your Game',
     difficulty,
-    prompt: conceptPrompt(concept),
+    prompt: evalPrompt ?? conceptPrompt(concept),
     setup: { pieces, playerSide },
     solution: steps,
     concept,
-    hint: conceptHint(concept),
+    hint: evalHint ?? conceptHint(concept),
   }
 }
 
@@ -131,4 +136,27 @@ function conceptHint(concept: string): string {
     default:
       return 'Improve your piece positioning or create a threat.'
   }
+}
+
+const pieceNames: Record<string, string> = {
+  tuong: 'General',
+  si: 'Advisor',
+  tinh: 'Elephant',
+  ma: 'Horse',
+  xe: 'Chariot',
+  phao: 'Cannon',
+  tot: 'Soldier',
+}
+
+function evalBasedPrompt(drop: number): string {
+  if (drop >= 50) return 'You lost a major piece here. Find the safe move.'
+  if (drop >= 30) return 'This move cost material. Find the better option.'
+  return 'A small inaccuracy. Can you spot the improvement?'
+}
+
+function evalBasedHint(evalHistory: EvalSnapshot[], fen: string): string | null {
+  const snapshot = evalHistory.find((s) => s.fenBefore === fen)
+  if (!snapshot) return null
+  const name = pieceNames[snapshot.pieceType] ?? snapshot.pieceType
+  return `Your ${name} was left vulnerable after this move.`
 }
