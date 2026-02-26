@@ -2,14 +2,62 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { usePracticeStore } from '@/store/usePracticeStore'
 import { ALL_PRACTICE_PUZZLES } from '../practicePuzzles'
 import { getGameResult } from '@/lib/moves/legality'
+import { evaluateAtDepth } from '@/lib/ai'
+import { validateGoal } from '@/lib/goalValidation'
 import { posEq } from '@/lib/moves/helpers'
-import type { Piece, Position } from '@/types/game'
-import type { PracticePuzzleDef } from '@/types/practice'
+import type { Piece, Position, Side } from '@/types/game'
+import type { PracticePuzzleDef, SolutionStep } from '@/types/practice'
 
 function applyMoveHelper(pieces: Piece[], from: Position, to: Position): Piece[] {
   return pieces
     .filter((p) => !posEq(p.position, to))
     .map((p) => (posEq(p.position, from) ? { ...p, position: to } : p))
+}
+
+/**
+ * Check if a move would be accepted by the store's submitMove logic.
+ * Must mirror usePracticeStore.ts lines 264-320 exactly.
+ */
+function wouldStoreAccept(
+  pieces: Piece[],
+  from: Position,
+  to: Position,
+  puzzle: PracticePuzzleDef,
+  step: SolutionStep,
+  stepIndex: number,
+): boolean {
+  const playerSide = puzzle.setup.playerSide
+  const oppSide: Side = playerSide === 'red' ? 'black' : 'red'
+  const wins = playerSide === 'red' ? 'red_wins' : 'black_wins'
+
+  // Hardcoded solution
+  if (posEq(from, step.playerMove.from) && posEq(to, step.playerMove.to)) return true
+  // Alternatives
+  if (step.alternativeMoves?.some((alt) => posEq(from, alt.from) && posEq(to, alt.to))) return true
+
+  // Goal-based validation
+  if (puzzle.goal) {
+    const remainingSteps = puzzle.solution.length - stepIndex - 1
+    const result = validateGoal(pieces, from, to, playerSide, puzzle.goal, remainingSteps)
+    if (result.valid) return true
+  }
+
+  // Engine validation for checkmate puzzles
+  if (puzzle.concept.startsWith('checkmate')) {
+    const afterMove = applyMoveHelper(pieces, from, to)
+    if (!step.opponentResponse) {
+      // Final step: accept any checkmate
+      if (getGameResult(afterMove, oppSide) === wins) return true
+    } else {
+      // Intermediate step: accept if forced mate maintained
+      const remainingSteps = puzzle.solution.length - stepIndex - 1
+      const depth = remainingSteps * 2
+      const score = evaluateAtDepth(afterMove, oppSide, depth)
+      if (score >= 9000) return true
+    }
+  }
+
+  return false
 }
 
 // We need to advance timers for opponent responses
@@ -145,25 +193,14 @@ describe('Practice flow — step through each puzzle', () => {
       loadPuzzleDirect(puzzle)
 
       const step = puzzle.solution[0]!
-      const isLastStep = puzzle.solution.length === 1
       const store = usePracticeStore.getState()
 
-      // Find a truly wrong target — not the solution, not an alternative, and
-      // for final-step checkmate puzzles, not a move that also delivers checkmate
+      // Find a truly wrong target — exclude any move the store would accept
+      // (hardcoded solution, alternatives, goal validation, engine-validated mates)
       store.selectPosition(step.playerMove.from)
       const afterSelect = usePracticeStore.getState()
       const wrongTarget = afterSelect.legalMoves.find((m) => {
-        if (posEq(m, step.playerMove.to)) return false
-        if (step.alternativeMoves?.some((alt) => posEq(alt.to, m))) return false
-        // Exclude moves that deliver checkmate on final step of checkmate puzzles
-        if (isLastStep && puzzle.concept.startsWith('checkmate')) {
-          const afterMove = applyMoveHelper(afterSelect.pieces, step.playerMove.from, m)
-          const oppSide = puzzle.setup.playerSide === 'red' ? 'black' : 'red'
-          const result = getGameResult(afterMove, oppSide)
-          const wins = puzzle.setup.playerSide === 'red' ? 'red_wins' : 'black_wins'
-          if (result === wins) return false
-        }
-        return true
+        return !wouldStoreAccept(afterSelect.pieces, step.playerMove.from, m, puzzle, step, 0)
       })
 
       if (!wrongTarget) {
@@ -182,16 +219,7 @@ describe('Practice flow — step through each puzzle', () => {
       after1.selectPosition(step.playerMove.from)
       const reselected = usePracticeStore.getState()
       const wrongTarget2 = reselected.legalMoves.find((m) => {
-        if (posEq(m, step.playerMove.to)) return false
-        if (step.alternativeMoves?.some((alt) => posEq(alt.to, m))) return false
-        if (isLastStep && puzzle.concept.startsWith('checkmate')) {
-          const afterMove = applyMoveHelper(reselected.pieces, step.playerMove.from, m)
-          const oppSide = puzzle.setup.playerSide === 'red' ? 'black' : 'red'
-          const result = getGameResult(afterMove, oppSide)
-          const wins = puzzle.setup.playerSide === 'red' ? 'red_wins' : 'black_wins'
-          if (result === wins) return false
-        }
-        return true
+        return !wouldStoreAccept(reselected.pieces, step.playerMove.from, m, puzzle, step, 0)
       })
       if (wrongTarget2) {
         reselected.selectPosition(wrongTarget2)

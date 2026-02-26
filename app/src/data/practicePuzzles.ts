@@ -282,6 +282,7 @@ export const PR_M1: PracticePuzzleDef = {
       p('tuong', 'red', 3, 0),
       p('xe', 'red', 8, 8),
       p('xe', 'red', 8, 6),
+      p('tot', 'red', 3, 8), // defends (4,8) — Gen can't capture Xe there
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 7),
       p('si', 'black', 3, 9),
@@ -444,6 +445,7 @@ export const PR_M2: PracticePuzzleDef = {
       p('tuong', 'red', 3, 0),
       p('xe', 'red', 8, 8),
       p('xe', 'red', 2, 5),
+      p('tot', 'red', 3, 8), // defends (4,8) — Gen can't capture Xe there
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 7),
       p('si', 'black', 3, 9),
@@ -1098,6 +1100,8 @@ export const PR_H3: PracticePuzzleDef = {
       p('xe', 'red', 0, 8),
       p('phao', 'red', 0, 2),
       p('tot', 'red', 4, 6),
+      p('ma', 'red', 6, 7), // defends (4,8) via leg (5,7) — Gen can't capture Xe there (step 1)
+      p('tot', 'red', 3, 7), // defends (3,8) — Gen can't capture Xe there (step 2)
       p('tuong', 'black', 4, 9),
       p('phao', 'black', 5, 9),
       p('phao', 'black', 2, 9),
@@ -1174,11 +1178,14 @@ export const PR_H4: PracticePuzzleDef = {
     //   Alt step 2: Xe(5,8)->(5,9)? (5,9) empty (gen left). Not a check on gen(4,9). No.
     //   Xe(5,8) other checks? (5,8) to (4,8)=Si (captured? That's the solution move to different square).
     //   Phao(8,3): No check. Clean!
+    // Red gen on col 4 — flying generals prevents Gen from capturing Xe at (4,8) in step 2.
+    // Ma(6,6) defends (5,8) — Gen can't capture Xe there in step 1.
     pieces: [
-      p('tuong', 'red', 3, 0),
+      p('tuong', 'red', 4, 0),
       p('xe', 'red', 8, 8),
       p('phao', 'red', 8, 3),
       p('tot', 'red', 5, 6),
+      p('ma', 'red', 6, 6),
       p('tuong', 'black', 5, 9),
       p('si', 'black', 4, 8),
       p('si', 'black', 3, 9),
@@ -1387,12 +1394,12 @@ export const PR_M7: PracticePuzzleDef = {
   setup: {
     playerSide: 'red',
     // Xe(0,9)->(4,9) check. Gen(5,9)->(5,8). Xe(4,9)->(8,9) captures Phao.
+    // Red gen on col 4 — flying generals prevents Gen from capturing Xe at (4,9).
     pieces: [
-      p('tuong', 'red', 3, 0),
+      p('tuong', 'red', 4, 0),
       p('xe', 'red', 0, 9),
       p('tuong', 'black', 5, 9),
       p('phao', 'black', 8, 9),
-      p('si', 'black', 4, 8),
       p('si', 'black', 5, 7),
     ],
   },
@@ -1607,8 +1614,9 @@ export const PR_M13: PracticePuzzleDef = {
     // Gen escapes: (5,8) open. Flying gen: col 5 vs col 3. Fine. Gen->(5,8).
     // Step 2: Phao(0,9)->(8,9) through screen Xe(4,9). Captures Xe(8,9). Material win!
     // Between Phao(0,9) and Xe(8,9) on row 9: (1,9)...(3,9) empty, (4,9)=Xe screen, (5,9)...(7,9) empty. ✓
+    // Red gen on col 4 — flying generals prevents Gen from capturing Xe at (4,9).
     pieces: [
-      p('tuong', 'red', 3, 0),
+      p('tuong', 'red', 4, 0),
       p('phao', 'red', 0, 9),
       p('xe', 'red', 4, 3),
       p('tuong', 'black', 5, 9),
@@ -1700,6 +1708,7 @@ export const PR_M15: PracticePuzzleDef = {
       p('tuong', 'red', 4, 0),
       p('xe', 'red', 0, 8),
       p('xe', 'red', 6, 3),
+      p('tot', 'red', 3, 7), // defends (3,8) — Gen can't capture Xe there
       p('tuong', 'black', 3, 9),
       p('si', 'black', 4, 8),
       p('si', 'black', 5, 7),
@@ -1946,6 +1955,7 @@ export const PR_H6: PracticePuzzleDef = {
       p('xe', 'red', 5, 3),
       p('xe', 'red', 0, 8),
       p('tot', 'red', 4, 5),
+      p('ma', 'red', 3, 6), // defends (4,8) — Gen can't capture Xe there (step 2)
       p('tuong', 'black', 5, 9),
       p('si', 'black', 5, 7),
       p('si', 'black', 4, 8),
@@ -2125,6 +2135,7 @@ export const PR_H11: PracticePuzzleDef = {
       p('xe', 'red', 3, 3),
       p('xe', 'red', 8, 8),
       p('tot', 'red', 4, 5),
+      p('ma', 'red', 5, 6), // defends (4,8) — Gen can't capture Xe there (step 2)
       p('tuong', 'black', 3, 9),
       p('si', 'black', 3, 7),
       p('si', 'black', 4, 8),
@@ -2155,11 +2166,14 @@ export const PR_H12: PracticePuzzleDef = {
   hint: 'Drive the General with the Chariot, then bring the Cannon into position for the kill.',
   setup: {
     playerSide: 'red',
+    // Red gen on col 4 — flying generals prevents Gen from capturing Xe at (4,8) in step 2.
+    // Ma(6,6) defends (5,8) — Gen can't capture Xe there in step 1.
     pieces: [
-      p('tuong', 'red', 3, 0),
+      p('tuong', 'red', 4, 0),
       p('xe', 'red', 8, 8),
       p('phao', 'red', 0, 3),
       p('tot', 'red', 5, 6),
+      p('ma', 'red', 6, 6),
       p('tuong', 'black', 5, 9),
       p('si', 'black', 4, 8),
       p('si', 'black', 3, 9),
@@ -2231,6 +2245,8 @@ export const PR_H14: PracticePuzzleDef = {
       p('phao', 'red', 8, 2),
       p('tot', 'red', 4, 5),
       p('tot', 'red', 5, 5),
+      p('tot', 'red', 3, 8), // defends (4,8) — Gen can't capture Xe there (step 1)
+      p('tot', 'red', 5, 7), // defends (5,8) — Gen can't capture Xe there (step 2)
       p('tuong', 'black', 4, 9),
       p('phao', 'black', 3, 9),
       p('phao', 'black', 6, 9),
