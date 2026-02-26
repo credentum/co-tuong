@@ -26,6 +26,7 @@ export const PATTERN_DEFS: PatternDef[] = [
     seeIt: {
       startingPieces: [
         // Red starts with cannon on col 1 and will swing it to col 7.
+        // Soldier already on col 7 as a screen. Horse on col 7 is the target.
         // Generals on different columns to avoid flying-generals issues throughout.
         p('tuong', 'red', 4, 0),
         p('si', 'red', 3, 0),
@@ -43,30 +44,27 @@ export const PATTERN_DEFS: PatternDef[] = [
       ],
       playerSide: 'black',
       moves: [
-        // Move 1: Red swings Cannon to col 7
+        // Move 1: Red swings Cannon to col 7 — screen already in place
         { from: { col: 1, row: 2 }, to: { col: 7, row: 2 } },
-        // Move 2: Black develops Horse (walks into danger on col 7)
-        { from: { col: 7, row: 9 }, to: { col: 8, row: 7 } },
-        // Move 3: Red advances screen Soldier
-        { from: { col: 7, row: 5 }, to: { col: 7, row: 6 } },
-        // Move 4: Black moves something else, ignoring the threat
-        { from: { col: 1, row: 7 }, to: { col: 1, row: 4 } },
-        // Move 5: Red Cannon repositions along col 7 to pressure
-        { from: { col: 7, row: 2 }, to: { col: 7, row: 0 } },
+        // Move 2: Black develops Cannon centrally, ignoring the threat
+        { from: { col: 1, row: 7 }, to: { col: 4, row: 7 } },
+        // Move 3: Red Cannon captures Horse through screen!
+        { from: { col: 7, row: 2 }, to: { col: 7, row: 9 } },
+        // Move 4: Black develops Elephant — too late, Horse is gone
+        { from: { col: 6, row: 9 }, to: { col: 8, row: 7 } },
       ],
       annotations: [
-        { text: "Red moves the Cannon to col 7 — aiming at the Horse's file." },
         {
-          text: "Black develops the Horse without considering the Cannon's attack line.",
+          text: "Red swings the Cannon to col 7. The Soldier on row 5 is already a screen — Black's Horse is in the crosshairs!",
         },
         {
-          text: "Red advances the Soldier — now it's a screen for the Cannon.",
+          text: "Black develops the Cannon centrally, ignoring the threat. The Horse is still sitting on the Cannon's attack line.",
         },
         {
-          text: 'Black ignores the threat, developing elsewhere.',
+          text: 'The Cannon fires through the Soldier screen and captures the Horse for free!',
         },
         {
-          text: "The Cannon has a clear screen to attack. Black's Horse was vulnerable from move one. Always check for Cannon lines when developing!",
+          text: 'Too late to react — a Horse is lost in the opening. Always check for Cannon lines when developing!',
         },
       ],
     },

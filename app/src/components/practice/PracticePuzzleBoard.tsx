@@ -11,6 +11,7 @@ export function PracticePuzzleBoard() {
   const lastMove = usePracticeStore((s) => s.lastMoveHighlight)
   const selectPosition = usePracticeStore((s) => s.selectPosition)
   const displayMode = useLearningStore((s) => s.displayMode)
+  const playerSide = usePracticeStore((s) => s.getCurrentPuzzle()?.setup.playerSide)
 
   return (
     <BoardRenderer
@@ -22,6 +23,7 @@ export function PracticePuzzleBoard() {
       highlightStyle={highlightStyle}
       onTapSquare={selectPosition}
       labelMode={displayMode}
+      flipped={playerSide === 'black'}
     />
   )
 }
