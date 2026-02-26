@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useGameStore, getEvalHistory } from '@/store/useGameStore'
+import { useGameStore, getEvalHistory, getAiBlunderCount } from '@/store/useGameStore'
 import { useLossStore } from '@/store/useLossStore'
 import { useLearningStore } from '@/store/useLearningStore'
 import { usePatternStore } from '@/store/usePatternStore'
@@ -57,8 +57,9 @@ export function PostGameSheet() {
     if (!isAiGame) return
 
     const snapshots = getEvalHistory()
+    const blunders = getAiBlunderCount()
     const id = setTimeout(() => {
-      const result = analyzeGame(snapshots)
+      const result = analyzeGame(snapshots, blunders)
       setAnalysis(result)
 
       // Record game for pattern tracking
@@ -115,9 +116,16 @@ export function PostGameSheet() {
           {analysis === null ? (
             <p className="text-center text-sm text-stone-400">Analysing...</p>
           ) : analysis.isCleanGame ? (
-            <p className="text-center text-sm font-medium text-green-700">
-              Clean game! No significant mistakes.
-            </p>
+            analysis.aiBlunders > 0 && gameResult === 'red_wins' ? (
+              <p className="text-center text-sm font-medium text-green-700">
+                Nice win — but the opponent missed some opportunities. Try Hard for a tougher
+                challenge.
+              </p>
+            ) : (
+              <p className="text-center text-sm font-medium text-green-700">
+                Clean game! No significant mistakes.
+              </p>
+            )
           ) : (
             <div className="flex flex-col gap-2">
               <p className="text-sm font-semibold text-stone-700">{analysisHeader}</p>

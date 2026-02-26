@@ -34,4 +34,5 @@ export interface AnalyzedMistake {
 export interface GameAnalysis {
   mistakes: AnalyzedMistake[]
   isCleanGame: boolean
+  aiBlunders: number
 }

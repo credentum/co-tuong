@@ -162,7 +162,14 @@ export function getMediumMove(
   side: Side,
   forbiddenFens?: Set<string>,
 ): AiMove | null {
-  return searchBestMove(pieces, side, 2, evaluateMedium, forbiddenFens)
+  // When losing material, switch to full eval so the AI fights back
+  const materialBalance = evaluate(pieces)
+  // evaluate() is from Red's perspective. Positive = Red ahead = Black losing.
+  // If AI's side is behind by 40+ points (~a Horse), use full eval to fight back.
+  const losing = side === 'red' ? materialBalance < -40 : materialBalance > 40
+  const evalFn = losing ? evaluate : evaluateMedium
+
+  return searchBestMove(pieces, side, 2, evalFn, forbiddenFens)
 }
 
 function searchBestMove(

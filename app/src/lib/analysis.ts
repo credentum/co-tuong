@@ -17,22 +17,22 @@ const PIECE_NAMES: Record<string, string> = {
   tot: 'Soldier',
 }
 
-export function analyzeGame(snapshots: EvalSnapshot[]): GameAnalysis {
-  if (snapshots.length === 0) return { mistakes: [], isCleanGame: true }
+export function analyzeGame(snapshots: EvalSnapshot[], aiBlunders: number = 0): GameAnalysis {
+  if (snapshots.length === 0) return { mistakes: [], isCleanGame: true, aiBlunders }
 
   const significant = snapshots
     .filter((s) => s.evalDrop >= MISTAKE_THRESHOLD)
     .sort((a, b) => b.evalDrop - a.evalDrop)
     .slice(0, MAX_MISTAKES)
 
-  if (significant.length === 0) return { mistakes: [], isCleanGame: true }
+  if (significant.length === 0) return { mistakes: [], isCleanGame: true, aiBlunders }
 
   const mistakes: AnalyzedMistake[] = significant.map((snapshot, i) => {
     const classified = classifyMistake(snapshot)
     return { rank: i + 1, snapshot, ...classified }
   })
 
-  return { mistakes, isCleanGame: false }
+  return { mistakes, isCleanGame: false, aiBlunders }
 }
 
 interface Classification {

@@ -69,6 +69,7 @@ const initialFen = boardToFen(INITIAL_POSITION, 'red')
 // Module-level eval tracking (ephemeral — cleared on resetGame)
 let evalHistory: EvalSnapshot[] = []
 let playerMoveCount = 0
+let aiBlunderCount = 0
 
 export function getEvalHistory(): EvalSnapshot[] {
   return [...evalHistory]
@@ -77,6 +78,11 @@ export function getEvalHistory(): EvalSnapshot[] {
 export function clearEvalHistory(): void {
   evalHistory = []
   playerMoveCount = 0
+  aiBlunderCount = 0
+}
+
+export function getAiBlunderCount(): number {
+  return aiBlunderCount
 }
 
 function trackPlayerMove(
@@ -392,6 +398,14 @@ function scheduleAiMove(mode: OpponentMode) {
     if (!aiMove) return
 
     const result = applyMoveLogic(pieces, aiMove.from, aiMove.to, currentTurn)
+
+    // Track AI blunders: if Black's move helped Red (eval went up), it's a blunder
+    const evalBefore = evaluate(pieces)
+    const evalAfter = evaluate(result.pieces)
+    if (evalAfter - evalBefore >= 15) {
+      aiBlunderCount++
+    }
+
     const record = recordMove(state, aiMove.from, aiMove.to, result)
     useGameStore.setState({
       ...result,
