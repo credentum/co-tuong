@@ -12,6 +12,7 @@ import { posEq } from '@/lib/moves/helpers'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
 import { evaluateAtDepth, getMinimaxMove } from '@/lib/ai'
 import { ALL_PRACTICE_PUZZLES, PRACTICE_PUZZLES_BY_DIFFICULTY } from '@/data/practicePuzzles'
+import { ALL_PATTERN_PUZZLES } from '@/data/patternPuzzles'
 import { usePatternStore } from './usePatternStore'
 import { getConceptsForPattern } from '@/lib/patternPuzzleMap'
 
@@ -21,9 +22,14 @@ function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
     .map((p) => (posEq(p.position, from) ? { ...p, position: to } : p))
 }
 
-/** Look up a puzzle by ID from both curated and loss-generated puzzles */
+/** Look up a puzzle by ID from curated, pattern, and loss-generated puzzles */
 function findPuzzle(puzzleId: string, lossPuzzles: PracticePuzzleDef[]): PracticePuzzleDef | null {
-  return ALL_PRACTICE_PUZZLES[puzzleId] ?? lossPuzzles.find((p) => p.puzzleId === puzzleId) ?? null
+  return (
+    ALL_PRACTICE_PUZZLES[puzzleId] ??
+    ALL_PATTERN_PUZZLES[puzzleId] ??
+    lossPuzzles.find((p) => p.puzzleId === puzzleId) ??
+    null
+  )
 }
 
 interface PracticeStore {

@@ -68,6 +68,23 @@ export function ActionBar({ onOpenSettings }: ActionBarProps) {
         <span className={labelClass}>{t('learning.title')}</span>
       </button>
 
+      {/* Patterns */}
+      <button
+        onClick={() => setAppMode('patterns')}
+        className={`${btnClass} text-indigo-600`}
+        aria-label={t('patterns.title')}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="h-7 w-7"
+        >
+          <path d="M12 2.25a.75.75 0 0 1 .75.75v1.598a7.502 7.502 0 0 1 6.652 6.652H21a.75.75 0 0 1 0 1.5h-1.598a7.502 7.502 0 0 1-6.652 6.652V21a.75.75 0 0 1-1.5 0v-1.598a7.502 7.502 0 0 1-6.652-6.652H3a.75.75 0 0 1 0-1.5h1.598a7.502 7.502 0 0 1 6.652-6.652V3a.75.75 0 0 1 .75-.75Zm0 4.5a5.25 5.25 0 1 0 0 10.5 5.25 5.25 0 0 0 0-10.5Zm0 2.25a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
+        </svg>
+        <span className={labelClass}>{t('patterns.title')}</span>
+      </button>
+
       {/* Practice */}
       <button
         onClick={() => setAppMode('practice')}

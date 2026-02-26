@@ -16,7 +16,7 @@ import { ALL_PUZZLES } from '@/data/puzzles'
 import { LESSONS } from '@/data/lessons'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
 
-export type AppMode = 'game' | 'learning' | 'practice' | 'review'
+export type AppMode = 'game' | 'learning' | 'practice' | 'patterns' | 'review'
 
 interface LearningStore {
   // Navigation

@@ -7,6 +7,7 @@ import { Toast } from './components/Toast'
 import { PieceInfoCard } from './components/PieceInfoCard'
 import { LearningScreen } from './components/learning/LearningScreen'
 import { PracticeScreen } from './components/practice/PracticeScreen'
+import { PatternsScreen } from './components/patterns/PatternsScreen'
 import { ReviewScreen } from './components/review/ReviewScreen'
 import { PostGameSheet } from './components/game/PostGameSheet'
 import { useLearningStore } from './store/useLearningStore'
@@ -19,6 +20,10 @@ export default function App() {
 
   if (appMode === 'learning') {
     return <LearningScreen />
+  }
+
+  if (appMode === 'patterns') {
+    return <PatternsScreen />
   }
 
   if (appMode === 'practice') {
