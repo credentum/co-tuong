@@ -18,7 +18,7 @@ export const L1_P1: PuzzleDef = {
     pieces: [
       p('xe', 'red', 4, 4),
       p('phao', 'red', 4, 6), // blocks col 4 north
-      p('tot', 'red', 4, 2), // blocks col 4 south
+      p('ma', 'red', 4, 2), // blocks col 4 south
       p('ma', 'black', 6, 4), // blocks row 4 east (capture)
       p('tot', 'black', 2, 4), // blocks row 4 west (capture)
       p('tuong', 'red', 5, 0),
@@ -349,14 +349,14 @@ export const L3_P4: PuzzleDef = {
       p('ma', 'red', 3, 6), // protects (4,8) via north leg — gen can't capture Xe
       p('tuong', 'red', 3, 0),
       p('tuong', 'black', 4, 9),
-      p('tot', 'black', 3, 9), // blocks gen left
-      p('tot', 'black', 5, 9), // blocks gen right
+      p('ma', 'black', 3, 9), // blocks gen left
+      p('ma', 'black', 5, 9), // blocks gen right
     ],
     playerSide: 'red',
   },
   answer: {
     type: 'find_the_move',
-    // Xe to e9 — checkmate (gen trapped by Tots, Xe protected by Ma)
+    // Xe to e9 — checkmate (gen trapped by Ma, Xe protected by Ma)
     moves: [{ from: { col: 0, row: 8 }, to: { col: 4, row: 8 } }],
   },
   teaches: 'Chariot delivers checkmate in the palace',
@@ -408,7 +408,7 @@ export const L4_P2: PuzzleDef = {
   setup: {
     pieces: [
       p('tuongVoi', 'red', 4, 2),
-      p('tot', 'red', 3, 1), // blocks southwest eye
+      p('ma', 'red', 3, 1), // blocks southwest eye
       p('tot', 'black', 5, 3), // blocks northeast eye
       p('tuong', 'red', 5, 0),
       p('tuong', 'black', 3, 9),
@@ -486,7 +486,7 @@ export const L4_P5: PuzzleDef = {
   setup: {
     pieces: [
       p('tuongVoi', 'red', 2, 2),
-      p('tot', 'red', 1, 1), // blocks southwest eye
+      p('ma', 'red', 1, 1), // blocks southwest eye
       p('ma', 'black', 0, 0), // target for elephant
       p('tuong', 'red', 5, 0),
       p('tuong', 'black', 3, 9),
@@ -495,8 +495,13 @@ export const L4_P5: PuzzleDef = {
   },
   answer: {
     type: 'find_the_move',
-    // Tot at (1,1) hasn't crossed river — can only move forward to (1,2)
-    moves: [{ from: { col: 1, row: 1 }, to: { col: 1, row: 2 } }],
+    // Horse at (1,1) blocks the elephant eye — move it anywhere to clear the path
+    moves: [
+      { from: { col: 1, row: 1 }, to: { col: 2, row: 3 } },
+      { from: { col: 1, row: 1 }, to: { col: 0, row: 3 } },
+      { from: { col: 1, row: 1 }, to: { col: 3, row: 2 } },
+      { from: { col: 1, row: 1 }, to: { col: 3, row: 0 } },
+    ],
   },
   teaches: 'Clear the eye-blocking piece to open the Elephant path',
 }
@@ -566,7 +571,7 @@ export const L5_P3: PuzzleDef = {
   setup: {
     pieces: [
       p('phao', 'red', 1, 0),
-      p('tot', 'red', 1, 4), // screen
+      p('tot', 'red', 1, 5), // screen (crossed river)
       p('xe', 'black', 1, 7), // target
       p('tuong', 'red', 5, 0),
       p('tuong', 'black', 3, 9),
@@ -611,7 +616,7 @@ export const L5_P5: PuzzleDef = {
   setup: {
     pieces: [
       p('phao', 'red', 2, 2),
-      p('tot', 'red', 6, 2), // screen on row 2 when cannon moves to (4,2)
+      p('ma', 'red', 6, 2), // screen on row 2 when cannon moves to (4,2)
       p('tot', 'red', 4, 5), // screen on col 4 when cannon moves to (4,2)
       p('xe', 'black', 8, 2), // target on row 2
       p('ma', 'black', 4, 8), // target on col 4
@@ -855,14 +860,14 @@ export const L7_P5: PuzzleDef = {
       p('ma', 'red', 3, 6), // protects (4,8) — gen can't capture Xe
       p('tuong', 'red', 3, 0),
       p('tuong', 'black', 4, 9),
-      p('tot', 'black', 3, 9), // blocks gen escape left
-      p('tot', 'black', 5, 9), // blocks gen escape right
+      p('ma', 'black', 3, 9), // blocks gen escape left
+      p('ma', 'black', 5, 9), // blocks gen escape right
     ],
     playerSide: 'red',
   },
   answer: {
     type: 'find_the_move',
-    // Xe to (4,8): checks gen at (4,9). Gen can't go (3,9) own Tot, (5,9) own Tot,
+    // Xe to (4,8): checks gen at (4,9). Gen can't go (3,9) own Ma, (5,9) own Ma,
     // (4,8) protected by Ma at (3,6). Checkmate.
     moves: [{ from: { col: 0, row: 8 }, to: { col: 4, row: 8 } }],
   },

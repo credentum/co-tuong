@@ -116,7 +116,7 @@ export const usePracticeStore = create<PracticeStore>()(
           return (pa?.box ?? 0) - (pb?.box ?? 0)
         })
 
-        const sessionIds = sorted.slice(0, 5)
+        const sessionIds = [...sorted]
         for (let i = sessionIds.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1))
           ;[sessionIds[i], sessionIds[j]] = [sessionIds[j]!, sessionIds[i]!]
@@ -158,7 +158,7 @@ export const usePracticeStore = create<PracticeStore>()(
           })
         }
 
-        const sessionIds = sorted.slice(0, 5)
+        const sessionIds = [...sorted]
         // Shuffle for variety
         for (let i = sessionIds.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1))

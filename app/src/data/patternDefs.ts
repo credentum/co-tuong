@@ -31,7 +31,7 @@ export const PATTERN_DEFS: PatternDef[] = [
         p('si', 'red', 3, 0),
         p('si', 'red', 5, 0),
         p('phao', 'red', 1, 2), // cannon starts here
-        p('tot', 'red', 7, 3), // soldier as screen on col 7
+        p('tot', 'red', 7, 5), // soldier as screen on col 7 (crossed river)
         p('ma', 'red', 1, 0),
         p('tuong', 'black', 5, 9),
         p('si', 'black', 4, 9),
@@ -48,7 +48,7 @@ export const PATTERN_DEFS: PatternDef[] = [
         // Move 2: Black develops Horse (walks into danger on col 7)
         { from: { col: 7, row: 9 }, to: { col: 8, row: 7 } },
         // Move 3: Red advances screen Soldier
-        { from: { col: 7, row: 3 }, to: { col: 7, row: 4 } },
+        { from: { col: 7, row: 5 }, to: { col: 7, row: 6 } },
         // Move 4: Black moves something else, ignoring the threat
         { from: { col: 1, row: 7 }, to: { col: 1, row: 4 } },
         // Move 5: Red Cannon repositions along col 7 to pressure

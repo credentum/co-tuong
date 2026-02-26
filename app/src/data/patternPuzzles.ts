@@ -31,7 +31,7 @@ export const PAT_01_S1: PracticePuzzleDef = {
     pieces: [
       p('tuong', 'red', 4, 0),
       p('phao', 'red', 7, 2),
-      p('tot', 'red', 7, 4), // screen
+      p('tot', 'red', 7, 5), // screen (crossed river)
       p('tuong', 'black', 5, 9),
       p('ma', 'black', 7, 7), // target
       p('tuongVoi', 'black', 2, 9),
@@ -90,7 +90,7 @@ export const PAT_01_S3: PracticePuzzleDef = {
     pieces: [
       p('tuong', 'red', 5, 0),
       p('phao', 'red', 7, 1),
-      p('tot', 'red', 7, 4), // screen
+      p('tot', 'red', 7, 5), // screen (crossed river)
       p('tuong', 'black', 4, 9),
       p('ma', 'black', 7, 8), // target
       p('tuongVoi', 'black', 5, 9), // can interpose at (7,7)
@@ -149,7 +149,7 @@ export const PAT_01_D2: PracticePuzzleDef = {
     pieces: [
       p('tuong', 'red', 5, 0),
       p('phao', 'red', 7, 2),
-      p('tot', 'red', 7, 4), // screen
+      p('tot', 'red', 7, 5), // screen (crossed river)
       p('tuong', 'black', 4, 9),
       p('ma', 'black', 7, 9), // target — remaining horse
       p('tuongVoi', 'black', 5, 9), // can interpose at (7,7)
