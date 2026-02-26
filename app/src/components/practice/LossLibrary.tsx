@@ -1,5 +1,7 @@
 import { useLossStore } from '@/store/useLossStore'
 import { useLearningStore } from '@/store/useLearningStore'
+import { usePracticeStore } from '@/store/usePracticeStore'
+import { lossToPuzzle } from '@/lib/lossToPuzzle'
 import type { SavedLoss } from '@/types/loss'
 
 function formatDate(timestamp: number): string {
@@ -20,10 +22,12 @@ function LossEntry({
   loss,
   onReview,
   onDelete,
+  onConvert,
 }: {
   loss: SavedLoss
   onReview: () => void
   onDelete: () => void
+  onConvert: () => void
 }) {
   return (
     <div
@@ -39,18 +43,33 @@ function LossEntry({
               New
             </span>
           )}
+          {loss.convertedToPuzzle && (
+            <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-700">
+              Puzzle
+            </span>
+          )}
         </div>
         <div className="mt-0.5 text-xs text-stone-500">
           vs {difficultyLabel(loss.aiDifficulty)} AI
           {loss.reviewed ? ' — reviewed' : ''}
         </div>
       </button>
-      <button
-        onClick={onDelete}
-        className="ml-3 rounded-lg px-2 py-1 text-xs text-stone-400 active:bg-stone-100"
-      >
-        Delete
-      </button>
+      <div className="ml-3 flex gap-1">
+        {!loss.convertedToPuzzle && (
+          <button
+            onClick={onConvert}
+            className="rounded-lg bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 active:bg-amber-100"
+          >
+            To Puzzle
+          </button>
+        )}
+        <button
+          onClick={onDelete}
+          className="rounded-lg px-2 py-1 text-xs text-stone-400 active:bg-stone-100"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   )
 }
@@ -58,7 +77,16 @@ function LossEntry({
 export function LossLibrary({ onBack }: { onBack: () => void }) {
   const losses = useLossStore((s) => s.losses)
   const deleteLoss = useLossStore((s) => s.deleteLoss)
+  const markConverted = useLossStore((s) => s.markConverted)
   const startReview = useLearningStore((s) => s.startReview)
+  const addLossPuzzle = usePracticeStore((s) => s.addLossPuzzle)
+
+  const handleConvert = (loss: SavedLoss) => {
+    const puzzle = lossToPuzzle(loss)
+    if (!puzzle) return
+    addLossPuzzle(puzzle)
+    markConverted(loss.id)
+  }
 
   // Sort: most recent first, unreviewed on top
   const sorted = [...losses].sort((a, b) => {
@@ -85,6 +113,7 @@ export function LossLibrary({ onBack }: { onBack: () => void }) {
               loss={loss}
               onReview={() => startReview(loss.id)}
               onDelete={() => deleteLoss(loss.id)}
+              onConvert={() => handleConvert(loss)}
             />
           ))}
         </div>

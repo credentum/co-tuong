@@ -20,6 +20,11 @@ function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
     .map((p) => (posEq(p.position, from) ? { ...p, position: to } : p))
 }
 
+/** Look up a puzzle by ID from both curated and loss-generated puzzles */
+function findPuzzle(puzzleId: string, lossPuzzles: PracticePuzzleDef[]): PracticePuzzleDef | null {
+  return ALL_PRACTICE_PUZZLES[puzzleId] ?? lossPuzzles.find((p) => p.puzzleId === puzzleId) ?? null
+}
+
 interface PracticeStore {
   // Navigation
   difficulty: PracticeDifficulty | null
@@ -49,8 +54,12 @@ interface PracticeStore {
   practiceProgress: PracticeProgress[]
   practiceSessionCount: number
 
+  // Loss-generated puzzles (persisted)
+  lossPuzzles: PracticePuzzleDef[]
+
   // Actions
   startSession: (difficulty: PracticeDifficulty) => void
+  startLossSession: () => void
   exitPractice: () => void
   loadPuzzle: (puzzleId: string) => void
   selectPosition: (pos: Position) => void
@@ -61,6 +70,8 @@ interface PracticeStore {
   requestHint: () => void
   recordResult: (puzzleId: string, correct: boolean) => void
   getCurrentPuzzle: () => PracticePuzzleDef | null
+  addLossPuzzle: (puzzle: PracticePuzzleDef) => void
+  deleteLossPuzzle: (puzzleId: string) => void
 }
 
 export const usePracticeStore = create<PracticeStore>()(
@@ -84,6 +95,36 @@ export const usePracticeStore = create<PracticeStore>()(
       _piecesAtStepStart: [],
       practiceProgress: [],
       practiceSessionCount: 0,
+      lossPuzzles: [],
+
+      startLossSession: () => {
+        const { lossPuzzles, practiceProgress, practiceSessionCount } = get()
+        if (lossPuzzles.length === 0) return
+
+        const ids = lossPuzzles.map((p) => p.puzzleId)
+        // Sort by Leitner box (lowest first)
+        const sorted = [...ids].sort((a, b) => {
+          const pa = practiceProgress.find((p) => p.puzzleId === a)
+          const pb = practiceProgress.find((p) => p.puzzleId === b)
+          return (pa?.box ?? 0) - (pb?.box ?? 0)
+        })
+
+        const sessionIds = sorted.slice(0, 5)
+        for (let i = sessionIds.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[sessionIds[i], sessionIds[j]] = [sessionIds[j]!, sessionIds[i]!]
+        }
+
+        set({
+          difficulty: null, // null signals loss session
+          sessionPuzzleIds: sessionIds,
+          sessionIndex: 0,
+          sessionResults: [],
+          practiceSessionCount: practiceSessionCount + 1,
+        })
+
+        get().loadPuzzle(sessionIds[0]!)
+      },
 
       startSession: (difficulty) => {
         const ids = PRACTICE_PUZZLES_BY_DIFFICULTY[difficulty]
@@ -148,7 +189,7 @@ export const usePracticeStore = create<PracticeStore>()(
       },
 
       loadPuzzle: (puzzleId) => {
-        const puzzle = ALL_PRACTICE_PUZZLES[puzzleId]
+        const puzzle = findPuzzle(puzzleId, get().lossPuzzles)
         if (!puzzle) return
         const pieces = [...puzzle.setup.pieces]
         set({
@@ -168,9 +209,9 @@ export const usePracticeStore = create<PracticeStore>()(
       },
 
       getCurrentPuzzle: () => {
-        const { sessionPuzzleIds, sessionIndex } = get()
+        const { sessionPuzzleIds, sessionIndex, lossPuzzles } = get()
         const id = sessionPuzzleIds[sessionIndex]
-        return id ? (ALL_PRACTICE_PUZZLES[id] ?? null) : null
+        return id ? findPuzzle(id, lossPuzzles) : null
       },
 
       selectPosition: (pos) => {
@@ -378,12 +419,27 @@ export const usePracticeStore = create<PracticeStore>()(
           })
         }
       },
+
+      addLossPuzzle: (puzzle) => {
+        const { lossPuzzles } = get()
+        // Avoid duplicates
+        if (lossPuzzles.some((p) => p.puzzleId === puzzle.puzzleId)) return
+        set({ lossPuzzles: [...lossPuzzles, puzzle] })
+      },
+
+      deleteLossPuzzle: (puzzleId) => {
+        set({
+          lossPuzzles: get().lossPuzzles.filter((p) => p.puzzleId !== puzzleId),
+          practiceProgress: get().practiceProgress.filter((p) => p.puzzleId !== puzzleId),
+        })
+      },
     }),
     {
       name: 'cotuong_practice',
       partialize: (state) => ({
         practiceProgress: state.practiceProgress,
         practiceSessionCount: state.practiceSessionCount,
+        lossPuzzles: state.lossPuzzles,
       }),
     },
   ),

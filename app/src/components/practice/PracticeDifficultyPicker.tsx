@@ -15,7 +15,9 @@ const DIFFICULTIES: { key: PracticeDifficulty; stars: string }[] = [
 export function PracticeDifficultyPicker() {
   const { t } = useTranslation()
   const startSession = usePracticeStore((s) => s.startSession)
+  const startLossSession = usePracticeStore((s) => s.startLossSession)
   const progress = usePracticeStore((s) => s.practiceProgress)
+  const lossPuzzleCount = usePracticeStore((s) => s.lossPuzzles.length)
   const unreviewedCount = useLossStore((s) => s.getUnreviewedCount())
   const lossCount = useLossStore((s) => s.losses.length)
   const [showLosses, setShowLosses] = useState(false)
@@ -54,6 +56,27 @@ export function PracticeDifficultyPicker() {
           </button>
         )
       })}
+
+      {/* My Puzzles — from converted losses */}
+      {lossPuzzleCount > 0 && (
+        <>
+          <div className="mt-4 w-full max-w-xs border-t border-stone-200" />
+          <button
+            onClick={() => startLossSession()}
+            className="w-full max-w-xs rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-left shadow-sm active:bg-amber-100"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-base font-semibold text-stone-800">
+                  {t('practice.myPuzzles')}
+                </div>
+                <div className="mt-0.5 text-xs text-stone-500">{t('practice.myPuzzlesDesc')}</div>
+              </div>
+              <div className="text-xs text-stone-400">{lossPuzzleCount}</div>
+            </div>
+          </button>
+        </>
+      )}
 
       {/* My Mistakes section */}
       {lossCount > 0 && (

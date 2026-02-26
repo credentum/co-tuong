@@ -108,7 +108,9 @@
     "sessionComplete": "Session Complete!",
     "practiceAgain": "Practice Again",
     "changeDifficulty": "Change Difficulty",
-    "score": "{{correct}} of {{total}} correct"
+    "score": "{{correct}} of {{total}} correct",
+    "myPuzzles": "My Puzzles",
+    "myPuzzlesDesc": "Practice positions from your losses"
   },
   "coaching": {
     "nudges": "Coaching Hints",

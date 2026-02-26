@@ -108,7 +108,9 @@
     "sessionComplete": "Hoàn thành phiên!",
     "practiceAgain": "Luyện lại",
     "changeDifficulty": "Đổi độ khó",
-    "score": "{{correct}} / {{total}} đúng"
+    "score": "{{correct}} / {{total}} đúng",
+    "myPuzzles": "Bài tập của tôi",
+    "myPuzzlesDesc": "Luyện từ ván thua của bạn"
   },
   "coaching": {
     "nudges": "Gợi ý huấn luyện",
