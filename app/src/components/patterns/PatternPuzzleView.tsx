@@ -12,6 +12,7 @@ export function PatternPuzzleView() {
   const phaseStatus = usePracticeStore((s) => s.phaseStatus)
   const attempts = usePracticeStore((s) => s.attempts)
   const hintShown = usePracticeStore((s) => s.hintShown)
+  const engineHintMove = usePracticeStore((s) => s.engineHintMove)
   const nextPuzzle = usePracticeStore((s) => s.nextPuzzle)
   const skipPuzzle = usePracticeStore((s) => s.skipPuzzle)
   const requestHint = usePracticeStore((s) => s.requestHint)
@@ -89,6 +90,9 @@ export function PatternPuzzleView() {
         {hintShown && puzzle.hint && (
           <p className="mb-2 text-center text-xs italic text-amber-700">{puzzle.hint}</p>
         )}
+        {hintShown && engineHintMove && (
+          <p className="mb-1 text-center text-xs text-blue-600">{t('practice.engineHint')}</p>
+        )}
 
         {/* Status messages */}
         {phaseStatus === 'opponent_responding' && (
@@ -104,7 +108,14 @@ export function PatternPuzzleView() {
         )}
 
         {phaseStatus === 'puzzle_failed' && (
-          <p className="mb-2 text-center text-sm text-stone-600">{t('practice.showSolution')}</p>
+          <>
+            <p className="mb-1 text-center text-sm text-stone-600">{t('practice.showSolution')}</p>
+            {engineHintMove && (
+              <p className="mb-2 text-center text-xs text-stone-500">
+                {t('practice.otherValidMoves')}
+              </p>
+            )}
+          </>
         )}
 
         {attempts === 1 && isActive && (

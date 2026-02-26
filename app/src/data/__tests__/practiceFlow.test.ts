@@ -207,8 +207,25 @@ describe('Practice flow — step through each puzzle', () => {
     const puzzle = puzzles[0]!
     loadPuzzleDirect(puzzle)
     expect(usePracticeStore.getState().hintShown).toBe(false)
+    expect(usePracticeStore.getState().engineHintMove).toBeNull()
     usePracticeStore.getState().requestHint()
-    expect(usePracticeStore.getState().hintShown).toBe(true)
+    const after = usePracticeStore.getState()
+    expect(after.hintShown).toBe(true)
+    // Engine should compute a best move for the position
+    expect(after.engineHintMove).not.toBeNull()
+    // Highlight squares should include the engine move
+    expect(after.highlightSquares.length).toBeGreaterThan(0)
+    expect(after.highlightStyle).toBe('target')
+  })
+
+  it('hint request is idempotent', () => {
+    const puzzle = puzzles[0]!
+    loadPuzzleDirect(puzzle)
+    usePracticeStore.getState().requestHint()
+    const first = usePracticeStore.getState().engineHintMove
+    usePracticeStore.getState().requestHint()
+    const second = usePracticeStore.getState().engineHintMove
+    expect(first).toEqual(second)
   })
 
   it('skip advances to next puzzle', () => {

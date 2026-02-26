@@ -51,6 +51,7 @@ interface PracticeStore {
   attempts: number
   showSolution: boolean
   hintShown: boolean
+  engineHintMove: { from: Position; to: Position } | null
   lastMoveHighlight: { from: Position; to: Position } | null
   highlightSquares: Position[]
   highlightStyle: 'target' | 'correct' | 'incorrect'
@@ -97,6 +98,7 @@ export const usePracticeStore = create<PracticeStore>()(
       attempts: 0,
       showSolution: false,
       hintShown: false,
+      engineHintMove: null,
       lastMoveHighlight: null,
       highlightSquares: [],
       highlightStyle: 'target',
@@ -191,6 +193,7 @@ export const usePracticeStore = create<PracticeStore>()(
           attempts: 0,
           showSolution: false,
           hintShown: false,
+          engineHintMove: null,
           lastMoveHighlight: null,
           highlightSquares: [],
         })
@@ -209,6 +212,7 @@ export const usePracticeStore = create<PracticeStore>()(
           attempts: 0,
           showSolution: false,
           hintShown: false,
+          engineHintMove: null,
           lastMoveHighlight: null,
           highlightSquares: [],
           highlightStyle: 'target',
@@ -361,15 +365,24 @@ export const usePracticeStore = create<PracticeStore>()(
           // Wrong move
           const newAttempts = state.attempts + 1
           if (newAttempts >= 2) {
-            // Show solution
+            // Show solution — highlight hardcoded answer + engine best move
+            const solutionSquares: Position[] = [step.playerMove.to]
+            let bestMove: { from: Position; to: Position } | null = null
+            if (puzzle.goal) {
+              bestMove = getMinimaxMove(state.pieces, puzzle.setup.playerSide, 2)
+              if (bestMove && !posEq(bestMove.to, step.playerMove.to)) {
+                solutionSquares.push(bestMove.to)
+              }
+            }
             set({
               selectedPosition: null,
               legalMoves: [],
               phaseStatus: 'puzzle_failed',
               attempts: newAttempts,
               showSolution: true,
-              highlightSquares: [step.playerMove.to],
+              highlightSquares: solutionSquares,
               highlightStyle: 'correct',
+              engineHintMove: bestMove,
             })
             state.recordResult(puzzle.puzzleId, false)
           } else {
@@ -429,7 +442,19 @@ export const usePracticeStore = create<PracticeStore>()(
       },
 
       requestHint: () => {
-        set({ hintShown: true })
+        const { pieces, hintShown } = get()
+        if (hintShown) return
+        const puzzle = get().getCurrentPuzzle()
+        if (!puzzle) return
+
+        // Compute engine's best move for a board highlight
+        const bestMove = getMinimaxMove(pieces, puzzle.setup.playerSide, 2)
+        set({
+          hintShown: true,
+          engineHintMove: bestMove,
+          highlightSquares: bestMove ? [bestMove.from, bestMove.to] : [],
+          highlightStyle: 'target',
+        })
       },
 
       recordResult: (puzzleId, correct) => {

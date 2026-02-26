@@ -110,7 +110,9 @@
     "changeDifficulty": "Đổi độ khó",
     "score": "{{correct}} / {{total}} đúng",
     "myPuzzles": "Bài tập của tôi",
-    "myPuzzlesDesc": "Luyện từ ván thua của bạn"
+    "myPuzzlesDesc": "Luyện từ ván thua của bạn",
+    "engineHint": "Đây là một nước mạnh (được tô sáng trên bàn cờ)",
+    "otherValidMoves": "Các nước đi hợp lệ khác cũng được tô sáng."
   },
   "patterns": {
     "title": "Chiến thuật",

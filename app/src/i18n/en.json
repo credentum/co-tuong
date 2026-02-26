@@ -110,7 +110,9 @@
     "changeDifficulty": "Change Difficulty",
     "score": "{{correct}} of {{total}} correct",
     "myPuzzles": "My Puzzles",
-    "myPuzzlesDesc": "Practice positions from your losses"
+    "myPuzzlesDesc": "Practice positions from your losses",
+    "engineHint": "Here's one strong option (highlighted on the board)",
+    "otherValidMoves": "Other valid moves are also highlighted."
   },
   "patterns": {
     "title": "Patterns",
