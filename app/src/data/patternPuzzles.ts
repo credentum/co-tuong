@@ -64,15 +64,15 @@ export const PAT_01_S2: PracticePuzzleDef = {
       p('tot', 'red', 2, 4), // screen
       p('tuong', 'black', 4, 9),
       p('ma', 'black', 2, 7), // target
-      p('xe', 'black', 2, 5), // can capture the screen at (2,4)
+      p('xe', 'black', 0, 4), // can capture the screen at (2,4) along row 4
       p('si', 'black', 3, 8),
       p('si', 'black', 5, 8),
     ],
   },
   goal: { type: 'find_capture', targetPos: { col: 2, row: 4 } },
   solution: [
-    // Capture the screen: xe(2,5) captures tot(2,4)
-    { playerMove: { from: { col: 2, row: 5 }, to: { col: 2, row: 4 } } },
+    // Capture the screen: xe(0,4) captures tot(2,4) along row 4
+    { playerMove: { from: { col: 0, row: 4 }, to: { col: 2, row: 4 } } },
   ],
 }
 
@@ -416,14 +416,14 @@ export const PAT_03_S3: PracticePuzzleDef = {
   setup: {
     playerSide: 'red',
     // Red gen(4,0), red phao at (4,4) pinned. Black gen(4,9).
-    // Black xe at (4,6) threatens to capture phao(4,4) which can't move.
+    // Black xe at (8,4) threatens to capture phao(4,4) along row 4 — phao can't move (pinned).
     // Solution: move gen(4,0) to (3,0) or (5,0) — unpin the cannon.
     pieces: [
       p('tuong', 'red', 4, 0),
       p('phao', 'red', 4, 4), // pinned by flying generals
       p('si', 'red', 3, 1),
       p('tuong', 'black', 4, 9),
-      p('xe', 'black', 4, 6), // threatens pinned cannon
+      p('xe', 'black', 8, 4), // threatens pinned cannon along row 4
       p('si', 'black', 3, 8),
     ],
   },
@@ -448,14 +448,14 @@ export const PAT_03_D1: PracticePuzzleDef = {
   setup: {
     playerSide: 'red',
     // Red gen(5,0), red ma at (5,4) pinned on col 5. Black gen(5,9).
-    // Black xe at (5,7) will capture ma next move.
+    // Black xe at (3,4) threatens ma along row 4 — ma can't move (pinned).
     // From (5,0): left (4,0), up (5,1). Both valid.
     pieces: [
       p('tuong', 'red', 5, 0),
       p('ma', 'red', 5, 4), // pinned
       p('si', 'red', 4, 1),
       p('tuong', 'black', 5, 9),
-      p('xe', 'black', 5, 7), // threatens pinned horse
+      p('xe', 'black', 3, 4), // threatens pinned horse along row 4
       p('si', 'black', 4, 8),
     ],
   },
