@@ -22,6 +22,7 @@ export interface BoardRendererProps {
   aiHighlightPos?: Position | null
   highlightSquares?: Position[]
   highlightStyle?: 'target' | 'correct' | 'incorrect'
+  highlightPerSquareStyles?: ('target' | 'correct' | 'incorrect')[]
   onTapSquare: (pos: Position) => void
   onLongPressPiece?: (type: string) => void
   flipped?: boolean
@@ -42,6 +43,7 @@ export function BoardRenderer({
   aiHighlightPos,
   highlightSquares,
   highlightStyle,
+  highlightPerSquareStyles,
   onTapSquare,
   onLongPressPiece,
   flipped,
@@ -198,9 +200,10 @@ export function BoardRenderer({
       })}
 
       {/* Custom highlight squares (for puzzles) — rendered on top of pieces */}
-      {highlightSquares?.map((pos) => {
+      {highlightSquares?.map((pos, i) => {
         const { x, y } = boardToSVG(pos.col, pos.row, flipped)
-        const color = HIGHLIGHT_COLORS[highlightStyle ?? 'target']
+        const style = highlightPerSquareStyles?.[i] ?? highlightStyle ?? 'target'
+        const color = HIGHLIGHT_COLORS[style]
         const hasPiece = pieces.some(
           (p) => p.position.col === pos.col && p.position.row === pos.row,
         )

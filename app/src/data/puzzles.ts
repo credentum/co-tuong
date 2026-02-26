@@ -422,7 +422,7 @@ export const L4_P2: PuzzleDef = {
     { col: 2, row: 4 }, // northwest — eye at (3,3) is clear → Yes
   ],
   tfExplanations: [
-    'No — the red Soldier at the diagonal midpoint blocks this path. The Elephant cannot jump over it.',
+    'No — the red Horse at the diagonal midpoint blocks this path. The Elephant cannot jump over it.',
     'No — the black Soldier at the diagonal midpoint blocks this direction.',
     'Yes — the diagonal midpoint is clear. The Elephant can reach this square.',
     'Yes — nothing blocks the midpoint. The Elephant moves freely in this direction.',

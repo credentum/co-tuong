@@ -7,6 +7,7 @@ export function PuzzleBoard() {
   const legalMoves = useLearningStore((s) => s.legalMoves)
   const highlightSquares = useLearningStore((s) => s.highlightSquares)
   const highlightStyle = useLearningStore((s) => s.highlightStyle)
+  const highlightPerSquareStyles = useLearningStore((s) => s.highlightPerSquareStyles)
   const tappedPositions = useLearningStore((s) => s.tappedPositions)
   const puzzleFeedback = useLearningStore((s) => s.puzzleFeedback)
   const selectPosition = useLearningStore((s) => s.selectPosition)
@@ -36,6 +37,9 @@ export function PuzzleBoard() {
       legalMoves={legalMoves}
       highlightSquares={allHighlights.length > 0 ? allHighlights : undefined}
       highlightStyle={highlightSquares.length > 0 ? highlightStyle : 'target'}
+      highlightPerSquareStyles={
+        highlightPerSquareStyles.length > 0 ? highlightPerSquareStyles : undefined
+      }
       onTapSquare={handleTap}
       labelMode={displayMode}
     />

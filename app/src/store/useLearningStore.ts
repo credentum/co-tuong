@@ -75,6 +75,7 @@ interface LearningStore {
   // Highlight state for board
   highlightSquares: Position[]
   highlightStyle: 'target' | 'correct' | 'incorrect'
+  highlightPerSquareStyles: ('target' | 'correct' | 'incorrect')[]
 
   // Current puzzle helper
   getCurrentPuzzle: () => PuzzleDef | null
@@ -158,6 +159,7 @@ export const useLearningStore = create<LearningStore>()(
           showSolution: false,
           tappedPositions: [],
           highlightSquares: [],
+          highlightPerSquareStyles: [],
           selectedPosition: null,
           legalMoves: [],
           tfCurrentIndex: 0,
@@ -173,6 +175,7 @@ export const useLearningStore = create<LearningStore>()(
           showSolution: false,
           tappedPositions: [],
           highlightSquares: [],
+          highlightPerSquareStyles: [],
           selectedPosition: null,
           legalMoves: [],
           tfCurrentIndex: 0,
@@ -195,6 +198,7 @@ export const useLearningStore = create<LearningStore>()(
           selectedPosition: null,
           legalMoves: [],
           highlightSquares: [],
+          highlightPerSquareStyles: [],
         }),
 
       // Board state
@@ -376,6 +380,9 @@ export const useLearningStore = create<LearningStore>()(
             showSolution: showSol,
             highlightSquares: showSol ? positions : [positions[idx]!],
             highlightStyle: showSol ? 'correct' : 'incorrect',
+            highlightPerSquareStyles: showSol
+              ? correctAnswers.map((a) => (a ? 'correct' : 'incorrect'))
+              : [],
           })
           if (showSol) {
             state.recordPuzzleResult(puzzle.puzzleId, false)
@@ -385,7 +392,7 @@ export const useLearningStore = create<LearningStore>()(
 
         // Correct answer — advance to next question or finish
         if (idx + 1 >= positions.length) {
-          // All questions answered correctly
+          // All questions answered correctly — show green for true, red for false
           set({
             tfAnswers: newAnswers,
             tfCurrentIndex: idx + 1,
@@ -393,6 +400,7 @@ export const useLearningStore = create<LearningStore>()(
             puzzleFeedback: 'correct',
             highlightSquares: positions,
             highlightStyle: 'correct',
+            highlightPerSquareStyles: correctAnswers.map((a) => (a ? 'correct' : 'incorrect')),
           })
           state.recordPuzzleResult(puzzle.puzzleId, true)
         } else {
@@ -403,6 +411,7 @@ export const useLearningStore = create<LearningStore>()(
             tfExplanation: '',
             highlightSquares: [positions[idx + 1]!],
             highlightStyle: 'target',
+            highlightPerSquareStyles: [],
           })
         }
       },
@@ -427,6 +436,7 @@ export const useLearningStore = create<LearningStore>()(
           showSolution: false,
           tappedPositions: [],
           highlightSquares: [],
+          highlightPerSquareStyles: [],
           selectedPosition: null,
           legalMoves: [],
           tfCurrentIndex: 0,
@@ -520,6 +530,7 @@ export const useLearningStore = create<LearningStore>()(
 
       highlightSquares: [],
       highlightStyle: 'target',
+      highlightPerSquareStyles: [],
 
       getCurrentPuzzle: () => {
         const state = get()
