@@ -10,6 +10,7 @@ import type {
 import { getFullyLegalMoves, getGameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
+import { evaluateAtDepth, getMinimaxMove } from '@/lib/ai'
 import { ALL_PRACTICE_PUZZLES, PRACTICE_PUZZLES_BY_DIFFICULTY } from '@/data/practicePuzzles'
 import { usePatternStore } from './usePatternStore'
 import { getConceptsForPattern } from '@/lib/patternPuzzleMap'
@@ -258,24 +259,43 @@ export const usePracticeStore = create<PracticeStore>()(
         const step = puzzle.solution[state.currentStepIndex]
         if (!step) return
 
-        // Check if the move matches the expected solution
+        const isCheckmatePuzzle = puzzle.concept.startsWith('checkmate')
+        const oppSide = puzzle.setup.playerSide === 'red' ? 'black' : 'red'
+        const wins = puzzle.setup.playerSide === 'red' ? 'red_wins' : 'black_wins'
+
+        // Check if the move matches the hardcoded solution
         let isCorrect =
           (posEq(step.playerMove.from, from) && posEq(step.playerMove.to, to)) ||
           (step.alternativeMoves?.some((m) => posEq(m.from, from) && posEq(m.to, to)) ?? false)
 
-        // Safety net: on the final step of checkmate puzzles, accept any move that delivers checkmate
-        if (!isCorrect && !step.opponentResponse && puzzle.concept.startsWith('checkmate')) {
+        // Engine validation for checkmate puzzles: accept any move that maintains forced mate
+        let engineOpponentResponse: { from: Position; to: Position } | null = null
+        if (!isCorrect && isCheckmatePuzzle) {
           const afterMove = applyMove(state.pieces, from, to)
-          const oppSide = puzzle.setup.playerSide === 'red' ? 'black' : 'red'
-          const result = getGameResult(afterMove, oppSide)
-          const wins = puzzle.setup.playerSide === 'red' ? 'red_wins' : 'black_wins'
-          if (result === wins) isCorrect = true
+
+          if (!step.opponentResponse) {
+            // Final step: accept any move that delivers immediate checkmate
+            if (getGameResult(afterMove, oppSide) === wins) isCorrect = true
+          } else {
+            // Intermediate step: check if forced mate still exists at required depth
+            const remainingSteps = puzzle.solution.length - state.currentStepIndex - 1
+            const depth = remainingSteps * 2
+            const score = evaluateAtDepth(afterMove, oppSide, depth)
+            // Score >= 9000 means red has forced mate
+            if (score >= 9000) {
+              isCorrect = true
+              // Compute opponent's best defensive move dynamically
+              const oppBest = getMinimaxMove(afterMove, oppSide, depth)
+              if (oppBest) engineOpponentResponse = oppBest
+            }
+          }
         }
 
         if (isCorrect) {
           const newPieces = applyMove(state.pieces, from, to)
+          const oppResponse = engineOpponentResponse ?? step.opponentResponse
 
-          if (step.opponentResponse) {
+          if (oppResponse) {
             // More steps to go — play opponent response after delay
             set({
               pieces: newPieces,
@@ -289,13 +309,12 @@ export const usePracticeStore = create<PracticeStore>()(
             setTimeout(() => {
               const current = usePracticeStore.getState()
               if (current.phaseStatus !== 'opponent_responding') return
-              const opp = step.opponentResponse!
-              const afterOpp = applyMove(current.pieces, opp.from, opp.to)
+              const afterOpp = applyMove(current.pieces, oppResponse.from, oppResponse.to)
               set({
                 pieces: afterOpp,
                 currentStepIndex: current.currentStepIndex + 1,
                 phaseStatus: 'awaiting_player_move',
-                lastMoveHighlight: { from: opp.from, to: opp.to },
+                lastMoveHighlight: { from: oppResponse.from, to: oppResponse.to },
                 _piecesAtStepStart: afterOpp,
                 attempts: 0,
                 highlightSquares: [],

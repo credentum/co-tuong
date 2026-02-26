@@ -134,6 +134,15 @@ export interface AiMove {
   to: Position
 }
 
+/**
+ * Evaluate a position at a given depth using minimax.
+ * Returns score from Red's perspective (positive = Red advantage).
+ * Score >= 9000 indicates forced checkmate for Red.
+ */
+export function evaluateAtDepth(pieces: Piece[], side: Side, depth: number): number {
+  return minimax(pieces, depth, -Infinity, Infinity, side === 'red', side)
+}
+
 /** Minimax AI: picks the best move at given depth. Black minimizes, Red maximizes. */
 export function getMinimaxMove(
   pieces: Piece[],

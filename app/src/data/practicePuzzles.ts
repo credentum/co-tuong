@@ -15,7 +15,7 @@ export const PR_E1: PracticePuzzleDef = {
   difficulty: 'easy',
   prompt: 'Checkmate in 1 -- Red to move',
   concept: 'checkmate_in_1',
-  hint: 'Slide the Chariot along the row to deliver checkmate.',
+  hint: 'Slide the Chariot along the column to deliver checkmate.',
   setup: {
     playerSide: 'red',
     // Red gen(3,0), Xe(0,9). Black gen(5,9), Si(4,8), Si(5,8).
@@ -72,20 +72,20 @@ export const PR_E1: PracticePuzzleDef = {
     // Xe(8,9)->(4,9)? No, Si(4,8) not blocking row 9 between col 5 and col 4.
     // Xe slides from col 8 to col 5 on row 9? (5,9) has gen. Xe captures gen? That's not how puzzles work.
     // Let me just use a classic smothered/confined position.
-    // Final design: Red gen(3,0), Xe(8,7). Black gen(4,9), Si(3,9), Si(5,9), tuongVoi(4,7 area).
-    // Xe(8,7)->(4,7) check on col 4. Gen is completely boxed: (3,9)=Si, (5,9)=Si, (4,8)=tuongVoi, (4,7)=Xe.
-    // No escape. CHECKMATE.
-    // tuongVoi replaces the 3rd Si (illegal) — Elephants can occupy (4,8) on black's side.
+    // Final design: Red gen(4,0), Xe(4,3). Black gen(4,9), tot(3,9), tot(5,9).
+    // Xe starts on col 4 between the generals, blocking flying generals at start.
+    // Xe(4,3)->(4,8): check on col 4. Gen(4,9) can't go to (3,9)=own tot, (5,9)=own tot,
+    // or capture Xe at (4,8) because that exposes flying generals with red gen(4,0). CHECKMATE.
+    // Tots at (3,9) and (5,9) can only move forward to (3,8)/(5,8), which don't block the check.
     pieces: [
-      p('tuong', 'red', 3, 0),
-      p('xe', 'red', 8, 7),
+      p('tuong', 'red', 4, 0),
+      p('xe', 'red', 4, 3),
       p('tuong', 'black', 4, 9),
-      p('si', 'black', 3, 9),
-      p('si', 'black', 5, 9),
-      p('tuongVoi', 'black', 4, 8),
+      p('tot', 'black', 3, 9),
+      p('tot', 'black', 5, 9),
     ],
   },
-  solution: [{ playerMove: { from: { col: 8, row: 7 }, to: { col: 4, row: 7 } } }],
+  solution: [{ playerMove: { from: { col: 4, row: 3 }, to: { col: 4, row: 8 } } }],
 }
 
 export const PR_E2: PracticePuzzleDef = {
@@ -107,8 +107,8 @@ export const PR_E2: PracticePuzzleDef = {
       p('tuong', 'red', 4, 0),
       p('phao', 'red', 1, 5),
       p('tuong', 'black', 4, 9),
-      p('si', 'black', 3, 8),
-      p('si', 'black', 5, 8),
+      p('si', 'black', 3, 7),
+      p('si', 'black', 5, 7),
       p('xe', 'black', 7, 5),
       p('tot', 'black', 4, 5), // screen piece
     ],
@@ -149,7 +149,7 @@ export const PR_E3: PracticePuzzleDef = {
       p('tuong', 'black', 5, 9),
       p('xe', 'black', 6, 8),
       p('si', 'black', 4, 8),
-      p('si', 'black', 4, 9),
+      p('si', 'black', 3, 9),
     ],
   },
   solution: [{ playerMove: { from: { col: 3, row: 5 }, to: { col: 4, row: 7 } } }],
@@ -166,15 +166,14 @@ export const PR_E4: PracticePuzzleDef = {
     playerSide: 'red',
     // Red gen(3,0) col 3, Black gen(5,9) col 5 -- different cols, no flying generals issue.
     // Red Xe(1,7) captures unprotected black Xe(6,7) along row 7.
-    // Path: (2,7),(3,7),(4,7),(5,7) must be empty -- yes.
-    // Black Si(4,8) is in palace, not on row 7.
+    // Path: (2,7),(3,7),(4,7),(5,7) must be empty -- yes, Si(3,9) and Si(4,8) are off row 7.
     // No other red piece that can capture anything as valuable.
     pieces: [
       p('tuong', 'red', 3, 0),
       p('xe', 'red', 1, 7),
       p('tuong', 'black', 5, 9),
       p('si', 'black', 4, 8),
-      p('si', 'black', 4, 9),
+      p('si', 'black', 3, 9),
       p('xe', 'black', 6, 7), // unprotected, most valuable target
     ],
   },
@@ -200,7 +199,7 @@ export const PR_E5: PracticePuzzleDef = {
       p('tot', 'red', 5, 7),
       p('tuong', 'black', 3, 9),
       p('si', 'black', 4, 8),
-      p('si', 'black', 3, 8),
+      p('si', 'black', 3, 7),
       p('ma', 'black', 6, 7),
     ],
   },
@@ -284,7 +283,7 @@ export const PR_M1: PracticePuzzleDef = {
       p('xe', 'red', 8, 8),
       p('xe', 'red', 8, 6),
       p('tuong', 'black', 4, 9),
-      p('si', 'black', 3, 8),
+      p('si', 'black', 3, 7),
       p('si', 'black', 3, 9),
       p('phao', 'black', 6, 9), // blocks Xe row-9 check from col 8
       p('tuongVoi', 'black', 4, 7), // blocks Xe col-4 check from row 6
@@ -446,7 +445,7 @@ export const PR_M2: PracticePuzzleDef = {
       p('xe', 'red', 8, 8),
       p('xe', 'red', 2, 5),
       p('tuong', 'black', 4, 9),
-      p('si', 'black', 3, 8),
+      p('si', 'black', 3, 7),
       p('si', 'black', 3, 9),
       p('phao', 'black', 7, 9), // blocks Xe row-9 check from (8,9)
       p('tuongVoi', 'black', 4, 7), // blocks Xe col-4 check from row 5
@@ -685,7 +684,7 @@ export const PR_M4: PracticePuzzleDef = {
       p('xe', 'red', 0, 5),
       p('tuong', 'black', 3, 9),
       p('si', 'black', 4, 8),
-      p('si', 'black', 4, 9),
+      p('tot', 'black', 4, 9),
       p('ma', 'black', 3, 7),
     ],
   },
@@ -781,8 +780,8 @@ export const PR_M5: PracticePuzzleDef = {
       p('tuong', 'red', 4, 0),
       p('ma', 'red', 3, 5),
       p('tuong', 'black', 3, 9),
-      p('si', 'black', 4, 9),
-      p('si', 'black', 5, 8),
+      p('tot', 'black', 4, 9),
+      p('si', 'black', 5, 7),
       p('xe', 'black', 5, 9),
     ],
   },
@@ -1324,7 +1323,6 @@ export const PR_H5: PracticePuzzleDef = {
       p('ma', 'red', 8, 7),
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 9),
-      p('si', 'black', 3, 8),
       p('ma', 'black', 4, 8),
     ],
   },
