@@ -2,7 +2,14 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGameStore } from '@/store/useGameStore'
 import { useLearningStore } from '@/store/useLearningStore'
-import { usePlayerStore, type DotMode } from '@/store/usePlayerStore'
+import {
+  usePlayerStore,
+  computeCafeReadiness,
+  type DotMode,
+  type NudgeMode,
+} from '@/store/usePlayerStore'
+import { usePatternStore } from '@/store/usePatternStore'
+import { usePracticeStore } from '@/store/usePracticeStore'
 import type { DisplayMode } from '@/constants/board'
 import type { OpponentMode } from '@/store/useGameStore'
 
@@ -26,6 +33,11 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
   const setDisplayMode = useLearningStore((s) => s.setDisplayMode)
   const dotMode = usePlayerStore((s) => s.dotMode)
   const setDotMode = usePlayerStore((s) => s.setDotMode)
+  const nudgeMode = usePlayerStore((s) => s.nudgeMode)
+  const setNudgeMode = usePlayerStore((s) => s.setNudgeMode)
+  const mastery = usePlayerStore((s) => s.mastery)
+  const patterns = usePatternStore((s) => s.patterns)
+  const practiceProgress = usePracticeStore((s) => s.practiceProgress)
 
   useEffect(() => {
     if (!open) return
@@ -58,6 +70,28 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     { mode: 'on_request', label: t('game.dotsOnRequest') },
     { mode: 'off', label: t('game.dotsOff') },
   ]
+
+  const nudgeModes: { mode: NudgeMode; label: string }[] = [
+    { mode: 'on', label: t('coaching.nudgesOn') },
+    { mode: 'subtle', label: t('coaching.nudgesSubtle') },
+    { mode: 'off', label: t('game.dotsOff') },
+  ]
+
+  // Café readiness computation
+  const resolvedCount = Object.values(patterns).filter((p) => p.resolved).length
+  const totalWithOccurrences = Object.values(patterns).filter((p) => p.occurrences > 0).length
+  const solveRate =
+    practiceProgress.length > 0
+      ? practiceProgress.filter((p) => p.lastCorrect).length / practiceProgress.length
+      : 0
+  const cafeReadiness = computeCafeReadiness(
+    mastery,
+    dotMode,
+    displayMode,
+    resolvedCount,
+    totalWithOccurrences,
+    solveRate,
+  )
 
   const difficulties: { mode: OpponentMode; label: string }[] = [
     { mode: 'pass-and-play', label: t('game.passAndPlay') },
@@ -98,6 +132,27 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
             {t('game.close')}
           </button>
         </div>
+
+        {/* Café Readiness */}
+        <section className="mb-4">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            {t('coaching.cafeReadiness')}
+          </h3>
+          <div className="h-2 overflow-hidden rounded-full bg-stone-200">
+            <div
+              className="h-2 rounded-full bg-amber-500 transition-all"
+              style={{ width: `${cafeReadiness}%` }}
+            />
+          </div>
+          <p className="mt-1 text-xs text-stone-500">
+            {cafeReadiness}% —{' '}
+            {cafeReadiness >= 80
+              ? t('coaching.almostReady')
+              : cafeReadiness >= 40
+                ? t('coaching.gettingThere')
+                : t('coaching.justStarting')}
+          </p>
+        </section>
 
         {/* Piece Labels */}
         <section className="mb-4">
@@ -164,6 +219,24 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                 key={d.mode}
                 onClick={() => setDotMode(d.mode)}
                 className={dotMode === d.mode ? btnOn : btnOff}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Coaching Nudges */}
+        <section className="mb-4">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            {t('coaching.nudges')}
+          </h3>
+          <div className="flex gap-2">
+            {nudgeModes.map((d) => (
+              <button
+                key={d.mode}
+                onClick={() => setNudgeMode(d.mode)}
+                className={nudgeMode === d.mode ? btnOn : btnOff}
               >
                 {d.label}
               </button>

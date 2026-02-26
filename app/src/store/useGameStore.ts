@@ -9,6 +9,8 @@ import type { EvalSnapshot } from '@/types/analysis'
 import { boardToFen } from '@/lib/fen'
 import { moveToWxf } from '@/lib/wxf'
 import { usePlayerStore } from './usePlayerStore'
+import { usePatternStore } from './usePatternStore'
+import { PIECE_TYPE_PATTERNS } from '@/lib/patternPuzzleMap'
 
 export type OpponentMode = 'pass-and-play' | 'random-bot' | 'medium' | 'minimax'
 
@@ -160,6 +162,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
       if (tappedPiece && tappedPiece.side === currentTurn) {
         const moves = getFullyLegalMoves(tappedPiece, pieces)
         set({ selectedPosition: pos, legalMoves: moves, pendingMove: null })
+
+        // Trigger coaching nudge for active patterns
+        if (currentTurn === 'red') {
+          const playerStore = usePlayerStore.getState()
+          if (playerStore.nudgeMode !== 'off') {
+            const activePatterns = usePatternStore.getState().getActivePatterns()
+            const piecePatterns = PIECE_TYPE_PATTERNS[tappedPiece.type]
+            if (piecePatterns) {
+              for (const cat of activePatterns) {
+                if (piecePatterns.includes(cat) && !playerStore.nudgesShownThisGame.includes(cat)) {
+                  playerStore.showNudge(cat)
+                  break
+                }
+              }
+            }
+          }
+        }
       }
       return
     }
@@ -192,7 +211,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
           result.currentTurn,
         )
         const movingPiece = pieces.find((p) => posEq(p.position, selectedPosition))
-        if (movingPiece) usePlayerStore.getState().recordLegalMove(movingPiece.type)
+        if (movingPiece) {
+          usePlayerStore.getState().recordLegalMove(movingPiece.type)
+          // Track nudge avoidance — player made a legal move with a nudge-relevant piece
+          const playerStore = usePlayerStore.getState()
+          const piecePatterns = PIECE_TYPE_PATTERNS[movingPiece.type]
+          if (piecePatterns) {
+            for (const cat of playerStore.nudgesShownThisGame) {
+              if (piecePatterns.includes(cat)) {
+                playerStore.recordNudgeAvoided(cat)
+              }
+            }
+          }
+        }
       }
       const record = recordMove(state, selectedPosition, pos, result)
       set({
@@ -265,6 +296,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (gameResult !== 'ongoing') {
       usePlayerStore.getState().onGameEnd()
     }
+    usePlayerStore.getState().resetNudgesForGame()
     clearEvalHistory()
     set({
       pieces: INITIAL_POSITION,

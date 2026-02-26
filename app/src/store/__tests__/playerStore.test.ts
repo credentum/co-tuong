@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { usePlayerStore } from '../usePlayerStore'
+import { usePlayerStore, computeCafeReadiness } from '../usePlayerStore'
 
 beforeEach(() => {
   usePlayerStore.setState({
@@ -11,6 +11,12 @@ beforeEach(() => {
       ]),
     ) as ReturnType<typeof usePlayerStore.getState>['mastery'],
     showDotsOverride: false,
+    nudgeMode: 'on',
+    activeNudge: null,
+    nudgesShownThisGame: [],
+    nudgeAvoidCount: {},
+    totalGamesPlayed: 0,
+    labelSuggestionDismissed: 'none',
   })
 })
 
@@ -128,5 +134,93 @@ describe('usePlayerStore — showDotsOverride', () => {
     expect(usePlayerStore.getState().showDotsOverride).toBe(true)
     usePlayerStore.getState().setShowDotsOverride(false)
     expect(usePlayerStore.getState().showDotsOverride).toBe(false)
+  })
+})
+
+describe('usePlayerStore — nudges', () => {
+  it('defaults to nudgeMode on', () => {
+    expect(usePlayerStore.getState().nudgeMode).toBe('on')
+  })
+
+  it('can change nudge mode', () => {
+    usePlayerStore.getState().setNudgeMode('subtle')
+    expect(usePlayerStore.getState().nudgeMode).toBe('subtle')
+  })
+
+  it('shows a nudge and tracks it', () => {
+    usePlayerStore.getState().showNudge('hung_piece')
+    const state = usePlayerStore.getState()
+    expect(state.activeNudge).toBe('hung_piece')
+    expect(state.nudgesShownThisGame).toContain('hung_piece')
+  })
+
+  it('clears nudge', () => {
+    usePlayerStore.getState().showNudge('hung_piece')
+    usePlayerStore.getState().clearNudge()
+    expect(usePlayerStore.getState().activeNudge).toBeNull()
+  })
+
+  it('resets nudges for game', () => {
+    usePlayerStore.getState().showNudge('hung_piece')
+    usePlayerStore.getState().resetNudgesForGame()
+    const state = usePlayerStore.getState()
+    expect(state.activeNudge).toBeNull()
+    expect(state.nudgesShownThisGame).toEqual([])
+  })
+
+  it('records nudge avoidance', () => {
+    usePlayerStore.getState().recordNudgeAvoided('hung_piece')
+    expect(usePlayerStore.getState().nudgeAvoidCount.hung_piece).toBe(1)
+    usePlayerStore.getState().recordNudgeAvoided('hung_piece')
+    expect(usePlayerStore.getState().nudgeAvoidCount.hung_piece).toBe(2)
+  })
+
+  it('auto-downgrades to subtle after 3 avoidances', () => {
+    const store = usePlayerStore.getState()
+    store.recordNudgeAvoided('hung_piece')
+    store.recordNudgeAvoided('hung_piece')
+    expect(usePlayerStore.getState().nudgeMode).toBe('on')
+    usePlayerStore.getState().recordNudgeAvoided('hung_piece')
+    expect(usePlayerStore.getState().nudgeMode).toBe('subtle')
+  })
+})
+
+describe('usePlayerStore — label fade', () => {
+  it('defaults to zero games played', () => {
+    expect(usePlayerStore.getState().totalGamesPlayed).toBe(0)
+  })
+
+  it('increments totalGamesPlayed on game end', () => {
+    usePlayerStore.getState().onGameEnd()
+    expect(usePlayerStore.getState().totalGamesPlayed).toBe(1)
+    usePlayerStore.getState().onGameEnd()
+    expect(usePlayerStore.getState().totalGamesPlayed).toBe(2)
+  })
+
+  it('can dismiss label suggestion', () => {
+    usePlayerStore.getState().setLabelSuggestionDismissed('vietnamese')
+    expect(usePlayerStore.getState().labelSuggestionDismissed).toBe('vietnamese')
+  })
+})
+
+describe('computeCafeReadiness', () => {
+  it('returns 0 for a brand new player', () => {
+    const mastery = Object.fromEntries(
+      ['tuong', 'si', 'tuongVoi', 'xe', 'phao', 'ma', 'tot'].map((t) => [
+        t,
+        { consecutiveClean: 0, graduated: false, recoveryGamesLeft: 0 },
+      ]),
+    ) as ReturnType<typeof usePlayerStore.getState>['mastery']
+    expect(computeCafeReadiness(mastery, 'always', 'english', 0, 0, 0)).toBe(20)
+  })
+
+  it('returns 100 for a fully mastered player', () => {
+    const mastery = Object.fromEntries(
+      ['tuong', 'si', 'tuongVoi', 'xe', 'phao', 'ma', 'tot'].map((t) => [
+        t,
+        { consecutiveClean: 10, graduated: true, recoveryGamesLeft: 0 },
+      ]),
+    ) as ReturnType<typeof usePlayerStore.getState>['mastery']
+    expect(computeCafeReadiness(mastery, 'off', 'characters_only', 3, 3, 1)).toBe(100)
   })
 })

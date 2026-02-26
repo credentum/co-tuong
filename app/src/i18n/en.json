@@ -109,5 +109,18 @@
     "practiceAgain": "Practice Again",
     "changeDifficulty": "Change Difficulty",
     "score": "{{correct}} of {{total}} correct"
+  },
+  "coaching": {
+    "nudges": "Coaching Hints",
+    "nudgesOn": "On",
+    "nudgesSubtle": "Subtle",
+    "cafeReadiness": "Cafe Readiness",
+    "almostReady": "Almost cafe-ready!",
+    "gettingThere": "Getting there!",
+    "justStarting": "Keep playing!",
+    "suggestVietnamese": "Ready to try Vietnamese labels?",
+    "suggestNoLabels": "Ready to play without labels?",
+    "yes": "Yes!",
+    "notYet": "Not yet"
   }
 }

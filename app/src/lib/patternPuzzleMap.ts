@@ -64,3 +64,27 @@ export const PATTERN_DESCRIPTIONS: Record<MistakeCategory, { alert: string; sugg
       suggestion: 'Take a moment to evaluate the position before each move',
     },
   }
+
+/** In-game nudge messages — gentle warnings, not hints */
+export const NUDGE_MESSAGES: Record<MistakeCategory, string> = {
+  hung_piece: 'Is your piece protected after this move?',
+  early_horse_loss: 'Watch your Horse — is it safe?',
+  cannon_screen_missed: 'Check for Cannon screens on this file',
+  broke_pin: 'Is this piece protecting your General?',
+  undefended_general: 'Your General looks exposed — careful!',
+  missed_capture: 'Look around — any free captures?',
+  elephant_ignored: 'Have you developed your Elephants?',
+  missed_checkmate: 'Can you deliver checkmate here?',
+  general_mistake: 'Take a moment to evaluate the position',
+}
+
+/** Map piece types to the mistake categories they're most associated with */
+export const PIECE_TYPE_PATTERNS: Record<string, MistakeCategory[]> = {
+  ma: ['early_horse_loss', 'hung_piece'],
+  phao: ['cannon_screen_missed'],
+  si: ['undefended_general', 'broke_pin'],
+  tuongVoi: ['elephant_ignored'],
+  xe: ['hung_piece', 'missed_capture'],
+  tot: ['hung_piece'],
+  tuong: ['undefended_general'],
+}

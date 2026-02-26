@@ -109,5 +109,18 @@
     "practiceAgain": "Luyện lại",
     "changeDifficulty": "Đổi độ khó",
     "score": "{{correct}} / {{total}} đúng"
+  },
+  "coaching": {
+    "nudges": "Gợi ý huấn luyện",
+    "nudgesOn": "Bật",
+    "nudgesSubtle": "Nhẹ",
+    "cafeReadiness": "Sẵn sàng ra quán",
+    "almostReady": "Gần sẵn sàng!",
+    "gettingThere": "Đang tiến bộ!",
+    "justStarting": "Tiếp tục chơi!",
+    "suggestVietnamese": "Sẵn sàng dùng nhãn tiếng Việt chưa?",
+    "suggestNoLabels": "Sẵn sàng chơi không nhãn chưa?",
+    "yes": "Có!",
+    "notYet": "Chưa"
   }
 }
