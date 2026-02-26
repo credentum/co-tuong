@@ -4,7 +4,7 @@ import { INITIAL_POSITION } from '@/constants/initialPosition'
 import { getFullyLegalMoves, getGameResult, type GameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { getRandomBotMove } from '@/lib/bot'
-import { getMinimaxMove } from '@/lib/ai'
+import { getMinimaxMove, getMediumMove } from '@/lib/ai'
 import { boardToFen } from '@/lib/fen'
 import { moveToWxf } from '@/lib/wxf'
 
@@ -258,9 +258,8 @@ function scheduleAiMove(mode: OpponentMode) {
     if (mode === 'minimax') {
       aiMove = getMinimaxMove(pieces, 'black', 2)
     } else if (mode === 'medium') {
-      // 40% mistake rate: plays like a café beginner
-      aiMove =
-        Math.random() < 0.4 ? getRandomBotMove(pieces, 'black') : getMinimaxMove(pieces, 'black', 2)
+      // Consistent but weaker AI: sees the board but undervalues tactics
+      aiMove = getMediumMove(pieces, 'black')
     } else {
       aiMove = getRandomBotMove(pieces, 'black')
     }

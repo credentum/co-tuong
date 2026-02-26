@@ -35,6 +35,32 @@ function evaluate(pieces: Piece[]): number {
   return score
 }
 
+/**
+ * Weaker evaluation for medium difficulty.
+ * Plays consistent, legal-looking moves but with slightly off priorities:
+ * - Undervalues tactical pieces (Cannon, Horse worth less relative to defensive pieces)
+ * - No check awareness (doesn't see threats coming)
+ * - Ignores soldier river crossing bonus (develops slowly)
+ */
+const MEDIUM_PIECE_VALUES: Record<string, number> = {
+  tuong: 10000,
+  xe: 90,
+  phao: 35, // undervalues Cannon (45 → 35)
+  ma: 30, // undervalues Horse (40 → 30)
+  si: 25, // overvalues Advisors (20 → 25)
+  tuongVoi: 25, // overvalues Elephants (20 → 25)
+  tot: 10,
+}
+
+function evaluateMedium(pieces: Piece[]): number {
+  let score = 0
+  for (const p of pieces) {
+    score += p.side === 'red' ? MEDIUM_PIECE_VALUES[p.type]! : -MEDIUM_PIECE_VALUES[p.type]!
+  }
+  // No check penalty — the medium AI doesn't "see" threats
+  return score
+}
+
 function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
   const filtered = pieces.filter((p) => !posEq(p.position, to))
   return filtered.map((p) => (posEq(p.position, from) ? { ...p, position: to } : p))
@@ -53,8 +79,9 @@ function minimax(
   beta: number,
   maximizing: boolean,
   side: Side,
+  evalFn: (pieces: Piece[]) => number = evaluate,
 ): number {
-  if (depth === 0) return evaluate(pieces)
+  if (depth === 0) return evalFn(pieces)
 
   const ownPieces = pieces.filter((p) => p.side === side)
   let hasLegalMove = false
@@ -67,7 +94,7 @@ function minimax(
         hasLegalMove = true
         const newPieces = applyMove(pieces, p.position, to)
         const nextSide: Side = side === 'red' ? 'black' : 'red'
-        const evalScore = minimax(newPieces, depth - 1, alpha, beta, false, nextSide)
+        const evalScore = minimax(newPieces, depth - 1, alpha, beta, false, nextSide, evalFn)
         maxEval = Math.max(maxEval, evalScore)
         alpha = Math.max(alpha, evalScore)
         if (beta <= alpha) break
@@ -87,7 +114,7 @@ function minimax(
         hasLegalMove = true
         const newPieces = applyMove(pieces, p.position, to)
         const nextSide: Side = side === 'red' ? 'black' : 'red'
-        const evalScore = minimax(newPieces, depth - 1, alpha, beta, true, nextSide)
+        const evalScore = minimax(newPieces, depth - 1, alpha, beta, true, nextSide, evalFn)
         minEval = Math.min(minEval, evalScore)
         beta = Math.min(beta, evalScore)
         if (beta <= alpha) break
@@ -108,6 +135,23 @@ export interface AiMove {
 
 /** Minimax AI: picks the best move at given depth. Black minimizes, Red maximizes. */
 export function getMinimaxMove(pieces: Piece[], side: Side, depth: number = 2): AiMove | null {
+  return searchBestMove(pieces, side, depth, evaluate)
+}
+
+/**
+ * Medium AI: depth-2 minimax with a weaker evaluation function.
+ * Plays consistent, real-looking moves but undervalues tactics and ignores threats.
+ */
+export function getMediumMove(pieces: Piece[], side: Side): AiMove | null {
+  return searchBestMove(pieces, side, 2, evaluateMedium)
+}
+
+function searchBestMove(
+  pieces: Piece[],
+  side: Side,
+  depth: number,
+  evalFn: (pieces: Piece[]) => number,
+): AiMove | null {
   const ownPieces = pieces.filter((p) => p.side === side)
   const maximizing = side === 'red'
   const candidates: ScoredMove[] = []
@@ -117,7 +161,15 @@ export function getMinimaxMove(pieces: Piece[], side: Side, depth: number = 2): 
     for (const to of moves) {
       const newPieces = applyMove(pieces, p.position, to)
       const nextSide: Side = side === 'red' ? 'black' : 'red'
-      const score = minimax(newPieces, depth - 1, -Infinity, Infinity, !maximizing, nextSide)
+      const score = minimax(
+        newPieces,
+        depth - 1,
+        -Infinity,
+        Infinity,
+        !maximizing,
+        nextSide,
+        evalFn,
+      )
       candidates.push({ from: p.position, to, score })
     }
   }
