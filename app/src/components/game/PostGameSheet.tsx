@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { useGameStore, getEvalHistory } from '@/store/useGameStore'
 import { useLossStore } from '@/store/useLossStore'
 import { useLearningStore } from '@/store/useLearningStore'
+import { usePatternStore } from '@/store/usePatternStore'
 import { analyzeGame } from '@/lib/analysis'
 import { fenToBoard } from '@/lib/fen'
+import { PATTERN_DESCRIPTIONS } from '@/lib/patternPuzzleMap'
 import { MiniBoardSVG } from './MiniBoardSVG'
-import type { GameAnalysis, AnalyzedMistake } from '@/types/analysis'
+import type { GameAnalysis, AnalyzedMistake, MistakeCategory } from '@/types/analysis'
 
 function AnalysisCard({ mistake, onReplay }: { mistake: AnalyzedMistake; onReplay: () => void }) {
   const { pieces } = fenToBoard(mistake.snapshot.fenBefore)
@@ -42,16 +44,35 @@ export function PostGameSheet() {
   const isAiGame = opponentMode !== 'pass-and-play'
   const isPlayerLoss = isAiGame && gameResult === 'black_wins'
 
+  const [patternAlerts, setPatternAlerts] = useState<MistakeCategory[]>([])
+  const [resolvedPatterns, setResolvedPatterns] = useState<MistakeCategory[]>([])
+
   useEffect(() => {
     if (gameResult === 'ongoing') {
       setAnalysis(null)
+      setPatternAlerts([])
+      setResolvedPatterns([])
       return
     }
     if (!isAiGame) return
 
     const snapshots = getEvalHistory()
     const id = setTimeout(() => {
-      setAnalysis(analyzeGame(snapshots))
+      const result = analyzeGame(snapshots)
+      setAnalysis(result)
+
+      // Record game for pattern tracking
+      const categories = result.isCleanGame ? [] : result.mistakes.map((m) => m.category)
+      const patternStore = usePatternStore.getState()
+      patternStore.recordGame(categories)
+
+      // Check for active patterns triggered this game
+      const triggered = patternStore.getNewlyTriggered(categories)
+      setPatternAlerts(triggered)
+      triggered.forEach((cat) => patternStore.markShown(cat))
+
+      // Check for newly resolved patterns
+      setResolvedPatterns(patternStore.getNewlyResolved())
     }, 0)
     return () => clearTimeout(id)
   }, [gameResult, isAiGame])
@@ -109,6 +130,37 @@ export function PostGameSheet() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Pattern alerts */}
+      {patternAlerts.length > 0 && (
+        <div className="mb-3 flex flex-col gap-2">
+          {patternAlerts.map((cat) => {
+            const entry = usePatternStore.getState().patterns[cat]
+            const n = entry.last5Games.filter(Boolean).length
+            const m = entry.last5Games.length
+            const desc = PATTERN_DESCRIPTIONS[cat]
+            return (
+              <div key={cat} className="rounded-xl border border-amber-200 bg-amber-50 p-3">
+                <p className="text-xs font-semibold text-amber-800">
+                  {desc.alert.replace('{{n}}', String(n)).replace('{{m}}', String(m))}
+                </p>
+                <p className="mt-1 text-xs text-amber-700">{desc.suggestion}</p>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Resolved pattern congratulations */}
+      {resolvedPatterns.length > 0 && (
+        <div className="mb-3">
+          {resolvedPatterns.map((cat) => (
+            <p key={cat} className="text-center text-sm font-medium text-green-700">
+              Great improvement! You haven&apos;t made that mistake in 5 games.
+            </p>
+          ))}
         </div>
       )}
 

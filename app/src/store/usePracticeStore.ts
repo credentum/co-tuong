@@ -11,6 +11,8 @@ import { getFullyLegalMoves, getGameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
 import { ALL_PRACTICE_PUZZLES, PRACTICE_PUZZLES_BY_DIFFICULTY } from '@/data/practicePuzzles'
+import { usePatternStore } from './usePatternStore'
+import { getConceptsForPattern } from '@/lib/patternPuzzleMap'
 
 function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
   return pieces
@@ -94,6 +96,19 @@ export const usePracticeStore = create<PracticeStore>()(
           const pb = progress.find((p) => p.puzzleId === b)
           return (pa?.box ?? 0) - (pb?.box ?? 0)
         })
+
+        // Prioritize puzzles matching active mistake patterns
+        const activePatterns = usePatternStore.getState().getActivePatterns()
+        if (activePatterns.length > 0) {
+          const matchingConcepts = new Set(activePatterns.flatMap(getConceptsForPattern))
+          sorted.sort((a, b) => {
+            const puzzleA = ALL_PRACTICE_PUZZLES[a]
+            const puzzleB = ALL_PRACTICE_PUZZLES[b]
+            const aMatch = puzzleA && matchingConcepts.has(puzzleA.concept) ? 1 : 0
+            const bMatch = puzzleB && matchingConcepts.has(puzzleB.concept) ? 1 : 0
+            return bMatch - aMatch // matching puzzles first
+          })
+        }
 
         const sessionIds = sorted.slice(0, 5)
         // Shuffle for variety
