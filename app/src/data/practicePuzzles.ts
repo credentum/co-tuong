@@ -292,8 +292,8 @@ export const PR_M1: PracticePuzzleDef = {
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 8),
       p('si', 'black', 3, 9),
-      p('tot', 'black', 6, 9), // blocks Xe row-9 check from col 8
-      p('tot', 'black', 4, 7), // blocks Xe col-4 check from row 6
+      p('phao', 'black', 6, 9), // blocks Xe row-9 check from col 8
+      p('tuongVoi', 'black', 4, 7), // blocks Xe col-4 check from row 6
     ],
   },
   solution: [
@@ -454,8 +454,8 @@ export const PR_M2: PracticePuzzleDef = {
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 8),
       p('si', 'black', 3, 9),
-      p('tot', 'black', 7, 9), // blocks Xe row-9 check from (8,9)
-      p('tot', 'black', 4, 7), // blocks Xe col-4 check from row 5
+      p('phao', 'black', 7, 9), // blocks Xe row-9 check from (8,9)
+      p('tuongVoi', 'black', 4, 7), // blocks Xe col-4 check from row 5
     ],
   },
   solution: [
@@ -834,8 +834,8 @@ export const PR_H1: PracticePuzzleDef = {
       p('phao', 'red', 8, 2),
       p('tot', 'red', 4, 6),
       p('tuong', 'black', 4, 9),
-      p('tot', 'black', 3, 9),
-      p('tot', 'black', 7, 9),
+      p('phao', 'black', 3, 9),
+      p('phao', 'black', 7, 9),
     ],
   },
   solution: [
@@ -1035,8 +1035,8 @@ export const PR_H2: PracticePuzzleDef = {
       p('tot', 'red', 4, 6),
       p('tot', 'red', 3, 8),
       p('tuong', 'black', 4, 9),
-      p('tot', 'black', 3, 9),
-      p('tot', 'black', 7, 9),
+      p('ma', 'black', 3, 9),
+      p('ma', 'black', 7, 9),
     ],
   },
   solution: [
@@ -1106,8 +1106,8 @@ export const PR_H3: PracticePuzzleDef = {
       p('phao', 'red', 0, 2),
       p('tot', 'red', 4, 6),
       p('tuong', 'black', 4, 9),
-      p('tot', 'black', 5, 9),
-      p('tot', 'black', 2, 9),
+      p('phao', 'black', 5, 9),
+      p('phao', 'black', 2, 9),
     ],
   },
   solution: [
@@ -1189,7 +1189,7 @@ export const PR_H4: PracticePuzzleDef = {
       p('tuong', 'black', 5, 9),
       p('si', 'black', 4, 8),
       p('si', 'black', 3, 9),
-      p('tot', 'black', 7, 9),
+      p('phao', 'black', 7, 9),
     ],
   },
   solution: [
@@ -1331,7 +1331,7 @@ export const PR_H5: PracticePuzzleDef = {
       p('tuong', 'black', 4, 9),
       p('si', 'black', 3, 9),
       p('si', 'black', 3, 8),
-      p('tot', 'black', 4, 8),
+      p('ma', 'black', 4, 8),
     ],
   },
   solution: [
