@@ -15,6 +15,7 @@ import { ALL_PRACTICE_PUZZLES, PRACTICE_PUZZLES_BY_DIFFICULTY } from '@/data/pra
 import { ALL_PATTERN_PUZZLES } from '@/data/patternPuzzles'
 import { usePatternStore } from './usePatternStore'
 import { getConceptsForPattern } from '@/lib/patternPuzzleMap'
+import { validateGoal } from '@/lib/goalValidation'
 
 function applyMove(pieces: Piece[], from: Position, to: Position): Piece[] {
   return pieces
@@ -274,8 +275,25 @@ export const usePracticeStore = create<PracticeStore>()(
           (posEq(step.playerMove.from, from) && posEq(step.playerMove.to, to)) ||
           (step.alternativeMoves?.some((m) => posEq(m.from, from) && posEq(m.to, to)) ?? false)
 
-        // Engine validation for checkmate puzzles: accept any move that maintains forced mate
+        // Goal-based validation fallback
         let engineOpponentResponse: { from: Position; to: Position } | null = null
+        if (!isCorrect && puzzle.goal) {
+          const remainingSteps = puzzle.solution.length - state.currentStepIndex - 1
+          const result = validateGoal(
+            state.pieces,
+            from,
+            to,
+            puzzle.setup.playerSide,
+            puzzle.goal,
+            remainingSteps,
+          )
+          if (result.valid) {
+            isCorrect = true
+            if (result.engineResponse) engineOpponentResponse = result.engineResponse
+          }
+        }
+
+        // Engine validation for checkmate puzzles: accept any move that maintains forced mate
         if (!isCorrect && isCheckmatePuzzle) {
           const afterMove = applyMove(state.pieces, from, to)
 

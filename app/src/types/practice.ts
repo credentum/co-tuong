@@ -1,5 +1,12 @@
-import type { Move, Piece, Side } from './game'
+import type { Move, Piece, Position, Side } from './game'
 import type { LeitnerBox } from './learning'
+
+export type GoalConfig =
+  | { type: 'escape_capture'; piecePos: Position }
+  | { type: 'find_capture'; targetPos: Position }
+  | { type: 'find_checkmate' }
+  | { type: 'best_move_threshold'; threshold: number; depth?: number }
+  | { type: 'avoid_blunder'; maxDrop: number; depth?: number }
 
 export interface SolutionStep {
   playerMove: Move
@@ -18,6 +25,7 @@ export interface PracticePuzzleDef {
   solution: SolutionStep[]
   concept: string
   hint?: string
+  goal?: GoalConfig
 }
 
 export type PracticePhaseStatus =

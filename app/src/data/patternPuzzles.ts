@@ -39,6 +39,7 @@ export const PAT_01_S1: PracticePuzzleDef = {
       p('si', 'black', 4, 8),
     ],
   },
+  goal: { type: 'escape_capture', piecePos: { col: 7, row: 7 } },
   solution: [
     // Move Horse to safety: ma(7,7) to (6,5)
     { playerMove: { from: { col: 7, row: 7 }, to: { col: 6, row: 5 } } },
@@ -68,6 +69,7 @@ export const PAT_01_S2: PracticePuzzleDef = {
       p('si', 'black', 5, 8),
     ],
   },
+  goal: { type: 'find_capture', targetPos: { col: 2, row: 4 } },
   solution: [
     // Capture the screen: xe(2,5) captures tot(2,4)
     { playerMove: { from: { col: 2, row: 5 }, to: { col: 2, row: 4 } } },
@@ -98,6 +100,7 @@ export const PAT_01_S3: PracticePuzzleDef = {
       p('si', 'black', 5, 8),
     ],
   },
+  goal: { type: 'escape_capture', piecePos: { col: 7, row: 8 } },
   solution: [
     // Interpose elephant: tuongVoi(5,9) to (7,7)
     { playerMove: { from: { col: 5, row: 9 }, to: { col: 7, row: 7 } } },
@@ -128,6 +131,7 @@ export const PAT_01_D1: PracticePuzzleDef = {
       p('tuongVoi', 'black', 2, 7),
     ],
   },
+  goal: { type: 'find_capture', targetPos: { col: 8, row: 3 } },
   solution: [
     // Capture undefended Xe: xe(8,7) -> xe(8,3)
     { playerMove: { from: { col: 8, row: 7 }, to: { col: 8, row: 3 } } },
@@ -156,6 +160,7 @@ export const PAT_01_D2: PracticePuzzleDef = {
       p('si', 'black', 3, 8),
     ],
   },
+  goal: { type: 'escape_capture', piecePos: { col: 7, row: 9 } },
   solution: [
     // Interpose elephant: tuongVoi(5,9) to (7,7)
     { playerMove: { from: { col: 5, row: 9 }, to: { col: 7, row: 7 } } },
@@ -187,6 +192,7 @@ export const PAT_02_S1: PracticePuzzleDef = {
       p('phao', 'black', 4, 7), // aiming at gen through col 4
     ],
   },
+  goal: { type: 'avoid_blunder', maxDrop: 30 },
   solution: [
     // Safe move: ma(3,0) to (2,2) — doesn't create screen on col 4
     {
@@ -219,6 +225,7 @@ export const PAT_02_S2: PracticePuzzleDef = {
       p('phao', 'black', 3, 8),
     ],
   },
+  goal: { type: 'avoid_blunder', maxDrop: 30 },
   solution: [
     // Safe: si(4,1) to (5,2) — not on col 3
     {
@@ -254,6 +261,7 @@ export const PAT_02_S3: PracticePuzzleDef = {
       p('phao', 'black', 6, 8), // aims at col 6
     ],
   },
+  goal: { type: 'avoid_blunder', maxDrop: 30 },
   solution: [
     // Safe: tuongVoi(4,2) to (2,4) eye at (3,3) clear.
     { playerMove: { from: { col: 4, row: 2 }, to: { col: 2, row: 4 } } },
@@ -366,6 +374,7 @@ export const PAT_03_S1: PracticePuzzleDef = {
       p('si', 'black', 5, 8),
     ],
   },
+  goal: { type: 'find_capture', targetPos: { col: 4, row: 5 } },
   solution: [
     // Capture pinned ma: xe(0,5) -> (4,5)
     { playerMove: { from: { col: 0, row: 5 }, to: { col: 4, row: 5 } } },
@@ -393,6 +402,7 @@ export const PAT_03_S2: PracticePuzzleDef = {
       p('si', 'black', 4, 8),
     ],
   },
+  goal: { type: 'find_capture', targetPos: { col: 3, row: 6 } },
   solution: [{ playerMove: { from: { col: 8, row: 6 }, to: { col: 3, row: 6 } } }],
 }
 
