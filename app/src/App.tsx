@@ -7,6 +7,8 @@ import { Toast } from './components/Toast'
 import { PieceInfoCard } from './components/PieceInfoCard'
 import { LearningScreen } from './components/learning/LearningScreen'
 import { PracticeScreen } from './components/practice/PracticeScreen'
+import { ReviewScreen } from './components/review/ReviewScreen'
+import { PostGameSheet } from './components/game/PostGameSheet'
 import { useLearningStore } from './store/useLearningStore'
 import type { PieceType } from '@/types/game'
 
@@ -23,6 +25,10 @@ export default function App() {
     return <PracticeScreen />
   }
 
+  if (appMode === 'review') {
+    return <ReviewScreen />
+  }
+
   return (
     <div className="flex h-[100dvh] flex-col items-center">
       <TurnIndicator />
@@ -31,6 +37,7 @@ export default function App() {
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <Toast />
       {infoPiece && <PieceInfoCard pieceType={infoPiece} onClose={() => setInfoPiece(null)} />}
+      <PostGameSheet />
     </div>
   )
 }

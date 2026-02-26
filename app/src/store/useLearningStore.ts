@@ -15,10 +15,14 @@ import { ALL_PUZZLES } from '@/data/puzzles'
 import { LESSONS } from '@/data/lessons'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
 
+export type AppMode = 'game' | 'learning' | 'practice' | 'review'
+
 interface LearningStore {
   // Navigation
-  appMode: 'game' | 'learning' | 'practice'
-  setAppMode: (mode: 'game' | 'learning' | 'practice') => void
+  appMode: AppMode
+  setAppMode: (mode: AppMode) => void
+  reviewLossId: string | null
+  startReview: (lossId: string) => void
 
   // Display mode for piece labels
   displayMode: DisplayMode
@@ -112,7 +116,9 @@ export const useLearningStore = create<LearningStore>()(
     (set, get) => ({
       // Navigation
       appMode: 'game',
-      setAppMode: (mode) => set({ appMode: mode }),
+      setAppMode: (mode) => set({ appMode: mode, reviewLossId: null }),
+      reviewLossId: null,
+      startReview: (lossId) => set({ appMode: 'review', reviewLossId: lossId }),
 
       // Display mode for piece labels
       displayMode: 'english' as DisplayMode,
