@@ -141,6 +141,22 @@
     "restart": "Bắt đầu lại",
     "progress": "{{solved}} / 5 bài tập"
   },
+  "review": {
+    "back": "← Quay lại",
+    "title": "Xem lại",
+    "playerWin": "Đi hay lắm!",
+    "savePuzzle": "Lưu làm bài tập?",
+    "save": "Lưu",
+    "opponentWin": "Đen thắng lần nữa",
+    "yourTurn": "Lượt bạn",
+    "aiThinking": "AI đang suy nghĩ…",
+    "undo": "Hoàn tác",
+    "reset": "Đặt lại",
+    "done": "Xong",
+    "prompt": "Đây là lúc sai lầm xảy ra. Thử cách khác.",
+    "notFound": "Không tìm thấy ván",
+    "backToGame": "Về trò chơi"
+  },
   "coaching": {
     "nudges": "Gợi ý huấn luyện",
     "nudgesOn": "Bật",

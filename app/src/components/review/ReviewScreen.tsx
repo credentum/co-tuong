@@ -1,8 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BoardRenderer } from '../BoardRenderer'
 import { useLearningStore } from '@/store/useLearningStore'
 import { useLossStore } from '@/store/useLossStore'
+import { usePracticeStore } from '@/store/usePracticeStore'
 import { fenToBoard } from '@/lib/fen'
+import { lossToPuzzle } from '@/lib/lossToPuzzle'
 import { getFullyLegalMoves, getGameResult, type GameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { getRandomBotMove } from '@/lib/bot'
@@ -28,6 +31,7 @@ function getAiMove(pieces: Piece[], side: Side, mode: OpponentMode) {
 }
 
 export function ReviewScreen() {
+  const { t } = useTranslation()
   const reviewLossId = useLearningStore((s) => s.reviewLossId)
   const reviewFen = useLearningStore((s) => s.reviewFen)
   const reviewDifficulty = useLearningStore((s) => s.reviewDifficulty)
@@ -35,6 +39,8 @@ export function ReviewScreen() {
   const setAppMode = useLearningStore((s) => s.setAppMode)
   const losses = useLossStore((s) => s.losses)
   const markReviewed = useLossStore((s) => s.markReviewed)
+  const markConverted = useLossStore((s) => s.markConverted)
+  const addLossPuzzle = usePracticeStore((s) => s.addLossPuzzle)
 
   const loss = reviewLossId ? losses.find((l) => l.id === reviewLossId) : null
 
@@ -176,50 +182,67 @@ export function ReviewScreen() {
     setHistory(history.slice(0, targetIdx + 1))
   }
 
+  const handleReset = () => {
+    if (!initial) return
+    aiPendingRef.current = false
+    setPieces(initial.pieces)
+    setCurrentTurn(initial.currentTurn)
+    setGameResult('ongoing')
+    setSelectedPosition(null)
+    setLegalMoves([])
+    setLastMove(null)
+    setHistory([{ pieces: initial.pieces, currentTurn: initial.currentTurn }])
+  }
+
   const handleBack = () => {
     if (loss) markReviewed(loss.id)
+    setAppMode('game')
+  }
+
+  const handleSaveAsPuzzle = () => {
+    if (!loss) return
+    const puzzle = lossToPuzzle(loss)
+    if (puzzle) {
+      addLossPuzzle(puzzle)
+      markConverted(loss.id)
+    }
+    markReviewed(loss.id)
     setAppMode('game')
   }
 
   if (!initial) {
     return (
       <div className="flex h-[100dvh] flex-col items-center justify-center gap-4">
-        <p className="text-stone-500">Loss not found</p>
+        <p className="text-stone-500">{t('review.notFound')}</p>
         <button
           onClick={() => setAppMode('game')}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
         >
-          Back to Game
+          {t('review.backToGame')}
         </button>
       </div>
     )
   }
 
-  const resultText =
-    gameResult === 'red_wins'
-      ? 'You won! Nice recovery!'
-      : gameResult === 'black_wins'
-        ? 'Black wins again'
-        : null
+  const playerWon = gameResult === 'red_wins'
+  const canSaveAsPuzzle = playerWon && loss && !loss.convertedToPuzzle
 
   return (
     <div className="flex h-[100dvh] flex-col items-center">
       {/* Header */}
       <div className="flex w-full items-center gap-3 px-4 py-2">
-        <button onClick={handleBack} className="text-sm text-blue-600 font-semibold">
-          &larr; Back
+        <button onClick={handleBack} className="text-sm font-semibold text-blue-600">
+          {t('review.back')}
         </button>
-        <h1 className="flex-1 text-center text-sm font-bold text-stone-800">Review</h1>
+        <h1 className="flex-1 text-center text-sm font-bold text-stone-800">{t('review.title')}</h1>
         <div className="w-12" />
       </div>
 
       {/* Turn indicator */}
       <div className="flex items-center gap-2 py-1">
-        {resultText ? (
-          <span
-            className={`text-sm font-bold ${gameResult === 'red_wins' ? 'text-green-700' : 'text-stone-700'}`}
-          >
-            {resultText}
+        {gameResult !== 'ongoing' ? (
+          <span className={`text-sm font-bold ${playerWon ? 'text-green-700' : 'text-stone-700'}`}>
+            {playerWon ? t('review.playerWin') : t('review.opponentWin')}
           </span>
         ) : (
           <>
@@ -229,11 +252,18 @@ export function ReviewScreen() {
             <span
               className={`text-sm font-semibold ${currentTurn === 'red' ? 'text-red-700' : 'text-stone-800'}`}
             >
-              {currentTurn === 'red' ? 'Your turn' : 'AI thinking...'}
+              {currentTurn === 'red' ? t('review.yourTurn') : t('review.aiThinking')}
             </span>
           </>
         )}
       </div>
+
+      {/* Save as puzzle prompt */}
+      {canSaveAsPuzzle && (
+        <p className="px-4 text-center text-xs font-medium text-green-700">
+          {t('review.savePuzzle')}
+        </p>
+      )}
 
       {/* Board */}
       <BoardRenderer
@@ -248,26 +278,41 @@ export function ReviewScreen() {
       {/* Controls */}
       <div className="flex w-full max-w-md items-center justify-center gap-3 px-4 py-3">
         <button
+          onClick={handleReset}
+          disabled={history.length <= 1}
+          className="rounded-lg bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700 disabled:opacity-40 active:bg-stone-200"
+        >
+          {t('review.reset')}
+        </button>
+        <button
           onClick={handleUndo}
           disabled={history.length <= 1}
           className="rounded-lg bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700 disabled:opacity-40 active:bg-stone-200"
         >
-          Undo
+          {t('review.undo')}
         </button>
+        {canSaveAsPuzzle && (
+          <button
+            onClick={handleSaveAsPuzzle}
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white active:bg-green-700"
+          >
+            {t('review.save')}
+          </button>
+        )}
         {gameResult !== 'ongoing' && (
           <button
             onClick={handleBack}
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white active:bg-blue-700"
           >
-            Done
+            {t('review.done')}
           </button>
         )}
       </div>
 
       {/* Prompt */}
-      <p className="px-4 text-center text-xs text-stone-500">
-        This is where things went wrong. Try a different approach.
-      </p>
+      {gameResult === 'ongoing' && (
+        <p className="px-4 text-center text-xs text-stone-500">{t('review.prompt')}</p>
+      )}
     </div>
   )
 }

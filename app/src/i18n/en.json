@@ -141,6 +141,22 @@
     "restart": "Restart",
     "progress": "{{solved}} of 5 puzzles"
   },
+  "review": {
+    "back": "← Back",
+    "title": "Review",
+    "playerWin": "Nice recovery!",
+    "savePuzzle": "Save as puzzle?",
+    "save": "Save",
+    "opponentWin": "Black wins again",
+    "yourTurn": "Your turn",
+    "aiThinking": "AI thinking…",
+    "undo": "Undo",
+    "reset": "Reset",
+    "done": "Done",
+    "prompt": "This is where things went wrong. Try a different approach.",
+    "notFound": "Loss not found",
+    "backToGame": "Back to Game"
+  },
   "coaching": {
     "nudges": "Coaching Hints",
     "nudgesOn": "On",
