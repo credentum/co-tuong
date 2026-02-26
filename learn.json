@@ -1,0 +1,401 @@
+{
+  "feature_name": "Coaching Engine — Learn By Playing",
+  "description": "A four-pillar adaptive teaching system that turns every game into a personalized lesson. The app watches how you play, identifies your weaknesses, and gradually removes support as you improve. The goal: an expat sits down at a café board and plays without needing the app.",
+
+  "design_philosophy": {
+    "core_principle": "The best teacher makes themselves unnecessary.",
+    "scaffolding_rule": "Everything that helps you — dots, labels, hints, nudges — should fade as you prove you don't need it anymore.",
+    "tracking_rule": "Track mistakes, not games played. Improvement is measured by errors not made.",
+    "privacy": "Everything runs locally. No server. No account. localStorage only."
+  },
+
+  "pillar_1_appropriate_opponent": {
+    "status": "DONE",
+    "description": "Medium bot with weakened evaluation function that plays realistic human-like moves.",
+    "current_implementation": {
+      "easy": "Random legal move bot — sandbox for learning piece flow",
+      "medium": "Depth 2 minimax with weakened eval weights — makes positional errors, bad trades, slow development. Consistent personality, not random blunders.",
+      "hard": "Depth 2 minimax with full eval — punishes mistakes immediately"
+    },
+    "no_changes_needed": true
+  },
+
+  "pillar_2_post_game_analysis": {
+    "status": "TO BUILD",
+    "description": "After every game, identify the 2-3 moments where the player's position deteriorated the most. Show them with plain English explanations.",
+
+    "how_it_works": {
+      "during_game": {
+        "step_1": "On every move, the AI already evaluates the board position (this is what the minimax does). Save the evaluation score for both before and after each player move.",
+        "step_2": "Store as array: [{ move_number, fen_before, fen_after, eval_before, eval_after, piece_moved, move_notation }]",
+        "storage": "In-memory during game, persisted to localStorage on game end"
+      },
+      "after_game": {
+        "step_1": "Calculate eval_drop for each player move: eval_before - eval_after",
+        "step_2": "Sort by largest eval_drop to find the 2-3 biggest mistakes",
+        "step_3": "Classify each mistake into a category (see mistake_categories below)",
+        "step_4": "Present to the player with explanation and the option to replay from that position"
+      }
+    },
+
+    "mistake_categories": {
+      "description": "Pattern-match the biggest eval drops to human-readable explanations. These don't need to be perfect — approximate is fine for teaching.",
+      "categories": [
+        {
+          "id": "hung_piece",
+          "detection": "Player moved a piece to a square attacked by opponent and not defended",
+          "english": "You left your {piece_name} unprotected on {square}. {opponent_piece} captured it next move.",
+          "example": "You left your Horse unprotected on f5. The Cannon captured it next move."
+        },
+        {
+          "id": "missed_capture",
+          "detection": "Opponent had an unprotected piece that player didn't capture",
+          "english": "You missed a free capture — the {piece_name} on {square} was unprotected.",
+          "example": "You missed a free capture — the Chariot on a7 was unprotected."
+        },
+        {
+          "id": "broke_pin",
+          "detection": "Player moved a piece that was between the two Generals on the same file",
+          "english": "You moved a piece off the file between the Generals. This exposed your General to the Flying General rule.",
+          "example": "Moving your Horse off the e-file left your General facing the enemy General."
+        },
+        {
+          "id": "early_horse_loss",
+          "detection": "Horse captured in first 6 moves, typically by Cannon",
+          "english": "Your Horse was captured in the opening. Cannons can attack Horses from move one — develop your Elephants early to block the screen.",
+          "example": "Your Horse on b1 was taken by the Cannon on b8 using the Knight as a screen."
+        },
+        {
+          "id": "undefended_general",
+          "detection": "General left with no Advisor or Elephant support when attacked",
+          "english": "Your General was exposed. Try to keep at least one Advisor in the palace to block diagonal attacks.",
+          "example": "Both Advisors were traded off, leaving your General vulnerable to the Cannon."
+        },
+        {
+          "id": "cannon_screen_missed",
+          "detection": "Player moved a piece into a line where it became a screen for opponent's Cannon",
+          "english": "You accidentally created a screen for the opponent's Cannon. Watch for Cannons on the same file or rank as your General.",
+          "example": "Moving your Soldier to e5 gave the enemy Cannon a screen to attack your General."
+        },
+        {
+          "id": "elephant_ignored",
+          "detection": "Elephant captured or player had early positional collapse on their side",
+          "english": "Your Elephant was captured early. Elephants protect your side of the board — losing them opens diagonal pathways to your General.",
+          "example": "The enemy Horse took your Elephant, opening a path to the palace."
+        },
+        {
+          "id": "missed_checkmate",
+          "detection": "Player had a forced checkmate in 1-2 moves but didn't find it",
+          "english": "You missed checkmate in {n} moves! Here's the winning sequence.",
+          "example": "Your Chariot on e8 could have delivered checkmate by moving to e1."
+        },
+        {
+          "id": "general_mistake",
+          "detection": "Large eval drop that doesn't match a specific pattern",
+          "english": "This move weakened your position significantly. Tap to replay from here and try a different approach.",
+          "example": null
+        }
+      ]
+    },
+
+    "ui": {
+      "trigger": "After every completed game (win or loss), bottom sheet slides up",
+      "prompt_on_loss": "'Here's where things went wrong' — shows 2-3 key moments",
+      "prompt_on_win": "'Nice win! Here's one moment you could have played even better'",
+      "prompt_on_easy_win": "'Clean game!' — no analysis shown if no significant mistakes",
+
+      "analysis_card": {
+        "layout": "Small board thumbnail showing the position + mistake description text + 'Replay' button",
+        "board_thumbnail": "Miniature board rendered from the FEN, highlighting the relevant pieces",
+        "replay_button": "Opens the position in Review Mode (from loss tracker spec) — player can try a different move",
+        "save_as_puzzle": "If position has a clean tactical solution, offer 'Save as practice puzzle'"
+      },
+
+      "dismiss": "Swipe down or tap 'New Game' to skip analysis",
+      "never_block": "Analysis is always optional. Never force the player to review before starting a new game."
+    }
+  },
+
+  "pillar_3_pattern_tracking": {
+    "status": "TO BUILD",
+    "description": "Track recurring mistakes across multiple games. When a pattern emerges, surface it as a personalized lesson and serve targeted puzzles.",
+
+    "what_to_track": {
+      "storage": "localStorage under key 'co_tuong_patterns'",
+      "per_category_tracking": {
+        "schema": {
+          "category_id": "string — matches mistake_categories above",
+          "occurrences": "number — total times this mistake was detected",
+          "last_5_games": "boolean[] — did this mistake occur in each of the last 5 games",
+          "last_occurred": "ISO date string",
+          "times_shown_to_player": "number — how many times we've surfaced this pattern",
+          "resolved": "boolean — has the player gone 5+ games without this mistake"
+        }
+      },
+
+      "additional_tracking": [
+        {
+          "metric": "horse_losses_in_opening",
+          "track": "Number of Horses lost in moves 1-6 per game",
+          "threshold": "3 of last 5 games"
+        },
+        {
+          "metric": "cannon_screen_awareness",
+          "track": "Number of times player accidentally created a screen for opponent",
+          "threshold": "2 of last 5 games"
+        },
+        {
+          "metric": "flying_general_pins_missed",
+          "track": "Number of times player tried to move a piece pinned by Flying General rule",
+          "threshold": "2 of last 5 games"
+        },
+        {
+          "metric": "elephant_development",
+          "track": "Whether player develops at least one Elephant in the first 8 moves",
+          "threshold": "Absent in 4 of last 5 games"
+        },
+        {
+          "metric": "endgame_conversion",
+          "track": "Games where player had material advantage but lost or drew",
+          "threshold": "2 of last 5 games"
+        }
+      ]
+    },
+
+    "when_to_surface": {
+      "trigger": "After post-game analysis, if a pattern crosses its threshold",
+      "presentation": "Additional card in the post-game bottom sheet",
+      "format": {
+        "pattern_alert": "'You've lost a Horse in the opening in {n} of your last {m} games'",
+        "suggestion": "'Try developing your Elephants before your Horses to block Cannon screens'",
+        "practice_link": "'Practice this pattern?' — opens a curated or generated puzzle targeting this weakness"
+      }
+    },
+
+    "targeted_puzzle_serving": {
+      "description": "When a pattern is detected, prioritize puzzles from that category in Practice mode",
+      "implementation": {
+        "step_1": "Tag each puzzle in the puzzle library with relevant categories (e.g., 'cannon_screen', 'horse_fork', 'flying_general')",
+        "step_2": "When player opens Practice mode, check pattern tracker for active (unresolved) patterns",
+        "step_3": "Serve puzzles matching active patterns first, before random puzzles",
+        "step_4": "When a pattern is resolved (5 games without the mistake), stop prioritizing those puzzles"
+      }
+    },
+
+    "pattern_resolution": {
+      "how": "A pattern is marked 'resolved' when the player goes 5 consecutive games without triggering it",
+      "on_resolved": "Brief congratulation: 'You haven't lost a Horse in the opening for 5 games — nice improvement!'",
+      "can_recur": "If the pattern re-emerges after being resolved, it reactivates"
+    }
+  },
+
+  "pillar_4_scaffolding_that_fades": {
+    "status": "TO BUILD",
+    "description": "Every visual aid in the app gradually disappears as the player demonstrates they don't need it. The goal is café-readiness: playing without any app assistance.",
+
+    "scaffold_1_legal_move_dots": {
+      "description": "Green dots showing where a selected piece can move",
+
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Full dots",
+          "behavior": "All legal moves shown for every piece when selected",
+          "when": "Default for new players",
+          "visual": "Green dots on all legal destination intersections"
+        },
+        {
+          "stage": 2,
+          "name": "Earned dots",
+          "behavior": "Dots only shown for piece types the player hasn't mastered yet. Mastered pieces select without dots.",
+          "when": "Per-piece graduation after consecutive legal moves without illegal attempts",
+          "visual": "Mastered pieces: selection highlight only, no dots. Unmastered pieces: green dots as normal.",
+          "recovery": "If player attempts an illegal move with a mastered piece, dots flash back briefly and the piece returns to Stage 1 for that piece type for 3 more games"
+        },
+        {
+          "stage": 3,
+          "name": "Dots on request",
+          "behavior": "No dots by default. Long-press a piece to see its legal moves.",
+          "when": "All 7 piece types have graduated from Stage 2",
+          "visual": "Clean board on tap. Long-press shows dots with a subtle 'hint' animation."
+        },
+        {
+          "stage": 4,
+          "name": "Café mode",
+          "behavior": "No dots at all. The player sees the board exactly as it looks in real life.",
+          "when": "Player manually enables in settings, or after extended play in Stage 3 without using long-press hints",
+          "visual": "Pure board. Selection highlight only."
+        }
+      ],
+
+      "graduation_logic": {
+        "per_piece_type": true,
+        "tracking": {
+          "piece_types": ["xe", "ma", "tuong_general", "si", "tuong_elephant", "phao", "tot"],
+          "per_type": {
+            "legal_moves_made": "number — total moves made with this piece type",
+            "illegal_attempts": "number — times player tried an illegal move with this piece type",
+            "consecutive_clean": "number — consecutive moves without an illegal attempt",
+            "stage": "number — current stage (1-4) for this piece type",
+            "graduated_at": "ISO date string or null"
+          }
+        },
+        "graduation_threshold": "10 consecutive legal moves with a piece type without any illegal attempts",
+        "note": "This threshold is per piece TYPE, not per individual piece. All Horses share one tracker, all Cannons share one, etc."
+      },
+
+      "manual_override": {
+        "settings_toggle": "Legal move dots: Always / Adaptive / On Request / Off",
+        "default": "Adaptive (the system described above)",
+        "note": "Some days you just want to play relaxed with all the dots. Never lock the player out of assistance."
+      }
+    },
+
+    "scaffold_2_piece_labels": {
+      "description": "English/Vietnamese text labels below pieces",
+      "fade_behavior": {
+        "stage_1": "English labels — default for new players",
+        "stage_2": "Vietnamese labels — suggested after completing all 7 lessons or after 20 games",
+        "stage_3": "No labels — suggested after player can consistently identify pieces (measured by no mis-taps on wrong piece types for 5 games)",
+        "stage_4": "Labels completely off — café ready"
+      },
+      "auto_suggestion": {
+        "trigger": "After conditions met, show a one-time toast: 'Ready to try Vietnamese labels?' or 'Ready to play without labels?'",
+        "player_choice": "Always a suggestion, never forced. Player can dismiss and stay on current setting."
+      },
+      "manual_override": "Always available in settings toggle: English / Tiếng Việt / Off"
+    },
+
+    "scaffold_3_coaching_nudges": {
+      "description": "Gentle warnings during play when the player is about to repeat a known mistake pattern",
+
+      "behavior": {
+        "when_active": "Only triggers for patterns identified by pillar_3 pattern tracking that the player keeps repeating",
+        "what_shows": "Subtle toast at bottom: 'Watch your Horse — is it protected?' or 'Check for Cannon screens on that file'",
+        "not_a_hint": "Never tells the player what to move. Only draws attention to the danger.",
+        "frequency": "Maximum once per game per pattern. Don't nag."
+      },
+
+      "fade_behavior": {
+        "stage_1": "Active nudges — appear when entering a position that matches a tracked pattern",
+        "stage_2": "Reduced nudges — after player avoids the mistake 3 times with nudge active, nudge becomes less specific: just a subtle yellow glow on the endangered piece instead of text",
+        "stage_3": "No nudges — pattern is resolved (5 games clean). Nudges disappear entirely.",
+        "reactivation": "If pattern recurs after resolution, nudges come back at Stage 2, not Stage 1"
+      },
+
+      "manual_override": {
+        "settings_toggle": "Coaching hints: On / Subtle / Off",
+        "default": "On"
+      }
+    },
+
+    "scaffold_4_post_game_analysis_depth": {
+      "description": "How much analysis is shown after games fades based on player skill",
+      "fade_behavior": {
+        "beginner": "Show all 2-3 mistakes with full explanations and suggestions",
+        "improving": "Show only the single biggest mistake with a shorter explanation",
+        "experienced": "Show 'No major mistakes — nice game!' for clean games. Only flag genuine blunders.",
+        "café_ready": "Post-game analysis becomes opt-in rather than automatic"
+      },
+      "skill_measurement": "Based on win rate against Medium over last 10 games. >70% win rate = improving. >85% = experienced."
+    }
+  },
+
+  "player_profile": {
+    "description": "Local-only player model that tracks all scaffolding state. No server, no account.",
+    "storage": "localStorage under key 'co_tuong_player'",
+    "schema": {
+      "games_played": {
+        "total": 0,
+        "by_difficulty": { "easy": 0, "medium": 0, "hard": 0 },
+        "wins": 0,
+        "losses": 0
+      },
+      "piece_mastery": {
+        "xe": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "ma": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "tuong_general": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "si": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "tuong_elephant": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "phao": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 },
+        "tot": { "stage": 1, "consecutive_clean": 0, "illegal_attempts": 0 }
+      },
+      "label_mode": "english",
+      "dot_mode": "adaptive",
+      "patterns": {},
+      "puzzle_progress": {},
+      "loss_library": [],
+      "games_history": {
+        "description": "Last 20 games eval history for pattern tracking",
+        "max_entries": 20
+      }
+    }
+  },
+
+  "café_readiness_meter": {
+    "description": "Optional fun feature — a single progress indicator showing how close the player is to being café-ready.",
+    "factors": [
+      { "factor": "Piece mastery", "weight": 0.25, "metric": "Percentage of piece types at Stage 3+" },
+      { "factor": "Label independence", "weight": 0.15, "metric": "Playing with Vietnamese or no labels" },
+      { "factor": "Win rate vs Medium", "weight": 0.25, "metric": "Win percentage over last 10 games" },
+      { "factor": "Pattern resolution", "weight": 0.20, "metric": "Percentage of detected patterns resolved" },
+      { "factor": "Dot independence", "weight": 0.15, "metric": "Playing at Stage 3+ for dots" }
+    ],
+    "display": "Small coffee cup icon that fills up. 100% = ready for the café.",
+    "location": "Settings panel or player profile screen",
+    "tone": "Encouraging, not pressuring. 'You're getting closer to café-ready! ☕'"
+  },
+
+  "implementation_priority": {
+    "description": "Build order based on value and dependencies",
+    "phase_1": {
+      "name": "Post-game analysis",
+      "effort": "3-4 days",
+      "why_first": "Highest value, lowest effort. AI already computes eval — just save it and display after the game.",
+      "tasks": [
+        "Save eval scores during game play",
+        "Calculate eval drops on game end",
+        "Classify mistakes into categories",
+        "Build post-game bottom sheet UI with board thumbnails",
+        "Add 'Replay from here' using existing Review Mode"
+      ]
+    },
+    "phase_2": {
+      "name": "Scaffolding — legal move dots",
+      "effort": "2-3 days",
+      "why_second": "Immediately visible improvement to the learning experience. Per-piece tracking is simple.",
+      "tasks": [
+        "Add per-piece-type move tracking to player profile",
+        "Implement graduation logic (10 consecutive clean moves)",
+        "Modify dot rendering to check piece mastery stage",
+        "Add recovery logic (illegal attempt resets to Stage 1)",
+        "Add settings toggle override"
+      ]
+    },
+    "phase_3": {
+      "name": "Pattern tracking",
+      "effort": "3-4 days",
+      "why_third": "Needs 5-10 games of history to be useful. By the time phase 1 and 2 are built, you'll have enough game data.",
+      "tasks": [
+        "Implement pattern trackers for each category",
+        "Track last 5 games per pattern",
+        "Build pattern alert cards in post-game UI",
+        "Tag existing puzzles with pattern categories",
+        "Prioritize matching puzzles in Practice mode"
+      ]
+    },
+    "phase_4": {
+      "name": "Coaching nudges and label fading",
+      "effort": "2-3 days",
+      "why_last": "Polish layer. The first three pillars do the heavy teaching. This makes it feel seamless.",
+      "tasks": [
+        "Implement in-game nudge system with toast/glow",
+        "Connect nudges to pattern tracker",
+        "Implement nudge fade stages",
+        "Add label mode auto-suggestion based on games played",
+        "Build café readiness meter (optional fun feature)"
+      ]
+    },
+    "total_estimated": "2 weeks across all 4 phases"
+  }
+}
