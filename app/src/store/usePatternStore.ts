@@ -14,18 +14,41 @@ const ALL_CATEGORIES: MistakeCategory[] = [
   'general_mistake',
 ]
 
+const WINDOW_SIZE = 10
+
+// High-severity mistakes activate after a single occurrence
+const HIGH_SEVERITY: MistakeCategory[] = [
+  'hung_piece',
+  'missed_checkmate',
+  'undefended_general',
+  'early_horse_loss',
+]
+
 export interface PatternEntry {
-  last5Games: boolean[] // sliding window, most recent last
+  lastGames: boolean[] // sliding window (up to WINDOW_SIZE), most recent last
+  /** @deprecated Use lastGames instead. Kept for migration from older localStorage data. */
+  last5Games?: boolean[]
   occurrences: number // lifetime total
   lastOccurred: number // timestamp
   timesShown: number // times pattern alert was surfaced
   resolved: boolean // true after 5 clean games
 }
 
+function migrateEntry(entry: PatternEntry): PatternEntry {
+  // Migrate old last5Games field to lastGames
+  if (!entry.lastGames && entry.last5Games) {
+    return { ...entry, lastGames: entry.last5Games, last5Games: undefined }
+  }
+  if (!entry.lastGames) {
+    return { ...entry, lastGames: [] }
+  }
+  return entry
+}
+
 function defaultPatternMap(): Record<MistakeCategory, PatternEntry> {
   const map: Partial<Record<MistakeCategory, PatternEntry>> = {}
   for (const cat of ALL_CATEGORIES) {
-    map[cat] = { last5Games: [], occurrences: 0, lastOccurred: 0, timesShown: 0, resolved: false }
+    map[cat] = { lastGames: [], occurrences: 0, lastOccurred: 0, timesShown: 0, resolved: false }
   }
   return map as Record<MistakeCategory, PatternEntry>
 }
@@ -49,11 +72,11 @@ export const usePatternStore = create<PatternStore>()(
         set((state) => {
           const updated = { ...state.patterns }
           for (const cat of ALL_CATEGORIES) {
-            const entry = { ...updated[cat] }
+            const entry = migrateEntry({ ...updated[cat] })
             const appeared = categories.includes(cat)
 
-            // Push to sliding window, keep max 5
-            entry.last5Games = [...entry.last5Games, appeared].slice(-5)
+            // Push to sliding window, keep max WINDOW_SIZE
+            entry.lastGames = [...entry.lastGames, appeared].slice(-WINDOW_SIZE)
 
             if (appeared) {
               entry.occurrences++
@@ -62,10 +85,10 @@ export const usePatternStore = create<PatternStore>()(
               if (entry.resolved) entry.resolved = false
             }
 
-            // Check resolution: 5 entries and all false
+            // Check resolution: 5 consecutive clean games at the tail
             if (
-              entry.last5Games.length >= 5 &&
-              entry.last5Games.every((g) => !g) &&
+              entry.lastGames.length >= 5 &&
+              entry.lastGames.slice(-5).every((g) => !g) &&
               entry.occurrences > 0
             ) {
               entry.resolved = true
@@ -92,10 +115,11 @@ export const usePatternStore = create<PatternStore>()(
       getActivePatterns: () => {
         const { patterns } = get()
         return ALL_CATEGORIES.filter((cat) => {
-          const entry = patterns[cat]
+          const entry = migrateEntry(patterns[cat])
           if (entry.resolved) return false
-          const trueCount = entry.last5Games.filter(Boolean).length
-          return trueCount >= 2
+          const trueCount = entry.lastGames.filter(Boolean).length
+          const threshold = HIGH_SEVERITY.includes(cat) ? 1 : 2
+          return trueCount >= threshold
         })
       },
 
@@ -107,10 +131,10 @@ export const usePatternStore = create<PatternStore>()(
       getNewlyResolved: () => {
         const { patterns } = get()
         return ALL_CATEGORIES.filter((cat) => {
-          const entry = patterns[cat]
+          const entry = migrateEntry(patterns[cat])
           // Resolved with the most recent game being clean (just crossed the threshold)
           return (
-            entry.resolved && entry.last5Games.length >= 5 && entry.timesShown > 0 // Only congratulate if we previously showed an alert
+            entry.resolved && entry.lastGames.length >= 5 && entry.timesShown > 0 // Only congratulate if we previously showed an alert
           )
         })
       },
@@ -118,6 +142,17 @@ export const usePatternStore = create<PatternStore>()(
     {
       name: 'co_tuong_patterns',
       partialize: (state) => ({ patterns: state.patterns }),
+      merge: (persisted, current) => {
+        const state = { ...current, ...(persisted as Partial<PatternStore>) }
+        // Migrate any old last5Games entries
+        const migrated = { ...state.patterns }
+        for (const cat of ALL_CATEGORIES) {
+          if (migrated[cat]) {
+            migrated[cat] = migrateEntry(migrated[cat])
+          }
+        }
+        return { ...state, patterns: migrated }
+      },
     },
   ),
 )

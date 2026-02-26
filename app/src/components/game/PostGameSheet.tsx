@@ -146,8 +146,9 @@ export function PostGameSheet() {
         <div className="mb-3 flex flex-col gap-2">
           {patternAlerts.map((cat) => {
             const entry = usePatternStore.getState().patterns[cat]
-            const n = entry.last5Games.filter(Boolean).length
-            const m = entry.last5Games.length
+            const games = entry.lastGames ?? entry.last5Games ?? []
+            const n = games.filter(Boolean).length
+            const m = games.length
             const desc = PATTERN_DESCRIPTIONS[cat]
             return (
               <div key={cat} className="rounded-xl border border-amber-200 bg-amber-50 p-3">
