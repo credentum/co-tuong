@@ -8,6 +8,7 @@ export function PuzzleBoard() {
   const highlightSquares = useLearningStore((s) => s.highlightSquares)
   const highlightStyle = useLearningStore((s) => s.highlightStyle)
   const tappedPositions = useLearningStore((s) => s.tappedPositions)
+  const puzzleFeedback = useLearningStore((s) => s.puzzleFeedback)
   const selectPosition = useLearningStore((s) => s.selectPosition)
   const tapPosition = useLearningStore((s) => s.tapPosition)
   const puzzle = useLearningStore((s) => s.getCurrentPuzzle())
@@ -22,8 +23,10 @@ export function PuzzleBoard() {
     }
   }
 
-  // Only show tapped positions for tap_all_targets puzzles
-  const taps = puzzle?.type === 'tap_all_targets' ? tappedPositions : []
+  // Show tapped positions only while still answering — once feedback is shown,
+  // highlightSquares takes over (avoids duplicate keys that break React reconciliation)
+  const taps =
+    puzzle?.type === 'tap_all_targets' && puzzleFeedback === 'none' ? tappedPositions : []
   const allHighlights = [...taps, ...highlightSquares]
 
   return (
