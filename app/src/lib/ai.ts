@@ -1,6 +1,7 @@
 import type { Piece, Position, Side } from '@/types/game'
 import { getFullyLegalMoves, isInCheck } from './moves/legality'
 import { posEq } from './moves/helpers'
+import { boardToFen } from './fen'
 
 /** Material values tuned for Cờ tướng piece hierarchy */
 const PIECE_VALUES: Record<string, number> = {
@@ -134,16 +135,25 @@ export interface AiMove {
 }
 
 /** Minimax AI: picks the best move at given depth. Black minimizes, Red maximizes. */
-export function getMinimaxMove(pieces: Piece[], side: Side, depth: number = 2): AiMove | null {
-  return searchBestMove(pieces, side, depth, evaluate)
+export function getMinimaxMove(
+  pieces: Piece[],
+  side: Side,
+  depth: number = 2,
+  forbiddenFens?: Set<string>,
+): AiMove | null {
+  return searchBestMove(pieces, side, depth, evaluate, forbiddenFens)
 }
 
 /**
  * Medium AI: depth-2 minimax with a weaker evaluation function.
  * Plays consistent, real-looking moves but undervalues tactics and ignores threats.
  */
-export function getMediumMove(pieces: Piece[], side: Side): AiMove | null {
-  return searchBestMove(pieces, side, 2, evaluateMedium)
+export function getMediumMove(
+  pieces: Piece[],
+  side: Side,
+  forbiddenFens?: Set<string>,
+): AiMove | null {
+  return searchBestMove(pieces, side, 2, evaluateMedium, forbiddenFens)
 }
 
 function searchBestMove(
@@ -151,6 +161,7 @@ function searchBestMove(
   side: Side,
   depth: number,
   evalFn: (pieces: Piece[]) => number,
+  forbiddenFens?: Set<string>,
 ): AiMove | null {
   const ownPieces = pieces.filter((p) => p.side === side)
   const maximizing = side === 'red'
@@ -178,6 +189,23 @@ function searchBestMove(
 
   // Sort: maximizing side wants highest score, minimizing wants lowest
   candidates.sort((a, b) => (maximizing ? b.score - a.score : a.score - b.score))
+
+  // Filter out moves that would create a 3-fold repeated position
+  if (forbiddenFens && forbiddenFens.size > 0) {
+    const nonRepeating = candidates.filter((m) => {
+      const resultPieces = applyMove(pieces, m.from, m.to)
+      const nextSide: Side = side === 'red' ? 'black' : 'red'
+      const fen = boardToFen(resultPieces, nextSide)
+      return !forbiddenFens.has(fen)
+    })
+    if (nonRepeating.length > 0) {
+      const bestScore = nonRepeating[0]!.score
+      const bestMoves = nonRepeating.filter((m) => m.score === bestScore)
+      const chosen = bestMoves[Math.floor(Math.random() * bestMoves.length)]!
+      return { from: chosen.from, to: chosen.to }
+    }
+    // All moves repeat — fall through to pick the best anyway (avoid stalemate)
+  }
 
   // Pick randomly among moves tied for the best score (adds variety)
   const bestScore = candidates[0]!.score

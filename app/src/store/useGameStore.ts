@@ -360,18 +360,32 @@ export const useGameStore = create<GameStore>((set, get) => ({
 // Import here to avoid circular issues at module level
 import { fenToBoard } from '@/lib/fen'
 
+/** Build set of FENs that have appeared 2+ times — AI must avoid creating a 3rd repetition */
+function getForbiddenFens(history: string[]): Set<string> {
+  const counts = new Map<string, number>()
+  for (const fen of history) {
+    counts.set(fen, (counts.get(fen) ?? 0) + 1)
+  }
+  const forbidden = new Set<string>()
+  for (const [fen, count] of counts) {
+    if (count >= 2) forbidden.add(fen)
+  }
+  return forbidden
+}
+
 function scheduleAiMove(mode: OpponentMode) {
   setTimeout(() => {
     const state = useGameStore.getState()
-    const { pieces, currentTurn, gameResult } = state
+    const { pieces, currentTurn, gameResult, history } = state
     if (gameResult !== 'ongoing' || currentTurn !== 'black') return
+
+    const forbiddenFens = getForbiddenFens(history)
 
     let aiMove
     if (mode === 'minimax') {
-      aiMove = getMinimaxMove(pieces, 'black', 2)
+      aiMove = getMinimaxMove(pieces, 'black', 2, forbiddenFens)
     } else if (mode === 'medium') {
-      // Consistent but weaker AI: sees the board but undervalues tactics
-      aiMove = getMediumMove(pieces, 'black')
+      aiMove = getMediumMove(pieces, 'black', forbiddenFens)
     } else {
       aiMove = getRandomBotMove(pieces, 'black')
     }
