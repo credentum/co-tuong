@@ -131,7 +131,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   confirmMoveEnabled: false,
   pendingMove: null,
   gameResult: 'ongoing',
-  opponentMode: 'pass-and-play',
+  opponentMode: 'random-bot',
   boardFlipped: false,
   lastMove: null,
   aiHighlightPos: null,
