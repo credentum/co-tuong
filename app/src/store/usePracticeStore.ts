@@ -7,7 +7,7 @@ import type {
   PracticeProgress,
   PracticePuzzleDef,
 } from '@/types/practice'
-import { getFullyLegalMoves } from '@/lib/moves/legality'
+import { getFullyLegalMoves, getGameResult } from '@/lib/moves/legality'
 import { posEq } from '@/lib/moves/helpers'
 import { advanceBox, resetBox } from '@/lib/learningProgress'
 import { ALL_PRACTICE_PUZZLES, PRACTICE_PUZZLES_BY_DIFFICULTY } from '@/data/practicePuzzles'
@@ -203,9 +203,18 @@ export const usePracticeStore = create<PracticeStore>()(
         if (!step) return
 
         // Check if the move matches the expected solution
-        const isCorrect =
+        let isCorrect =
           (posEq(step.playerMove.from, from) && posEq(step.playerMove.to, to)) ||
           (step.alternativeMoves?.some((m) => posEq(m.from, from) && posEq(m.to, to)) ?? false)
+
+        // Safety net: on the final step of checkmate puzzles, accept any move that delivers checkmate
+        if (!isCorrect && !step.opponentResponse && puzzle.concept.startsWith('checkmate')) {
+          const afterMove = applyMove(state.pieces, from, to)
+          const oppSide = puzzle.setup.playerSide === 'red' ? 'black' : 'red'
+          const result = getGameResult(afterMove, oppSide)
+          const wins = puzzle.setup.playerSide === 'red' ? 'red_wins' : 'black_wins'
+          if (result === wins) isCorrect = true
+        }
 
         if (isCorrect) {
           const newPieces = applyMove(state.pieces, from, to)
